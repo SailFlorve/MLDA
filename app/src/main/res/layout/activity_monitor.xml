@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.lmachine.mlda.MonitorActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="180dp">
+
+        <ImageView
+            android:id="@+id/iv_monitor_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:foreground="#4b000000"
+            android:scaleType="centerCrop"
+            android:transitionName="sport_bg" />
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:fitsSystemWindows="true"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:title=" " />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_sport_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="高抬腿"
+                android:textColor="#FFF"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/tv_sport_des"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/small_jump_des"
+                android:textColor="#FFF"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <com.lmachine.mlda.view.SensorView
+                        android:id="@+id/sensor_view_dir"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <com.lmachine.mlda.view.SensorView
+                        android:id="@+id/sensor_view_gyro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <com.lmachine.mlda.view.SensorView
+                        android:id="@+id/sensor_view_gravity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <com.lmachine.mlda.view.SensorView
+                        android:id="@+id/sensor_view_acc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+            </ScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:text="提示: 测试时间应尽量短暂" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="5dp">
+
+                    <Button
+                        android:foreground="?attr/selectableItemBackground"
+                        android:id="@+id/btn_start_test"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:background="@color/colorPrimary"
+                        android:text="开始测试"
+                        android:textColor="#FFF" />
+
+                    <LinearLayout
+                        android:id="@+id/btn_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true">
+
+                        <Button
+                            android:foreground="?attr/selectableItemBackground"
+                            android:id="@+id/btn_save"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="1"
+                            android:background="@color/colorPrimary"
+                            android:text="保存数据"
+                            android:textColor="#FFF" />
+
+                        <Button
+                            android:foreground="?attr/selectableItemBackground"
+                            android:id="@+id/btn_retest"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight="1"
+                            android:background="@color/colorPrimary"
+                            android:text="重新测试"
+                            android:textColor="#FFF" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/count_down_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#aa000000">
+
+            <TextView
+                android:id="@+id/tv_count_down"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text=""
+                android:textColor="#FFF"
+                android:textSize="100sp" />
+        </FrameLayout>
+
+    </RelativeLayout>
+</LinearLayout>

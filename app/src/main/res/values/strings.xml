@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MLDA</string>
+    <string name="privacy_statement">隐私声明: 我们非常重视对您的个人隐私保护，此信息信息仅研究使用。若同意此声明，请点击下一步；否则请退出。</string>
+    <string name="small_jump_des">绷紧全身，左右跳动，身体跟随双腿左右摆动。起跳时，手臂用力上提带起身体。</string>
+    <string name="jumping_jack_des">双脚开合跳跃，小腿放松，用肩部力量抬臂，背部力量下压手臂，用手臂带动身体跳跃。收紧腰腹，手臂用力绷紧。</string>
+    <string name="high_knees_des">挺直背部，目视前方，前脚掌着地快速交替抬腿。保持身体稳定，保持最快速度。</string>
+</resources>
