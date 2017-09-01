@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -139,9 +140,8 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
 
     private void check() {
         clearError();
-        int id = radioGroup.getCheckedRadioButtonId();
-        Log.d(TAG, "check: " + id);
-        if (id == -1) {
+        RadioButton radioButton = (RadioButton) findViewById(radioGroup.getCheckedRadioButtonId());
+        if (radioButton == null) {
             showSnackBar(rootLayout, "请选择性别。");
             return;
         }
@@ -160,8 +160,9 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
             showSnackBar(rootLayout, "传感器缺失，无法测试。");
             return;
         }
+        String checkText = radioButton.getText().toString();
         Intent intent = new Intent(this, SelectActivity.class);
-        intent.putExtra("sex", id == 1 ? "男" : "女");
+        intent.putExtra("sex", checkText.substring(0, 1));
         intent.putExtra("age", ageText.getEditText().getText().toString());
         intent.putExtra("stature", statureText.getEditText().getText().toString());
         intent.putExtra("weight", weightText.getEditText().getText().toString());
