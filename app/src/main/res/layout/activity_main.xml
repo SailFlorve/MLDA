@@ -14,11 +14,12 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:title="基本信息"/>
+        app:title="基本信息" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:focusableInTouchMode="true">
 
         <View
             android:layout_width="match_parent"
@@ -35,17 +36,6 @@
             app:cardCornerRadius="5dp"
             app:cardElevation="1dp">
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_marginBottom="25dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:clickable="true"
-                android:src="@drawable/ic_arrow_forward_white_36dp"
-                app:fabSize="normal" />
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -180,16 +170,28 @@
 
                 </LinearLayout>
             </ScrollView>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginBottom="25dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:src="@drawable/ic_arrow_forward_white_36dp"
+                app:fabSize="normal" />
+
         </android.support.v7.widget.CardView>
 
         <TextView
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:textSize="12sp"
-            android:text="@string/privacy_statement" />
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:text="@string/privacy_statement"
+            android:textSize="12sp" />
     </RelativeLayout>
 </LinearLayout>
