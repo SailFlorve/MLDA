@@ -112,7 +112,8 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
             clearAll();
         } else if (item.getItemId() == R.id.show_data) {
             //startActivity(new Intent(this, DataPresentActivity.class));
-            showSnackBar(rootLayout, "此功能正在制作中。");
+            int num = (int) new Select().from(TestInfo.class).count();
+            showSnackBar(rootLayout, "共有" + num + "条历史记录，查看功能正在开发中。");
         } else if (item.getItemId() == R.id.output_data) {
             if (checkPermission(0, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 outputData();
@@ -138,6 +139,7 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void check() {
         clearError();
         RadioButton radioButton = (RadioButton) findViewById(radioGroup.getCheckedRadioButtonId());
@@ -161,11 +163,18 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
             return;
         }
         String checkText = radioButton.getText().toString();
+        int age = Integer.parseInt(ageText.getEditText().getText().toString());
+        int stature = Integer.parseInt(statureText.getEditText().getText().toString());
+        int weight = Integer.parseInt(weightText.getEditText().getText().toString());
+        if ((age < 14 || age > 80) || (stature < 130 || stature > 200) || (weight < 30 || weight > 150)) {
+            showSnackBar(rootLayout, "请如实填写信息，不要胡编乱造。");
+            return;
+        }
         Intent intent = new Intent(this, SelectActivity.class);
         intent.putExtra("sex", checkText.substring(0, 1));
-        intent.putExtra("age", ageText.getEditText().getText().toString());
-        intent.putExtra("stature", statureText.getEditText().getText().toString());
-        intent.putExtra("weight", weightText.getEditText().getText().toString());
+        intent.putExtra("age", age);
+        intent.putExtra("stature", stature);
+        intent.putExtra("weight", weight);
         startActivity(intent);
     }
 

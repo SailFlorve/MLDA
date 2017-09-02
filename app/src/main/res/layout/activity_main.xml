@@ -14,7 +14,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:title="基本信息" />
+        app:title="基本信息"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -146,7 +146,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="4dp"
-                        android:layout_marginTop="65dp"
+                        android:layout_marginTop="56dp"
                         android:orientation="vertical">
 
                         <TextView
@@ -189,7 +189,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:textSize="13sp"
+            android:textSize="12sp"
             android:text="@string/privacy_statement" />
     </RelativeLayout>
 </LinearLayout>

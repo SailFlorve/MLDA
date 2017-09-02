@@ -9,7 +9,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="180dp">
+        android:layout_height="200dp">
 
         <ImageView
             android:id="@+id/iv_monitor_title"
@@ -42,7 +42,8 @@
                 android:layout_height="wrap_content"
                 android:text="高抬腿"
                 android:textColor="#FFF"
-                android:textSize="24sp" />
+                android:textSize="42sp"
+                android:transitionName="sport_text" />
 
             <TextView
                 android:id="@+id/tv_sport_des"
@@ -51,7 +52,7 @@
                 android:layout_marginTop="5dp"
                 android:text="@string/small_jump_des"
                 android:textColor="#FFF"
-                android:textSize="15sp" />
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -63,7 +64,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <ScrollView
@@ -120,12 +121,12 @@
                     android:layout_marginTop="5dp">
 
                     <Button
-                        android:foreground="?attr/selectableItemBackground"
                         android:id="@+id/btn_start_test"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:background="@color/colorPrimary"
+                        android:foreground="?attr/selectableItemBackground"
                         android:text="开始测试"
                         android:textColor="#FFF" />
 
@@ -136,7 +137,6 @@
                         android:layout_centerInParent="true">
 
                         <Button
-                            android:foreground="?attr/selectableItemBackground"
                             android:id="@+id/btn_save"
                             style="?android:attr/buttonBarButtonStyle"
                             android:layout_width="0dp"
@@ -144,11 +144,11 @@
                             android:layout_marginRight="5dp"
                             android:layout_weight="1"
                             android:background="@color/colorPrimary"
+                            android:foreground="?attr/selectableItemBackground"
                             android:text="保存数据"
                             android:textColor="#FFF" />
 
                         <Button
-                            android:foreground="?attr/selectableItemBackground"
                             android:id="@+id/btn_retest"
                             style="?android:attr/buttonBarButtonStyle"
                             android:layout_width="0dp"
@@ -156,6 +156,7 @@
                             android:layout_marginLeft="5dp"
                             android:layout_weight="1"
                             android:background="@color/colorPrimary"
+                            android:foreground="?attr/selectableItemBackground"
                             android:text="重新测试"
                             android:textColor="#FFF" />
                     </LinearLayout>

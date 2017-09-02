@@ -3,6 +3,7 @@ package com.lmachine.mlda;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -41,9 +42,9 @@ public class SelectActivity extends BaseActivity {
     private void initView() {
         Intent intent = getIntent();
         testInfo.setSex(intent.getStringExtra("sex"));
-        testInfo.setStature(Integer.valueOf(intent.getStringExtra("stature")));
-        testInfo.setWeight(Integer.valueOf(intent.getStringExtra("weight")));
-        testInfo.setAge(Integer.valueOf(intent.getStringExtra("age")));
+        testInfo.setStature(intent.getIntExtra("stature", 0));
+        testInfo.setWeight(intent.getIntExtra("weight", 0));
+        testInfo.setAge(intent.getIntExtra("age", 0));
 
         highKnees = (SportView) findViewById(R.id.sport_view_high_knees);
         smallJump = (SportView) findViewById(R.id.sport_view_small_jump);
@@ -72,7 +73,8 @@ public class SelectActivity extends BaseActivity {
                 Log.d(TAG, "onClick: ");
                 Intent intent = new Intent(SelectActivity.this, MonitorActivity.class);
                 intent.putExtra("sport", SportType.HIGH_KNEES);
-                startActivityForResult(intent, HIGH_KNEES);
+                startActivityForResult(intent, HIGH_KNEES, ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        SelectActivity.this, highKnees.getTextView(), "sport_text").toBundle());
             }
         });
 
@@ -81,7 +83,8 @@ public class SelectActivity extends BaseActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(SelectActivity.this, MonitorActivity.class);
                 intent.putExtra("sport", SportType.SMALL_JUMP);
-                startActivityForResult(intent, SMALL_JUMP);
+                startActivityForResult(intent, SMALL_JUMP, ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        SelectActivity.this, smallJump.getTextView(), "sport_text").toBundle());
             }
         });
 
@@ -90,7 +93,8 @@ public class SelectActivity extends BaseActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(SelectActivity.this, MonitorActivity.class);
                 intent.putExtra("sport", SportType.JUMPING_JACKS);
-                startActivityForResult(intent, JUMPING_JACKS);
+                startActivityForResult(intent, JUMPING_JACKS, ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        SelectActivity.this, jumpingJacks.getTextView(), "sport_text").toBundle());
             }
         });
     }

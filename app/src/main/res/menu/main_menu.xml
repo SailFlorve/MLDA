@@ -8,7 +8,7 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/show_data"
-        android:title="查看历史数据"
+        android:title="查看历史记录"
         app:showAsAction="never" />
 
     <item

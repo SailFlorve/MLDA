@@ -1,11 +1,13 @@
 package com.lmachine.mlda;
 
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
 import com.lmachine.mlda.bean.SensorData;
 import com.lmachine.mlda.constant.SportType;
@@ -84,6 +87,25 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
         unbindService(this);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (currentState == 1 || currentState == 2 || currentState == 3) {
+            new AlertDialog.Builder(this)
+                    .setTitle("退出确认")
+                    .setMessage("如果退出，测试数据将会丢失。是否确认退出？")
+                    .setPositiveButton("退出", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("取消", null)
+                    .create().show();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     protected void initView() {
         Intent intent = getIntent();
         String sportName = intent.getStringExtra("sport");
@@ -103,9 +125,13 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
                 break;
         }
         dirView.setSensorName("当前方向");
+        dirView.setSensorInfo(getString(R.string.dir_info));
         gyroView.setSensorName("陀螺仪");
+        gyroView.setSensorInfo(getString(R.string.gyro_info));
         gravityView.setSensorName("重力传感器");
+        gravityView.setSensorInfo(getString(R.string.gravity_info));
         accView.setSensorName("线性加速度传感器");
+        accView.setSensorInfo(getString(R.string.acc_info));
         buttonLayout.setVisibility(View.GONE);
         countDownLayout.setVisibility(View.GONE);
         startButton.setOnClickListener(new View.OnClickListener() {

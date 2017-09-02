@@ -15,7 +15,8 @@
         android:layout_height="match_parent"
         android:foreground="#82000000"
         android:scaleType="centerCrop"
-        android:src="@drawable/bg_high_knees" />
+        android:src="@drawable/bg_high_knees"
+        android:transitionName="sport_bg"/>
 
     <TextView
         android:id="@+id/tv_sport_view"
@@ -24,7 +25,8 @@
         android:layout_gravity="center"
         android:text="高抬腿"
         android:textColor="#FFF"
-        android:textSize="45sp" />
+        android:textSize="42sp"
+        android:transitionName="sport_text"/>
 
     <ImageView
         android:visibility="gone"

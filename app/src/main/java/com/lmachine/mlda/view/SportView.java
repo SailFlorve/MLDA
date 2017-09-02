@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.lmachine.mlda.R;
 
 /**
@@ -43,8 +44,8 @@ public class SportView extends CardView {
     }
 
     public void setImage(@DrawableRes int id) {
-        //Glide.with(mContext).load(id).into(imageView);
-        imageView.setImageResource(id);
+        Glide.with(mContext).load(id).into(imageView);
+        //imageView.setImageResource(id);
     }
 
     public void setText(String text) {
@@ -58,7 +59,12 @@ public class SportView extends CardView {
     public boolean getFinish() {
         return finishView.getVisibility() == VISIBLE;
     }
+
     public ImageView getImageView() {
         return imageView;
+    }
+
+    public TextView getTextView() {
+        return textView;
     }
 }
