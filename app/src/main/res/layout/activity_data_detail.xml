@@ -8,20 +8,20 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
-        android:transitionName="sport_name"
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:transitionName="sport_name"
         app:title=" " />
 
     <ScrollView
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -170,11 +170,12 @@
                     android:id="@+id/tv_ori_data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
                     android:background="#ededed"
                     android:ellipsize="end"
-                    android:maxLines="3"
-                    android:padding="5dp"
+                    android:maxLines="4"
+                    android:padding="6dp"
                     android:text=""
                     android:textSize="12sp" />
 
@@ -188,11 +189,12 @@
                     android:id="@+id/tv_gyro_data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
                     android:background="#ededed"
                     android:ellipsize="end"
-                    android:maxLines="3"
-                    android:padding="5dp"
+                    android:maxLines="4"
+                    android:padding="6dp"
                     android:text=""
                     android:textSize="12sp" />
 
@@ -206,11 +208,12 @@
                     android:id="@+id/tv_gra_data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
                     android:background="#ededed"
                     android:ellipsize="end"
-                    android:maxLines="3"
-                    android:padding="5dp"
+                    android:maxLines="4"
+                    android:padding="6dp"
                     android:text=""
                     android:textSize="12sp" />
 
@@ -224,11 +227,12 @@
                     android:id="@+id/tv_acc_data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
                     android:background="#ededed"
                     android:ellipsize="end"
-                    android:maxLines="3"
-                    android:padding="5dp"
+                    android:maxLines="4"
+                    android:padding="6dp"
                     android:text=""
                     android:textSize="12sp" />
             </LinearLayout>
