@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:background="#FFF"
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:transitionName="sport_name">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_sport_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="开合跳"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/tv_sport_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="15秒"
+            android:textColor="#b9000000" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="/" />
+
+        <TextView
+            android:id="@+id/tv_sport_tester_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="16岁  156cm  78kg" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_sport_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="2017-5-10 13:23:22"
+        android:textSize="13sp" />
+
+</LinearLayout>

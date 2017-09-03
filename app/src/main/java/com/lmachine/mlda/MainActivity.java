@@ -1,6 +1,5 @@
 package com.lmachine.mlda;
 
-import android.Manifest;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -17,7 +16,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -32,6 +30,7 @@ import com.lmachine.mlda.util.SaveUtil;
 import com.lmachine.mlda.util.TimeUtil;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -88,6 +87,17 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
         });
 
         bindService(new Intent(this, SensorService.class), this, BIND_AUTO_CREATE);
+        List<float[]> list = new ArrayList<>();
+        float[] num = new float[]{};
+
+        float[] num1 = new float[]{1f, 2f, 3f};
+        float[] num2 = new float[]{4f, 5f, 6f};
+        num = num1;
+        list.add(num);
+        num = num2;
+        list.add(num);
+
+        Log.d(TAG, "onCreate: " + list.toString());
     }
 
     @Override
@@ -112,15 +122,14 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.clear_all) {
             clearAll();
-        } else if (item.getItemId() == R.id.show_data) {
-            //startActivity(new Intent(this, DataPresentActivity.class));
-            int num = (int) new Select().from(TestInfo.class).count();
-            showSnackBar(rootLayout, "共有" + num + "条历史记录，查看功能正在开发中。");
-        } else if (item.getItemId() == R.id.output_data) {
-            if (checkPermission(0, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                outputData();
-            }
+        } else if (item.getItemId() == R.id.manage_data) {
+            startActivity(new Intent(this, DataManageActivity.class));
         }
+//        } else if (item.getItemId() == R.id.output_data) {
+//            if (checkPermission(0, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                outputData();
+//            }
+//        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -146,7 +155,7 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
         clearError();
         RadioButton radioButton = (RadioButton) findViewById(radioGroup.getCheckedRadioButtonId());
         if (radioButton == null) {
-            showSnackBar(rootLayout, "请选择性别。");
+            showSnackBar("请选择性别。");
             return;
         }
         for (TextInputLayout textInputLayout : textInputLayouts) {
@@ -161,7 +170,12 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
             }
         }
         if (!haveMag || !haveAcc || !haveGravity || !haveGyro) {
-            showSnackBar(rootLayout, "传感器缺失，无法测试。");
+            String sb = "以下传感器缺失，无法测试：" +
+                    (haveMag ? "" : "磁场传感器\n") +
+                    (haveAcc ? "" : "线性加速度传感器\n") +
+                    (haveGravity ? "" : "重力传感器\n") +
+                    (haveGyro ? "" : "陀螺仪\n");
+            showSnackBar(sb);
             return;
         }
         String checkText = radioButton.getText().toString();
@@ -169,7 +183,7 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
         int stature = Integer.parseInt(statureText.getEditText().getText().toString());
         int weight = Integer.parseInt(weightText.getEditText().getText().toString());
         if ((age < 14 || age > 80) || (stature < 130 || stature > 200) || (weight < 30 || weight > 150)) {
-            showSnackBar(rootLayout, "请如实填写信息，不要胡编乱造。");
+            showSnackBar("请如实填写信息，不要胡编乱造。");
             return;
         }
         Intent intent = new Intent(this, SelectActivity.class);
@@ -178,33 +192,6 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
         intent.putExtra("stature", stature);
         intent.putExtra("weight", weight);
         startActivity(intent);
-    }
-
-    private void outputData() {
-        List<TestInfo> testInfoList = new Select().from(TestInfo.class).queryList();
-        if (testInfoList.isEmpty()) {
-            showSnackBar(rootLayout, "数据为空！");
-            return;
-        }
-        String str = new Gson().toJson(testInfoList);
-        String fileName = TimeUtil.getNowTime(TimeUtil.B) + ".txt";
-        if (SaveUtil.saveString(str, fileName)) {
-            showSnackBar(rootLayout, "数据已导出到: SD卡根目录/MLDA/" + fileName);
-        } else {
-            showSnackBar(rootLayout, "数据导出失败。");
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 0) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                outputData();
-            } else {
-                showSnackBar(rootLayout, "必须允许读写SD卡权限，才能导出数据。");
-            }
-        }
     }
 
     @Override

@@ -52,7 +52,10 @@ public class SensorService extends Service {
                     return;
                 }
                 float[] oriData = getOrientation(gravityData, linearAccData, magData);
-                dataListener.onSensorDataChanged(oriData, linearAccData, gravityData, gyroData);
+                dataListener.onSensorDataChanged(oriData,
+                        new float[]{linearAccData[0], linearAccData[1], linearAccData[2]},
+                        new float[]{gravityData[0], gravityData[1], gravityData[2]},
+                        new float[]{gyroData[0], gyroData[1], gyroData[2]});
             }
         }
 

@@ -3,6 +3,7 @@
     package="com.lmachine.mlda">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:name=".application.MyApplication"
         android:allowBackup="true"
@@ -35,7 +36,11 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/TransparentTheme" />
-        <activity android:name=".DataPresentActivity"></activity>
+        <activity
+            android:name=".DataManageActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".DataDetailActivity" />
     </application>
 
 </manifest>

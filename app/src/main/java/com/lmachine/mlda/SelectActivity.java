@@ -124,8 +124,9 @@ public class SelectActivity extends BaseActivity {
         info.setGyroscopeData(data.getStringExtra("gyroData"));
         info.setOrientationData(data.getStringExtra("oriData"));
         info.setTime(TimeUtil.getNowTime(TimeUtil.A));
+        info.setDuration(data.getIntExtra("duration", 0));
         info.save();
-        showSnackBar(rootLayout, "数据已保存。");
+        showSnackBar("数据已保存。");
         if (highKnees.getFinish() && jumpingJacks.getFinish() && smallJump.getFinish()) {
             new AlertDialog.Builder(this)
                     .setTitle("测试全部完成")

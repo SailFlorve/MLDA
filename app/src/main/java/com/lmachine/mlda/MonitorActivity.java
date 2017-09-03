@@ -7,31 +7,35 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
-import com.lmachine.mlda.bean.SensorData;
 import com.lmachine.mlda.constant.SportType;
 import com.lmachine.mlda.service.SensorService;
 import com.lmachine.mlda.view.SensorView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class MonitorActivity extends BaseActivity implements ServiceConnection {
 
     private ImageView titleImage;
     private TextView sportTitle;
     private TextView sportDes;
+    private TextView tipText;
+    private Chronometer chronometer;
 
     private SensorView dirView;
     private SensorView gyroView;
@@ -64,6 +68,8 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
         setToolbar(R.id.toolbar, true);
         sportTitle = (TextView) findViewById(R.id.tv_sport_name);
         sportDes = (TextView) findViewById(R.id.tv_sport_des);
+        tipText = (TextView) findViewById(R.id.tv_tip_text);
+        chronometer = (Chronometer) findViewById(R.id.chronometer);
         titleImage = (ImageView) findViewById(R.id.iv_monitor_title);
         dirView = (SensorView) findViewById(R.id.sensor_view_dir);
         gyroView = (SensorView) findViewById(R.id.sensor_view_gyro);
@@ -147,6 +153,7 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
                     countDownLayout.setVisibility(View.GONE);
                     startButton.setText("开始测试");
                 } else if (currentState == 2) {
+                    chronometer.stop();
                     currentState = 3;
                     startButton.animate().translationY(500).setDuration(500);
                     buttonLayout.setVisibility(View.VISIBLE);
@@ -160,18 +167,11 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent();
-                SensorData ori = new SensorData();
-                SensorData gyro = new SensorData();
-                SensorData gra = new SensorData();
-                SensorData acc = new SensorData();
-                ori.setData(oriDataList);
-                gyro.setData(gyroDataList);
-                gra.setData(gravityDataList);
-                acc.setData(accDataList);
-                i.putExtra("oriData", new Gson().toJson(ori, SensorData.class));
-                i.putExtra("gyroData", new Gson().toJson(gyro, SensorData.class));
-                i.putExtra("graData", new Gson().toJson(gra, SensorData.class));
-                i.putExtra("accData", new Gson().toJson(acc, SensorData.class));
+                i.putExtra("oriData", new Gson().toJson(oriDataList));
+                i.putExtra("gyroData", new Gson().toJson(gyroDataList));
+                i.putExtra("graData", new Gson().toJson(gravityDataList));
+                i.putExtra("accData", new Gson().toJson(accDataList));
+                i.putExtra("duration", Integer.valueOf(chronometer.getText().toString().split("秒")[0]));
                 setResult(RESULT_OK, i);
                 finish();
             }
@@ -191,6 +191,14 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
                 startButton.setText("开始测试");
             }
         });
+
+        chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
+                int seconds = (int) ((SystemClock.elapsedRealtime() - chronometer.getBase()) / 1000);
+                chronometer.setText(String.format(Locale.getDefault(), "%02d秒", seconds));
+            }
+        });
     }
 
     private void countDown() {
@@ -206,13 +214,11 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
         sensorService.setSensorListener(new SensorService.SensorDataListener() {
             @Override
             public void onSensorDataChanged(float[] dirData, float[] linearAccData, float[] gravityData, float[] gyroData) {
-                //Log.d(TAG, "onSensorDataChanged: 回调数据...");
                 dirView.setSensorData(dirData);
                 accView.setSensorData(linearAccData);
                 gravityView.setSensorData(gravityData);
                 gyroView.setSensorData(gyroData);
                 if (currentState == 2) {
-                    //Log.d(TAG, "onSensorDataChanged: 添加数据...");
                     oriDataList.add(dirData);
                     accDataList.add(linearAccData);
                     gravityDataList.add(gravityData);
@@ -238,7 +244,7 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
          * @param countDownInterval The interval along the way to receive
          *                          {@link #onTick(long)} callbacks.
          */
-        public MyCountDownTimer(long millisInFuture, long countDownInterval) {
+        MyCountDownTimer(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
         }
 
@@ -256,6 +262,9 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
 
         @Override
         public void onFinish() {
+            tipText.setText("已用时间: ");
+            chronometer.setBase(SystemClock.elapsedRealtime());
+            chronometer.start();
             currentState = 2;
             countDownLayout.setVisibility(View.GONE);
             startButton.setText("结束测试");

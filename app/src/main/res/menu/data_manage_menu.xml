@@ -2,13 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/clear_all"
-        android:icon="@drawable/ic_clear_all_white_48dp"
-        android:title="清除全部"
+        android:id="@+id/output_data"
+        android:title="导出数据"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/manage_data"
-        android:title="数据管理"
+        android:id="@+id/clear_data"
+        android:title="删除全部数据"
         app:showAsAction="never" />
-
 </menu>

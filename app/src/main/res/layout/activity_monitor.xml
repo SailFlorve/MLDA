@@ -105,12 +105,25 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:gravity="center"
-                    android:text="提示: 测试时间应尽量短暂" />
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tv_tip_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="提示：测试时间尽量短暂。" />
+
+                    <Chronometer
+                        android:id="@+id/chronometer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:format=""
+                        android:gravity="center" />
+                </LinearLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"

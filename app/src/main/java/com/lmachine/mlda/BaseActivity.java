@@ -55,11 +55,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected void showSnackBar(View root, String content) {
+    protected void showSnackBar(String content) {
+        View root = findViewById(R.id.root_layout);
         Snackbar.make(root, content, Snackbar.LENGTH_SHORT).setAction("知道了", emptyClickListener).show();
     }
 
-    protected void showSnackBar(View root, String content, String action, View.OnClickListener listener) {
+    protected void showSnackBar(String content, String action, View.OnClickListener listener) {
+        View root = findViewById(R.id.root_layout);
         Snackbar.make(root, content, Snackbar.LENGTH_LONG).setAction(action, listener).show();
     }
 
