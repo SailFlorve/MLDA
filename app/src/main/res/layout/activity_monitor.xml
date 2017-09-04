@@ -1,66 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.lmachine.mlda.MonitorActivity">
+    android:layout_height="match_parent">
 
-    <RelativeLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="200dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.lmachine.mlda.MonitorActivity">
 
-        <ImageView
-            android:id="@+id/iv_monitor_title"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:foreground="#4b000000"
-            android:scaleType="centerCrop"
-            android:transitionName="sport_bg" />
+            android:layout_height="200dp">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:fitsSystemWindows="true"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:title=" " />
+            <ImageView
+                android:id="@+id/iv_monitor_title"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:transitionName="sport_bg" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:orientation="vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#50000000"/>
 
-            <TextView
-                android:id="@+id/tv_sport_name"
-                android:layout_width="wrap_content"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:fitsSystemWindows="true"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:title=" " />
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="高抬腿"
-                android:textColor="#FFF"
-                android:textSize="42sp"
-                android:transitionName="sport_text" />
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_sport_des"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="@string/small_jump_des"
-                android:textColor="#FFF"
-                android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/tv_sport_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="高抬腿"
+                    android:textColor="#FFF"
+                    android:textSize="42sp"
+                    android:transitionName="sport_text" />
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_sport_des"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/small_jump_des"
+                    android:textColor="#FFF"
+                    android:textSize="14sp" />
 
-    </RelativeLayout>
+            </LinearLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -178,21 +184,22 @@
             </LinearLayout>
         </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/count_down_layout"
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/count_down_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#8c000000">
+
+        <TextView
+            android:id="@+id/tv_count_down"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#aa000000">
+            android:gravity="center"
+            android:text=""
+            android:textColor="#FFF"
+            android:textSize="100sp" />
+    </FrameLayout>
 
-            <TextView
-                android:id="@+id/tv_count_down"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text=""
-                android:textColor="#FFF"
-                android:textSize="100sp" />
-        </FrameLayout>
-
-    </RelativeLayout>
-</LinearLayout>
+</RelativeLayout>

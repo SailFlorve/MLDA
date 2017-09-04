@@ -33,14 +33,13 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".MonitorActivity"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/TransparentTheme" />
         <activity
             android:name=".DataManageActivity"
             android:launchMode="singleTask" />
         <activity android:name=".DataDetailActivity" />
-        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".SettingsActivity"/>
     </application>
 
 </manifest>

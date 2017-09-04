@@ -135,7 +135,7 @@ public class SelectActivity extends BaseActivity {
                     .setNegativeButton("返回主界面", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            startActivity(new Intent(SelectActivity.this, MainActivity.class));
+                            finish();
                         }
                     }).create().show();
         }

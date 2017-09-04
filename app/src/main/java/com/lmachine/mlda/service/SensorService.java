@@ -30,67 +30,45 @@ public class SensorService extends Service {
 
     private SensorDataListener dataListener;
 
-    private SensorEventListener magListener = new SensorEventListener() {
+    private SensorEventListener sensorEventListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
-            magData = event.values;
-            if (dataListener != null) {
-                if (magData.length == 0 || linearAccData.length == 0
-                        || gravityData.length == 0) {
-                    return;
-                }
-                float[] oriData = getOrientation(gravityData, linearAccData, magData);
-                dataListener.onOriDataChanged(oriData);
-            }
-        }
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        }
-    };
-
-    private SensorEventListener gyroListener = new SensorEventListener() {
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            gyroData = event.values;
-            if (dataListener != null) {
-                dataListener.onGyroDataChanged(new float[]{
-                        gyroData[0], gyroData[1], gyroData[2]
-                });
-            }
-        }
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-        }
-    };
-
-    private SensorEventListener gravityListener = new SensorEventListener() {
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            gravityData = event.values;
-            if (dataListener != null) {
-                dataListener.onGravityDataChanged(new float[]{
-                        gravityData[0], gravityData[1], gravityData[2]
-                });
-            }
-        }
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-        }
-    };
-
-    private SensorEventListener accListener = new SensorEventListener() {
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            linearAccData = event.values;
-            if (dataListener != null) {
-                dataListener.onAccDataChanged(new float[]{
-                        linearAccData[0], linearAccData[1], linearAccData[2]
-                });
+            switch (event.sensor.getType()) {
+                case Sensor.TYPE_MAGNETIC_FIELD:
+                    magData = event.values;
+                    if (dataListener != null) {
+                        if (magData.length == 0 || linearAccData.length == 0
+                                || gravityData.length == 0) {
+                            return;
+                        }
+                        float[] oriData = getOrientation(gravityData, linearAccData, magData);
+                        dataListener.onOriDataChanged(oriData);
+                    }
+                    break;
+                case Sensor.TYPE_GYROSCOPE:
+                    gyroData = event.values;
+                    if (dataListener != null) {
+                        dataListener.onGyroDataChanged(new float[]{
+                                gyroData[0], gyroData[1], gyroData[2]
+                        });
+                    }
+                    break;
+                case Sensor.TYPE_GRAVITY:
+                    gravityData = event.values;
+                    if (dataListener != null) {
+                        dataListener.onGravityDataChanged(new float[]{
+                                gravityData[0], gravityData[1], gravityData[2]
+                        });
+                    }
+                    break;
+                case Sensor.TYPE_LINEAR_ACCELERATION:
+                    linearAccData = event.values;
+                    if (dataListener != null) {
+                        dataListener.onAccDataChanged(new float[]{
+                                linearAccData[0], linearAccData[1], linearAccData[2]
+                        });
+                    }
+                    break;
             }
         }
 
@@ -167,10 +145,10 @@ public class SensorService extends Service {
         public void startMonitor() {
             String rateStr = SPUtil.load(SensorService.this).getString("data_rate", "40");
             int rate = Integer.parseInt(rateStr) * 1000;
-            sensorManager.registerListener(magListener, magSensor, rate);
-            sensorManager.registerListener(accListener, linearAccSensor, rate);
-            sensorManager.registerListener(gravityListener, gravitySensor, rate);
-            sensorManager.registerListener(gyroListener, gyroSensor, rate);
+            sensorManager.registerListener(sensorEventListener, magSensor, rate);
+            sensorManager.registerListener(sensorEventListener, linearAccSensor, rate);
+            sensorManager.registerListener(sensorEventListener, gravitySensor, rate);
+            sensorManager.registerListener(sensorEventListener, gyroSensor, rate);
         }
 
         public void stopMonitor() {
@@ -179,10 +157,7 @@ public class SensorService extends Service {
     }
 
     private void unregisterSensorListener() {
-        sensorManager.unregisterListener(magListener);
-        sensorManager.unregisterListener(gyroListener);
-        sensorManager.unregisterListener(gravityListener);
-        sensorManager.unregisterListener(accListener);
+        sensorManager.unregisterListener(sensorEventListener);
     }
 
     public interface SensorStatusCallback {
