@@ -39,8 +39,8 @@
         <activity
             android:name=".DataManageActivity"
             android:launchMode="singleTask" />
-        <activity
-            android:name=".DataDetailActivity" />
+        <activity android:name=".DataDetailActivity" />
+        <activity android:name=".SettingsActivity"></activity>
     </application>
 
 </manifest>

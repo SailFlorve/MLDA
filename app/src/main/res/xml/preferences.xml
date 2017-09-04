@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="基本设置">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="check_sensor"
+            android:summary="开启后，当传感器缺失时，不允许进入测试。"
+            android:title="检查传感器完整性" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="数据采集">
+        <ListPreference
+            android:defaultValue="40"
+            android:entries="@array/rate_array"
+            android:entryValues="@array/rate_array_value"
+            android:inputType="number"
+            android:key="data_rate"
+            android:summary="%s"
+            android:title="数据采集频率" />
+    </PreferenceCategory>
+</PreferenceScreen>

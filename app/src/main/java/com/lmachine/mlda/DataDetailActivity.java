@@ -30,6 +30,7 @@ import java.util.List;
 
 public class DataDetailActivity extends BaseActivity implements View.OnClickListener {
 
+    private TextView sex;
     private TextView age;
     private TextView weight;
     private TextView stature;
@@ -62,6 +63,7 @@ public class DataDetailActivity extends BaseActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data_detail);
         setToolbar(R.id.toolbar, true);
+        sex = (TextView) findViewById(R.id.tv_sex);
         age = (TextView) findViewById(R.id.tv_age);
         stature = (TextView) findViewById(R.id.tv_stature);
         weight = (TextView) findViewById(R.id.tv_weight);
@@ -101,6 +103,7 @@ public class DataDetailActivity extends BaseActivity implements View.OnClickList
         }
 
         toolbar.setTitle(testInfo.getType());
+        sex.setText("性别: " + testInfo.getSex());
         age.setText("年龄: " + testInfo.getAge() + "岁");
         weight.setText("体重: " + testInfo.getWeight() + "kg");
         stature.setText("身高: " + testInfo.getStature() + "cm");

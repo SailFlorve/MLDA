@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.lmachine.mlda.bean.TestInfo;
 import com.lmachine.mlda.service.SensorService;
+import com.lmachine.mlda.util.SPUtil;
 import com.lmachine.mlda.util.SaveUtil;
 import com.lmachine.mlda.util.TimeUtil;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -124,12 +125,9 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
             clearAll();
         } else if (item.getItemId() == R.id.manage_data) {
             startActivity(new Intent(this, DataManageActivity.class));
+        } else if (item.getItemId() == R.id.settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
         }
-//        } else if (item.getItemId() == R.id.output_data) {
-//            if (checkPermission(0, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-//                outputData();
-//            }
-//        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -169,15 +167,19 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
                 return;
             }
         }
-        if (!haveMag || !haveAcc || !haveGravity || !haveGyro) {
-            String sb = "以下传感器缺失，无法测试：" +
-                    (haveMag ? "" : "磁场传感器\n") +
-                    (haveAcc ? "" : "线性加速度传感器\n") +
-                    (haveGravity ? "" : "重力传感器\n") +
-                    (haveGyro ? "" : "陀螺仪\n");
+
+        boolean checkSensor = SPUtil.load(this).getBoolean("check_sensor", true);
+        if (checkSensor && !(haveAcc && haveMag && haveGravity && haveGyro)) {
+            String sb = "传感器缺失: " +
+                    (haveMag ? "" : "磁场传感器, ") +
+                    (haveAcc ? "" : "线性加速度传感器, ") +
+                    (haveGravity ? "" : "重力传感器, ") +
+                    (haveGyro ? "" : "陀螺仪, ") +
+                    "无法测试。";
             showSnackBar(sb);
             return;
         }
+
         String checkText = radioButton.getText().toString();
         int age = Integer.parseInt(ageText.getEditText().getText().toString());
         int stature = Integer.parseInt(statureText.getEditText().getText().toString());

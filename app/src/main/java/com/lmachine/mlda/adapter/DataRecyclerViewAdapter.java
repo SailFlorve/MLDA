@@ -28,7 +28,8 @@ public class DataRecyclerViewAdapter extends BaseQuickAdapter<TestInfo, BaseView
                 .setText(R.id.tv_sport_time, item.getTime())
                 .setText(R.id.tv_sport_tester_info,
                         String.format(Locale.getDefault(),
-                                "%d岁 · %dcm · %dkg",
+                                "%s · %d岁 · %dcm · %dkg",
+                                item.getSex(),
                                 item.getAge(),
                                 item.getStature(),
                                 item.getWeight()));

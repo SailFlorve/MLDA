@@ -213,16 +213,34 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
         SensorService sensorService = binder.getService();
         sensorService.setSensorListener(new SensorService.SensorDataListener() {
             @Override
-            public void onSensorDataChanged(float[] dirData, float[] linearAccData, float[] gravityData, float[] gyroData) {
-                dirView.setSensorData(dirData);
-                accView.setSensorData(linearAccData);
-                gravityView.setSensorData(gravityData);
-                gyroView.setSensorData(gyroData);
+            public void onOriDataChanged(float[] data) {
+                dirView.setSensorData(data);
                 if (currentState == 2) {
-                    oriDataList.add(dirData);
-                    accDataList.add(linearAccData);
-                    gravityDataList.add(gravityData);
-                    gyroDataList.add(gyroData);
+                    oriDataList.add(data);
+                }
+            }
+
+            @Override
+            public void onGyroDataChanged(float[] data) {
+                gyroView.setSensorData(data);
+                if (currentState == 2) {
+                    gyroDataList.add(data);
+                }
+            }
+
+            @Override
+            public void onGravityDataChanged(float[] data) {
+                gravityView.setSensorData(data);
+                if (currentState == 2) {
+                    gravityDataList.add(data);
+                }
+            }
+
+            @Override
+            public void onAccDataChanged(float[] data) {
+                accView.setSensorData(data);
+                if (currentState == 2) {
+                    accDataList.add(data);
                 }
             }
         });
