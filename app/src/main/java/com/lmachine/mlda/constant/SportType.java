@@ -9,4 +9,5 @@ public class SportType {
     public static final String HIGH_KNEES = "高抬腿";
     public static final String JUMPING_JACKS = "开合跳";
     public static final String SMALL_JUMP = "左右小跳";
+    public static final String DEEP_SQUAT = "深蹲";
 }

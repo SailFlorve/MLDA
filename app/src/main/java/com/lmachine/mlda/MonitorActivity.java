@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.hardware.Sensor;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
@@ -20,12 +21,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
-import com.lmachine.mlda.constant.SportType;
+import com.lmachine.mlda.bean.TestInfo;
+import com.lmachine.mlda.bean.sport.SportInfo;
 import com.lmachine.mlda.service.SensorService;
 import com.lmachine.mlda.view.SensorView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -60,6 +61,8 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
     private List<float[]> accDataList = new ArrayList<>();
 
     private int currentState = 0;//0: 未开始记录 1: 正在倒计时 2:正在记录 3.记录结束
+
+    TestInfo testInfo = new TestInfo();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,32 +117,24 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
 
     protected void initView() {
         Intent intent = getIntent();
-        String sportName = intent.getStringExtra("sport");
-        sportTitle.setText(sportName);
-        switch (sportName) {
-            case SportType.HIGH_KNEES:
-                Glide.with(this).load(R.drawable.high_knees).into(titleImage);
-                sportDes.setText(getString(R.string.high_knees_des));
-                break;
-            case SportType.JUMPING_JACKS:
-                Glide.with(this).load(R.drawable.jumping_jacks).into(titleImage);
-                sportDes.setText(getString(R.string.jumping_jack_des));
-                break;
-            case SportType.SMALL_JUMP:
-                Glide.with(this).load(R.drawable.small_jump).into(titleImage);
-                sportDes.setText(getString(R.string.small_jump_des));
-                break;
-        }
+        SportInfo sport = (SportInfo) intent.getSerializableExtra("sport");
+
+        sportTitle.setText(sport.getName());
+
+        Glide.with(this).load(sport.getGifId()).into(titleImage);
+        sportDes.setText(sport.getDes());
+
         dirView.setSensorName("当前方向");
-        dirView.setSensorInfo(getString(R.string.dir_info));
+        dirView.setSensorDes(getString(R.string.dir_info));
         gyroView.setSensorName("陀螺仪");
-        gyroView.setSensorInfo(getString(R.string.gyro_info));
+        gyroView.setSensorDes(getString(R.string.gyro_info));
         gravityView.setSensorName("重力传感器");
-        gravityView.setSensorInfo(getString(R.string.gravity_info));
+        gravityView.setSensorDes(getString(R.string.gravity_info));
         accView.setSensorName("线性加速度传感器");
-        accView.setSensorInfo(getString(R.string.acc_info));
+        accView.setSensorDes(getString(R.string.acc_info));
         buttonLayout.setVisibility(View.GONE);
         countDownLayout.setVisibility(View.GONE);
+
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,11 +162,12 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent();
-                i.putExtra("oriData", new Gson().toJson(oriDataList));
-                i.putExtra("gyroData", new Gson().toJson(gyroDataList));
-                i.putExtra("graData", new Gson().toJson(gravityDataList));
-                i.putExtra("accData", new Gson().toJson(accDataList));
-                i.putExtra("duration", Integer.valueOf(chronometer.getText().toString().split("秒")[0]));
+                testInfo.setOrientationData(new Gson().toJson(oriDataList));
+                testInfo.setGravityData(new Gson().toJson(gravityDataList));
+                testInfo.setGyroscopeData(new Gson().toJson(gyroDataList));
+                testInfo.setAccelerationData(new Gson().toJson(accDataList));
+                testInfo.setDuration(Integer.valueOf(chronometer.getText().toString().split("秒")[0]));
+                i.putExtra("test_info", testInfo);
                 setResult(RESULT_OK, i);
                 finish();
             }
@@ -211,6 +207,36 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
     public void onServiceConnected(ComponentName name, IBinder service) {
         binder = (SensorService.MyBinder) service;
         SensorService sensorService = binder.getService();
+
+        Sensor mag = sensorService.getMagSensor();
+        Sensor gra = sensorService.getGravitySensor();
+        Sensor gyro = sensorService.getGyroSensor();
+        Sensor acc = sensorService.getLinearAccSensor();
+
+        dirView.setSensorVendor(
+                "磁场传感器:", mag.getVendor() + " " + mag.getName());
+
+        gravityView.setSensorVendor(gra.getVendor(),
+                gra.getName());
+
+        gyroView.setSensorVendor(gyro.getVendor(),
+                gyro.getName());
+
+        accView.setSensorVendor(acc.getVendor(),
+                acc.getName());
+
+        testInfo.setMagSensorName(mag.getName());
+        testInfo.setMagSensorVendor(mag.getVendor());
+
+        testInfo.setGravitySensorName(gra.getName());
+        testInfo.setGravitySensorVendor(gra.getVendor());
+
+        testInfo.setGyroName(gyro.getName());
+        testInfo.setGyroVendor(gyro.getVendor());
+
+        testInfo.setAccelerationSensorName(acc.getName());
+        testInfo.setAccelerationSensorVendor(acc.getVendor());
+
         sensorService.setSensorListener(new SensorService.SensorDataListener() {
             @Override
             public void onOriDataChanged(float[] data) {

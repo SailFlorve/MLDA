@@ -1,14 +1,16 @@
 <resources>
     <string name="app_name">MLDA</string>
-    <string name="privacy_statement">隐私声明: 我们非常重视对您的个人隐私保护，此信息仅研究使用。若不同意此声明，请退出软件。\n©Machine Learning Data Acquisition</string>
+    <string name="privacy_statement">隐私声明:\n©Machine Learning Data Acquisition</string>
     <string name="small_jump_des">绷紧全身，左右跳动，身体跟随双腿左右摆动。起跳时，手臂用力上提带起身体。</string>
     <string name="jumping_jack_des">双脚开合跳跃，小腿放松，用肩部力量抬臂，背部力量下压手臂，用手臂带动身体跳跃。收紧腰腹，手臂用力绷紧。</string>
     <string name="high_knees_des">挺直背部，目视前方，前脚掌着地快速交替抬腿。保持身体稳定，保持最快速度。</string>
-    <string name="dir_info">x: 手机头部的朝向与正北方向夹角。\ny: 手机顶部或尾部翘起的角度。\nz: 手机左侧或右侧翘起的角度。</string>
+    <string name="dir_info">根据磁场传感器、线性加速度传感器与重力传感器计算所得结果。\nx: 手机头部的朝向与正北方向夹角。\ny: 手机顶部或尾部翘起的角度。\nz: 手机左侧或右侧翘起的角度。</string>
     <string name="acc_info">表示x、y、z三轴的加速度。</string>
     <string name="gravity_info">表示x、y、z三轴的重力。\n手机横向放置，x为g值；\n手机竖直放置，y为g值；\n手机平躺放置，z为g值。</string>
     <string name="gyro_info">表示x、y、z三轴的角速度。</string>
+    <string name="data_help">导出数据说明：\n导出为Json字符串，每个传感器数据(orientationData、gyroscopeData、gravityData、accelerationData)也为一个Json字符串，此Json中包含许多个float数组。</string>
     <string-array name="rate_array">
+        <item>10毫秒</item>
         <item>20毫秒</item>
         <item>30毫秒</item>
         <item>40毫秒</item>
@@ -16,6 +18,7 @@
         <item>60毫秒</item>
     </string-array>
     <string-array name="rate_array_value">
+        <item>10</item>
         <item>20</item>
         <item>30</item>
         <item>40</item>

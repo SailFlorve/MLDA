@@ -14,6 +14,7 @@ public class TimeUtil {
     public static final String B = "yyyy-MM-dd HH:mm:ss";
     public static final String C = "MM月dd日 HH:mm:ss";
     public static final String D = "MM-dd HH:mm:ss";
+    public static final String E = "yyyy-MM-dd HH-mm-ss";
 
     public static String getNowTime(String pattern) {
         return new SimpleDateFormat(pattern, Locale.getDefault()).format(new Date());

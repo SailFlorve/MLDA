@@ -102,8 +102,7 @@ public class DataManageActivity extends BaseActivity {
                     })
                     .setNegativeButton("取消", null)
                     .create().show();
-        }
-        if (item.getItemId() == R.id.clear_data) {
+        } else if (item.getItemId() == R.id.clear_data) {
             new AlertDialog.Builder(this)
                     .setTitle("删除全部数据")
                     .setMessage("删除所有测试数据，删除后不可恢复。是否继续？")
@@ -116,6 +115,12 @@ public class DataManageActivity extends BaseActivity {
                     })
                     .setNegativeButton("取消", null)
                     .create().show();
+        } else if (item.getItemId() == R.id.data_help) {
+            new AlertDialog.Builder(this)
+                    .setTitle("帮助")
+                    .setMessage(getString(R.string.data_help))
+                    .setPositiveButton("很好", null)
+                    .create().show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -126,7 +131,7 @@ public class DataManageActivity extends BaseActivity {
             return;
         }
         String str = new Gson().toJson(dataList);
-        String fileName = TimeUtil.getNowTime(TimeUtil.B) + ".txt";
+        String fileName = TimeUtil.getNowTime(TimeUtil.E) + ".txt";
         if (SaveUtil.saveString(str, fileName)) {
             showSnackBar("数据已导出为 " + fileName + "。");
         } else {

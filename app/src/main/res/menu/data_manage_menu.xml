@@ -9,4 +9,8 @@
         android:id="@+id/clear_data"
         android:title="删除全部数据"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/data_help"
+        android:title="帮助"
+        app:showAsAction="never" />
 </menu>

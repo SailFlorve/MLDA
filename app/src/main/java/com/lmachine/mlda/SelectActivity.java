@@ -5,16 +5,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.lmachine.mlda.adapter.SportRecyclerViewAdapter;
 import com.lmachine.mlda.bean.TestInfo;
+import com.lmachine.mlda.bean.sport.SportInfo;
 import com.lmachine.mlda.constant.SportType;
 import com.lmachine.mlda.util.TimeUtil;
-import com.lmachine.mlda.view.SportView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class SelectActivity extends BaseActivity {
@@ -23,13 +29,15 @@ public class SelectActivity extends BaseActivity {
     private final int SMALL_JUMP = 1;
     private final int JUMPING_JACKS = 2;
 
-    private SportView highKnees;
-    private SportView smallJump;
-    private SportView jumpingJacks;
+    private RecyclerView recyclerView;
+    private SportRecyclerViewAdapter listAdapter;
+
     private TextView testerInfoText;
     private LinearLayout rootLayout;
 
     private TestInfo testInfo = new TestInfo();
+    private List<SportInfo> sportInfoList = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,18 +54,27 @@ public class SelectActivity extends BaseActivity {
         testInfo.setWeight(intent.getIntExtra("weight", 0));
         testInfo.setAge(intent.getIntExtra("age", 0));
 
-        highKnees = (SportView) findViewById(R.id.sport_view_high_knees);
-        smallJump = (SportView) findViewById(R.id.sport_view_small_jump);
-        jumpingJacks = (SportView) findViewById(R.id.sport_view_jumping_jacks);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         testerInfoText = (TextView) findViewById(R.id.tv_tester_info);
         rootLayout = (LinearLayout) findViewById(R.id.root_layout);
 
-        highKnees.setImage(R.drawable.bg_high_knees);
-        highKnees.setText(SportType.HIGH_KNEES);
-        smallJump.setImage(R.drawable.bg_small_jump);
-        smallJump.setText(SportType.SMALL_JUMP);
-        jumpingJacks.setImage(R.drawable.bg_jumpling_jacks);
-        jumpingJacks.setText(SportType.JUMPING_JACKS);
+        listAdapter = new SportRecyclerViewAdapter(R.layout.sport_view, sportInfoList);
+        recyclerView.setAdapter(listAdapter);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
+
+        addSport();
+
+        listAdapter.notifyDataSetChanged();
+        listAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Intent intent = new Intent(SelectActivity.this, MonitorActivity.class);
+                intent.putExtra("sport", sportInfoList.get(position));
+
+                startActivityForResult(intent, position, ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        SelectActivity.this, view.findViewById(R.id.tv_sport_view), "sport_text").toBundle());
+            }
+        });
 
         testerInfoText.setText(String.format(
                 Locale.getDefault(),
@@ -66,78 +83,53 @@ public class SelectActivity extends BaseActivity {
                 testInfo.getAge(),
                 testInfo.getStature(),
                 testInfo.getWeight()));
+    }
 
-        highKnees.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: ");
-                Intent intent = new Intent(SelectActivity.this, MonitorActivity.class);
-                intent.putExtra("sport", SportType.HIGH_KNEES);
-                startActivityForResult(intent, HIGH_KNEES, ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        SelectActivity.this, highKnees.getTextView(), "sport_text").toBundle());
-            }
-        });
+    private void addSport() {
+        sportInfoList.add(new SportInfo(
+                SportType.HIGH_KNEES,
+                getString(R.string.high_knees_des),
+                R.drawable.bg_high_knees,
+                R.drawable.high_knees));
 
-        smallJump.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SelectActivity.this, MonitorActivity.class);
-                intent.putExtra("sport", SportType.SMALL_JUMP);
-                startActivityForResult(intent, SMALL_JUMP, ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        SelectActivity.this, smallJump.getTextView(), "sport_text").toBundle());
-            }
-        });
+        sportInfoList.add(new SportInfo(
+                SportType.SMALL_JUMP,
+                getString(R.string.small_jump_des),
+                R.drawable.bg_small_jump,
+                R.drawable.small_jump));
 
-        jumpingJacks.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SelectActivity.this, MonitorActivity.class);
-                intent.putExtra("sport", SportType.JUMPING_JACKS);
-                startActivityForResult(intent, JUMPING_JACKS, ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        SelectActivity.this, jumpingJacks.getTextView(), "sport_text").toBundle());
-            }
-        });
+        sportInfoList.add(new SportInfo(
+                SportType.JUMPING_JACKS,
+                getString(R.string.jumping_jack_des),
+                R.drawable.bg_jumpling_jacks,
+                R.drawable.jumping_jacks));
+
+        sportInfoList.add(new SportInfo(
+                SportType.DEEP_SQUAT,
+                "深蹲。",
+                R.drawable.bg_deep_squat,
+                R.drawable.deep_squad));
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         Log.d(TAG, "onActivityResult: " + requestCode + resultCode + data);
+
         if (data == null) return;
-        TestInfo info = new TestInfo(testInfo);
-        switch (requestCode) {
-            case HIGH_KNEES:
-                info.setType(SportType.HIGH_KNEES);
-                highKnees.setFinish(true);
-                break;
-            case JUMPING_JACKS:
-                info.setType(SportType.JUMPING_JACKS);
-                jumpingJacks.setFinish(true);
-                break;
-            case SMALL_JUMP:
-                info.setType(SportType.SMALL_JUMP);
-                smallJump.setFinish(true);
-                break;
-        }
-        info.setAccelerationData(data.getStringExtra("accData"));
-        info.setGravityData(data.getStringExtra("graData"));
-        info.setGyroscopeData(data.getStringExtra("gyroData"));
-        info.setOrientationData(data.getStringExtra("oriData"));
+
+        sportInfoList.get(requestCode).setFinished(true);
+        listAdapter.notifyDataSetChanged();
+
+        TestInfo info = (TestInfo) data.getSerializableExtra("test_info");
+        info.setType(sportInfoList.get(requestCode).getName());
         info.setTime(TimeUtil.getNowTime(TimeUtil.A));
-        info.setDuration(data.getIntExtra("duration", 0));
+        info.setSex(testInfo.getSex());
+        info.setStature(testInfo.getStature());
+        info.setWeight(testInfo.getWeight());
+        info.setAge(testInfo.getAge());
         info.save();
         showSnackBar("数据已保存。");
-        if (highKnees.getFinish() && jumpingJacks.getFinish() && smallJump.getFinish()) {
-            new AlertDialog.Builder(this)
-                    .setTitle("测试全部完成")
-                    .setMessage("恭喜你完成了全部测试！")
-                    .setPositiveButton("确定", null)
-                    .setNegativeButton("返回主界面", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    }).create().show();
-        }
     }
 }

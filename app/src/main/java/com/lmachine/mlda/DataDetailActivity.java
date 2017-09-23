@@ -115,19 +115,23 @@ public class DataDetailActivity extends BaseActivity implements View.OnClickList
         }.getType();
 
         oriDataList = new Gson().fromJson(testInfo.getOrientationData(), type);
-        ori.setText("方向: " + oriDataList.size() + "条");
+        ori.setText("方向: " + oriDataList.size() + "条\n"
+                + testInfo.getMagSensorVendor() + " " + testInfo.getMagSensorName());
         oriData.setText(testInfo.getOrientationData());
 
         gyroDataList = new Gson().fromJson(testInfo.getGyroscopeData(), type);
-        gyro.setText("陀螺仪: " + gyroDataList.size() + "条");
+        gyro.setText("陀螺仪: " + gyroDataList.size() + "条\n"
+                + testInfo.getGyroVendor() + " " + testInfo.getGyroName());
         gyroData.setText(testInfo.getGyroscopeData());
 
         graDataList = new Gson().fromJson(testInfo.getGravityData(), type);
-        gra.setText("重力传感器: " + graDataList.size() + "条");
+        gra.setText("重力传感器: " + graDataList.size() + "条\n"
+                + testInfo.getGravitySensorVendor() + " " + testInfo.getGravitySensorName());
         graData.setText(testInfo.getGravityData());
 
         accDataList = new Gson().fromJson(testInfo.getAccelerationData(), type);
-        acc.setText("线性加速度传感器: " + accDataList.size() + "条");
+        acc.setText("线性加速度传感器: " + accDataList.size() + "条\n"
+                + testInfo.getAccelerationSensorVendor() + " " + testInfo.getAccelerationSensorName());
         accData.setText(testInfo.getAccelerationData());
 
 
@@ -214,7 +218,7 @@ public class DataDetailActivity extends BaseActivity implements View.OnClickList
 
     private void output() {
         String str = new Gson().toJson(testInfo, TestInfo.class);
-        String fileName = TimeUtil.getNowTime(TimeUtil.B) + ".txt";
+        String fileName = TimeUtil.getNowTime(TimeUtil.E) + ".txt";
         if (SaveUtil.saveString(str, fileName)) {
             showSnackBar("数据已导出为 " + fileName + "。");
         } else {

@@ -24,9 +24,10 @@ public class SensorView extends CardView {
     private TextView sensorX;
     private TextView sensorY;
     private TextView sensorZ;
+    private TextView sensorVendor;
 
     private ImageView infoImg;
-    private String sensorInfo = null;
+    private String sensorDes = null;
 
     public SensorView(Context context) {
         super(context);
@@ -43,15 +44,16 @@ public class SensorView extends CardView {
         sensorY = (TextView) findViewById(R.id.tv_sensor_y);
         sensorZ = (TextView) findViewById(R.id.tv_sensor_z);
         infoImg = (ImageView) findViewById(R.id.tv_sensor_info);
+        sensorVendor = (TextView) findViewById(R.id.tv_sensor_vendor);
         setSensorName("传感器");
         setSensorData(new float[]{0, 0, 0});
 
         infoImg.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(sensorInfo)) return;
+                if (TextUtils.isEmpty(sensorDes)) return;
                 new AlertDialog.Builder(mContext)
-                        .setMessage(sensorInfo)
+                        .setMessage(sensorDes)
                         .setPositiveButton("知道了", null)
                         .create().show();
             }
@@ -72,7 +74,11 @@ public class SensorView extends CardView {
         }
     }
 
-    public void setSensorInfo(String sensorInfo) {
-        this.sensorInfo = sensorInfo;
+    public void setSensorDes(String sensorInfo) {
+        this.sensorDes = sensorInfo;
+    }
+
+    public void setSensorVendor(String vendor, String name) {
+        sensorVendor.setText(vendor + " " + name);
     }
 }

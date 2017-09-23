@@ -173,4 +173,20 @@ public class SensorService extends Service {
 
         void onAccDataChanged(float[] data);
     }
+
+    public Sensor getMagSensor() {
+        return magSensor;
+    }
+
+    public Sensor getGyroSensor() {
+        return gyroSensor;
+    }
+
+    public Sensor getGravitySensor() {
+        return gravitySensor;
+    }
+
+    public Sensor getLinearAccSensor() {
+        return linearAccSensor;
+    }
 }

@@ -5,6 +5,7 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ import java.util.List;
  */
 
 @Table(database = AppDatabase.class)
-public class TestInfo extends BaseModel {
+public class TestInfo extends BaseModel implements Serializable {
     @PrimaryKey(autoincrement = true)
     private int id;
     @Column
@@ -38,6 +39,22 @@ public class TestInfo extends BaseModel {
     private String gravityData;
     @Column
     private String accelerationData;
+    @Column
+    private String magSensorVendor;
+    @Column
+    private String magSensorName;
+    @Column
+    private String gyroVendor;
+    @Column
+    private String gyroName;
+    @Column
+    private String gravitySensorVendor;
+    @Column
+    private String gravitySensorName;
+    @Column
+    private String accelerationSensorVendor;
+    @Column
+    private String accelerationSensorName;
 
     public TestInfo() {
 
@@ -150,5 +167,69 @@ public class TestInfo extends BaseModel {
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public String getMagSensorVendor() {
+        return magSensorVendor;
+    }
+
+    public void setMagSensorVendor(String magSensorVendor) {
+        this.magSensorVendor = magSensorVendor;
+    }
+
+    public String getMagSensorName() {
+        return magSensorName;
+    }
+
+    public void setMagSensorName(String magSensorName) {
+        this.magSensorName = magSensorName;
+    }
+
+    public String getGyroVendor() {
+        return gyroVendor;
+    }
+
+    public void setGyroVendor(String gyroVendor) {
+        this.gyroVendor = gyroVendor;
+    }
+
+    public String getGyroName() {
+        return gyroName;
+    }
+
+    public void setGyroName(String gyroName) {
+        this.gyroName = gyroName;
+    }
+
+    public String getGravitySensorVendor() {
+        return gravitySensorVendor;
+    }
+
+    public void setGravitySensorVendor(String gravitySensorVendor) {
+        this.gravitySensorVendor = gravitySensorVendor;
+    }
+
+    public String getGravitySensorName() {
+        return gravitySensorName;
+    }
+
+    public void setGravitySensorName(String gravitySensorName) {
+        this.gravitySensorName = gravitySensorName;
+    }
+
+    public String getAccelerationSensorVendor() {
+        return accelerationSensorVendor;
+    }
+
+    public void setAccelerationSensorVendor(String accelerationSensorVendor) {
+        this.accelerationSensorVendor = accelerationSensorVendor;
+    }
+
+    public String getAccelerationSensorName() {
+        return accelerationSensorName;
+    }
+
+    public void setAccelerationSensorName(String accelerationSensorName) {
+        this.accelerationSensorName = accelerationSensorName;
     }
 }

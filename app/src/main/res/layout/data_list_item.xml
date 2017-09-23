@@ -39,6 +39,7 @@
             android:textColor="#b9000000" />
 
         <TextView
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -46,6 +47,7 @@
             android:text="/" />
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/tv_sport_tester_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
