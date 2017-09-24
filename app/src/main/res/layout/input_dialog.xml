@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="18dp"
+    android:paddingRight="18dp"
+    android:paddingTop="10dp">
+
+    <EditText
+        android:id="@+id/et_sport_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="运动名称..."
+        android:inputType="textPersonName"
+        android:maxLength="10" />
+
+    <EditText
+        android:id="@+id/et_sport_des"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:hint="运动描述..."
+        android:maxLength="100" />
+</LinearLayout>

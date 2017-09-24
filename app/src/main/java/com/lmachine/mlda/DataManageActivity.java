@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,16 +18,16 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
 import com.lmachine.mlda.adapter.DataRecyclerViewAdapter;
 import com.lmachine.mlda.bean.TestInfo;
+import com.lmachine.mlda.util.DataUtil;
 import com.lmachine.mlda.util.SaveUtil;
-import com.lmachine.mlda.util.TimeUtil;
-import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class DataManageActivity extends BaseActivity {
+public class DataManageActivity extends DataActivity {
 
     private RecyclerView recyclerView;
     private DataRecyclerViewAdapter adapter;
@@ -79,7 +78,6 @@ public class DataManageActivity extends BaseActivity {
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.data_manage_menu, menu);
@@ -88,34 +86,7 @@ public class DataManageActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.output_data) {
-            new AlertDialog.Builder(this)
-                    .setTitle("导出数据")
-                    .setMessage("数据将导出到: SD卡/MLDA/导出时间.txt。是否继续？")
-                    .setPositiveButton("继续", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (checkPermission(0, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                                outputData();
-                            }
-                        }
-                    })
-                    .setNegativeButton("取消", null)
-                    .create().show();
-        } else if (item.getItemId() == R.id.clear_data) {
-            new AlertDialog.Builder(this)
-                    .setTitle("删除全部数据")
-                    .setMessage("删除所有测试数据，删除后不可恢复。是否继续？")
-                    .setPositiveButton("继续", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            new Delete().from(TestInfo.class).execute();
-                            finish();
-                        }
-                    })
-                    .setNegativeButton("取消", null)
-                    .create().show();
-        } else if (item.getItemId() == R.id.data_help) {
+        if (item.getItemId() == R.id.data_help) {
             new AlertDialog.Builder(this)
                     .setTitle("帮助")
                     .setMessage(getString(R.string.data_help))
@@ -125,29 +96,18 @@ public class DataManageActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void outputData() {
+    @Override
+    protected void output(SaveUtil.SaveCallback callback) {
         if (dataList.isEmpty()) {
             showSnackBar("数据为空！");
             return;
         }
-        String str = new Gson().toJson(dataList);
-        String fileName = TimeUtil.getNowTime(TimeUtil.E) + ".txt";
-        if (SaveUtil.saveString(str, fileName)) {
-            showSnackBar("数据已导出为 " + fileName + "。");
-        } else {
-            showSnackBar("数据导出失败。");
-        }
+        DataUtil.output(new Gson().toJson(dataList), this);
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 0) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                outputData();
-            } else {
-                showSnackBar("必须允许读写SD卡权限，才能导出数据。");
-            }
-        }
+    protected void delete() {
+        DataUtil.deleteAll();
+        finish();
     }
 }

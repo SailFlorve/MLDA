@@ -12,9 +12,15 @@ import java.io.IOException;
  */
 
 public class SaveUtil {
-    public static boolean saveString(String str, String fineName) {
+    public interface SaveCallback {
+        void onSaveSuccess(File file);
+
+        void onSaveFailed(String msg);
+    }
+
+    public static void saveString(String str, String fileName, SaveCallback callback) {
         try {
-            File file = new File(Environment.getExternalStorageDirectory(), "MLDA/" + fineName);
+            File file = new File(Environment.getExternalStorageDirectory(), "MLDA/" + fileName);
             if (!file.exists()) {
                 File dir = new File(file.getParent());
                 dir.mkdirs();
@@ -23,10 +29,28 @@ public class SaveUtil {
             FileOutputStream outStream = new FileOutputStream(file);
             outStream.write(str.getBytes());
             outStream.close();
-            return true;
+            callback.onSaveSuccess(file);
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            callback.onSaveFailed(e.getMessage());
         }
     }
+//
+//    public static boolean saveString(String str, String fineName) {
+//        try {
+//            File file = new File(Environment.getExternalStorageDirectory(), "MLDA/" + fineName);
+//            if (!file.exists()) {
+//                File dir = new File(file.getParent());
+//                dir.mkdirs();
+//                file.createNewFile();
+//            }
+//            FileOutputStream outStream = new FileOutputStream(file);
+//            outStream.write(str.getBytes());
+//            outStream.close();
+//            return true;
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
 }

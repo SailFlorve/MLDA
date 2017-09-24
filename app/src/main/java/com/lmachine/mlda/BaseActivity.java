@@ -1,5 +1,7 @@
 package com.lmachine.mlda;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -10,8 +12,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -26,6 +30,8 @@ import java.util.List;
 public abstract class BaseActivity extends AppCompatActivity {
 
     protected String TAG = getClass().getSimpleName();
+    private ProgressDialog progressDialog = null;
+
     protected View.OnClickListener emptyClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -55,14 +61,53 @@ public abstract class BaseActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected void showSnackBar(String content) {
+    public void showSnackBar(String content) {
         View root = findViewById(R.id.root_layout);
-        Snackbar.make(root, content, Snackbar.LENGTH_SHORT).setAction("知道了", emptyClickListener).show();
+        Snackbar.make(root, content, Snackbar.LENGTH_LONG).setAction("知道了", emptyClickListener).show();
     }
 
-    protected void showSnackBar(String content, String action, View.OnClickListener listener) {
+    public void showSnackBar(String content, String action, View.OnClickListener listener) {
         View root = findViewById(R.id.root_layout);
         Snackbar.make(root, content, Snackbar.LENGTH_LONG).setAction(action, listener).show();
+    }
+
+    public void closeProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+    public void showProgressDialog(String text) {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+        } else {
+            progressDialog.dismiss();
+        }
+        progressDialog.setMessage(text);
+        progressDialog.show();
+    }
+
+    public void showDialog(String message, String positive) {
+        showDialog(null, message, positive, null, null, null);
+    }
+
+    public void showDialog(String title, String message, String positive, String negative,
+                           DialogInterface.OnClickListener positiveListener,
+                           DialogInterface.OnClickListener negativeListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        if (!TextUtils.isEmpty(title)) {
+            builder.setTitle(title);
+        }
+        if (!TextUtils.isEmpty(message)) {
+            builder.setMessage(message);
+        }
+        if (!TextUtils.isEmpty(positive)) {
+            builder.setPositiveButton(positive, positiveListener);
+        }
+        if (!TextUtils.isEmpty(negative)) {
+            builder.setNegativeButton(negative, negativeListener);
+        }
+        builder.create().show();
     }
 
     /**

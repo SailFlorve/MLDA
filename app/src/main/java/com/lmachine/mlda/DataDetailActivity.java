@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lmachine.mlda.bean.TestInfo;
 import com.lmachine.mlda.bean.TestInfo_Table;
+import com.lmachine.mlda.util.DataUtil;
 import com.lmachine.mlda.util.SaveUtil;
 import com.lmachine.mlda.util.TimeUtil;
 import com.raizlabs.android.dbflow.sql.language.Delete;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class DataDetailActivity extends BaseActivity implements View.OnClickListener {
+public class DataDetailActivity extends DataActivity implements View.OnClickListener {
 
     private TextView sex;
     private TextView age;
@@ -85,7 +86,7 @@ public class DataDetailActivity extends BaseActivity implements View.OnClickList
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void initView() {
@@ -148,40 +149,6 @@ public class DataDetailActivity extends BaseActivity implements View.OnClickList
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.delete_data) {
-            new AlertDialog.Builder(this)
-                    .setTitle("删除此条数据")
-                    .setMessage("删除此数据，删除后不可恢复。是否继续？")
-                    .setPositiveButton("继续", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            new Delete().from(TestInfo.class).where(TestInfo_Table.id.eq(id)).execute();
-                            startActivity(new Intent(DataDetailActivity.this, DataManageActivity.class));
-                            finish();
-                        }
-                    })
-                    .setNegativeButton("取消", null)
-                    .create().show();
-        } else if (item.getItemId() == R.id.output_data) {
-            new AlertDialog.Builder(this)
-                    .setTitle("导出此条数据")
-                    .setMessage("数据将导出到: SD卡/MLDA/导出时间.txt。是否继续？")
-                    .setPositiveButton("继续", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (checkPermission(0, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                                output();
-                            }
-                        }
-                    })
-                    .setNegativeButton("取消", null)
-                    .create().show();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onClick(View v) {
         dataList.clear();
         switch (v.getId()) {
@@ -216,13 +183,15 @@ public class DataDetailActivity extends BaseActivity implements View.OnClickList
         return stringList;
     }
 
-    private void output() {
-        String str = new Gson().toJson(testInfo, TestInfo.class);
-        String fileName = TimeUtil.getNowTime(TimeUtil.E) + ".txt";
-        if (SaveUtil.saveString(str, fileName)) {
-            showSnackBar("数据已导出为 " + fileName + "。");
-        } else {
-            showSnackBar("数据导出失败。");
-        }
+    @Override
+    protected void output(SaveUtil.SaveCallback callback) {
+        DataUtil.output(new Gson().toJson(testInfo, TestInfo.class), this);
+    }
+
+    @Override
+    protected void delete() {
+        DataUtil.delete(id);
+        startActivity(new Intent(DataDetailActivity.this, DataManageActivity.class));
+        finish();
     }
 }

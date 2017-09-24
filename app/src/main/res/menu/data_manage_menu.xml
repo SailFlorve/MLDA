@@ -6,7 +6,7 @@
         android:title="导出数据"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/clear_data"
+        android:id="@+id/delete_data"
         android:title="删除全部数据"
         app:showAsAction="never" />
     <item

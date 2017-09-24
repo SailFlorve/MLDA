@@ -7,8 +7,12 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,17 +21,15 @@ import com.lmachine.mlda.adapter.SportRecyclerViewAdapter;
 import com.lmachine.mlda.bean.TestInfo;
 import com.lmachine.mlda.bean.sport.SportInfo;
 import com.lmachine.mlda.constant.SportType;
+import com.lmachine.mlda.util.SPUtil;
 import com.lmachine.mlda.util.TimeUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
 public class SelectActivity extends BaseActivity {
-
-    private final int HIGH_KNEES = 0;
-    private final int SMALL_JUMP = 1;
-    private final int JUMPING_JACKS = 2;
 
     private RecyclerView recyclerView;
     private SportRecyclerViewAdapter listAdapter;
@@ -85,30 +87,67 @@ public class SelectActivity extends BaseActivity {
                 testInfo.getWeight()));
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.select_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.add_sport) {
+            final View view = getLayoutInflater().inflate(R.layout.input_dialog, null);
+            new AlertDialog.Builder(this).setTitle("添加运动")
+                    .setView(view)
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            EditText sportName = (EditText) view.findViewById(R.id.et_sport_name);
+                            EditText sportDes = (EditText) view.findViewById(R.id.et_sport_des);
+                            String name = sportName.getText().toString();
+                            String des = sportDes.getText().toString();
+                            sportInfoList.add(new SportInfo(
+                                    name,
+                                    TextUtils.isEmpty(des) ? "没有详细说明。" : des,
+                                    R.drawable.bg_sport,
+                                    R.drawable.bg_sport));
+                            listAdapter.notifyDataSetChanged();
+                            saveSport(name, TextUtils.isEmpty(des) ? "没有详细说明。" : des);
+                            recyclerView.smoothScrollToPosition(sportInfoList.size() - 1);
+                        }
+                    })
+                    .setNegativeButton("取消", null)
+                    .create()
+                    .show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void addSport() {
         sportInfoList.add(new SportInfo(
                 SportType.HIGH_KNEES,
                 getString(R.string.high_knees_des),
                 R.drawable.bg_high_knees,
-                R.drawable.high_knees));
+                R.drawable.bg_high_knees));
 
         sportInfoList.add(new SportInfo(
                 SportType.SMALL_JUMP,
                 getString(R.string.small_jump_des),
                 R.drawable.bg_small_jump,
-                R.drawable.small_jump));
+                R.drawable.bg_small_jump));
 
         sportInfoList.add(new SportInfo(
                 SportType.JUMPING_JACKS,
                 getString(R.string.jumping_jack_des),
-                R.drawable.bg_jumpling_jacks,
-                R.drawable.jumping_jacks));
+                R.drawable.bg_jumping_jacks,
+                R.drawable.bg_jumping_jacks));
 
         sportInfoList.add(new SportInfo(
                 SportType.DEEP_SQUAT,
                 "深蹲。",
                 R.drawable.bg_deep_squat,
-                R.drawable.deep_squad));
+                R.drawable.bg_deep_squat));
+
+        loadSport();
     }
 
     @Override
@@ -131,5 +170,32 @@ public class SelectActivity extends BaseActivity {
         info.setAge(testInfo.getAge());
         info.save();
         showSnackBar("数据已保存。");
+    }
+
+    private void saveSport(String name, String des) {
+        SPUtil.SharedPrefsManager manager = SPUtil.load(this);
+        String savedNames = manager.getString("sport_name_added", "");
+        String savedDescriptions = manager.getString("sport_des_added", "");
+        manager.put("sport_name_added", savedNames + name + "|");
+        manager.put("sport_des_added", savedDescriptions + des + "|");
+    }
+
+    private void loadSport() {
+        SPUtil.SharedPrefsManager manager = SPUtil.load(this);
+        String savedNames = manager.getString("sport_name_added", "");
+        String savedDescriptions = manager.getString("sport_des_added", "");
+        String[] nameArray = savedNames.split("\\|");
+        String[] desArray = savedDescriptions.split("\\|");
+        Log.d(TAG, "loadSport: " + Arrays.toString(nameArray));
+        for (int i = 0; i < nameArray.length; i++) {
+            if (TextUtils.isEmpty(nameArray[i])) continue;
+            sportInfoList.add(new SportInfo(
+                    nameArray[i],
+                    desArray[i],
+                    R.drawable.bg_sport,
+                    R.drawable.bg_sport
+            ));
+        }
+        listAdapter.notifyDataSetChanged();
     }
 }
