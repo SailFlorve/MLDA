@@ -12,8 +12,8 @@ import java.util.List;
 public class KalmanFilter {
 
     public static final String TAG = "KalmanFilter";
-    public static final double Q_DEFAULT = 1E-5;
-    public static final double R_DEFAULT = 0.01;
+    public static final double Q_DEFAULT = 5E-6;
+    public static final double R_DEFAULT = 0.0001;
 
     /**
      * 滤波
