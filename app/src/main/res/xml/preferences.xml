@@ -16,5 +16,12 @@
             android:key="data_rate"
             android:summary="%s"
             android:title="数据采集频率" />
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/filter_type"
+            android:entryValues="@array/filter_type_value"
+            android:key="filter_type"
+            android:summary="%s"
+            android:title="数据滤波" />
     </PreferenceCategory>
 </PreferenceScreen>

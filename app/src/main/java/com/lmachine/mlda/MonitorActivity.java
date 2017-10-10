@@ -21,9 +21,14 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.lmachine.mlda.algorithm.filter.FilterCallback;
+import com.lmachine.mlda.algorithm.filter.KalmanFilter;
+import com.lmachine.mlda.algorithm.filter.LowPassFilter;
+import com.lmachine.mlda.algorithm.util.FilterUtil;
 import com.lmachine.mlda.bean.TestInfo;
 import com.lmachine.mlda.bean.sport.SportInfo;
 import com.lmachine.mlda.service.SensorService;
+import com.lmachine.mlda.util.SPUtil;
 import com.lmachine.mlda.view.SensorView;
 
 import java.util.ArrayList;
@@ -161,15 +166,18 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent();
-                testInfo.setOrientationData(new Gson().toJson(oriDataList));
-                testInfo.setGravityData(new Gson().toJson(gravityDataList));
-                testInfo.setGyroscopeData(new Gson().toJson(gyroDataList));
-                testInfo.setAccelerationData(new Gson().toJson(accDataList));
-                testInfo.setDuration(Integer.valueOf(chronometer.getText().toString().split("秒")[0]));
-                i.putExtra("test_info", testInfo);
-                setResult(RESULT_OK, i);
-                finish();
+                final Intent i = new Intent();
+                showProgressDialog("正在处理数据...");
+                saveData(new FilterCallback() {
+                    @Override
+                    public void onFilterFinished() {
+                        closeProgressDialog();
+                        i.putExtra("test_info", testInfo);
+                        setResult(RESULT_OK, i);
+                        finish();
+                    }
+                });
+
             }
         });
 
@@ -277,6 +285,33 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
     public void onServiceDisconnected(ComponentName name) {
         Log.d(TAG, "onServiceDisconnected: ");
         binder.stopMonitor();
+    }
+
+    private void saveData(final FilterCallback callback) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int filterType = Integer.parseInt(SPUtil.load(MonitorActivity.this).getString("filter_type", "0"));
+                testInfo.setOrientationData(new Gson().toJson(
+                        filterType == 0 ? oriDataList :
+                                (filterType == 1 ? KalmanFilter.filter(oriDataList) : LowPassFilter.filter(oriDataList))));
+                testInfo.setGravityData(new Gson().toJson(filterType == 0 ? oriDataList :
+                        (filterType == 1 ? KalmanFilter.filter(gravityDataList) : LowPassFilter.filter(gravityDataList))));
+                testInfo.setGyroscopeData(new Gson().toJson(filterType == 0 ? oriDataList :
+                        (filterType == 1 ? KalmanFilter.filter(gyroDataList) : LowPassFilter.filter(gyroDataList))));
+                testInfo.setAccelerationData(new Gson().toJson(filterType == 0 ? oriDataList :
+                        (filterType == 1 ? KalmanFilter.filter(accDataList) : LowPassFilter.filter(accDataList))));
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        testInfo.setDuration(Integer.valueOf(chronometer.getText().toString().split("秒")[0]));
+                        callback.onFilterFinished();
+                    }
+                });
+            }
+        }).start();
     }
 
     private class MyCountDownTimer extends CountDownTimer {

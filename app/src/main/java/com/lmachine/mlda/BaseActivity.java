@@ -43,6 +43,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    protected void onDestroy() {
+        closeProgressDialog();
+        super.onDestroy();
+    }
+
     protected void setToolbar(@IdRes int toolbarId, boolean haveBackButton) {
         Toolbar toolbar = (Toolbar) findViewById(toolbarId);
         toolbar.setPopupTheme(R.style.ThemeOverlay_AppCompat_Light);
@@ -84,6 +90,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             progressDialog.dismiss();
         }
         progressDialog.setMessage(text);
+
         progressDialog.show();
     }
 

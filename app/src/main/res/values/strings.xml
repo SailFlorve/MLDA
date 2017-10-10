@@ -25,4 +25,14 @@
         <item>50</item>
         <item>60</item>
     </string-array>
+    <string-array name="filter_type">
+        <item>不滤波</item>
+        <item>卡尔曼滤波</item>
+        <item>低通滤波</item>
+    </string-array>
+    <string-array name="filter_type_value">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
 </resources>
