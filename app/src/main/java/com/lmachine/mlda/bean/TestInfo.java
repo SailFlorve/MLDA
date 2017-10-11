@@ -55,6 +55,10 @@ public class TestInfo extends BaseModel implements Serializable {
     private String accelerationSensorVendor;
     @Column
     private String accelerationSensorName;
+    @Column(defaultValue = "0")
+    private boolean isFiltered;
+    @Column(defaultValue = "0")
+    private int inputTimes;
 
     public TestInfo() {
 
@@ -231,5 +235,21 @@ public class TestInfo extends BaseModel implements Serializable {
 
     public void setAccelerationSensorName(String accelerationSensorName) {
         this.accelerationSensorName = accelerationSensorName;
+    }
+
+    public boolean isFiltered() {
+        return isFiltered;
+    }
+
+    public void setFiltered(boolean filtered) {
+        isFiltered = filtered;
+    }
+
+    public int getInputTimes() {
+        return inputTimes;
+    }
+
+    public void setInputTimes(int inputTimes) {
+        this.inputTimes = inputTimes;
     }
 }

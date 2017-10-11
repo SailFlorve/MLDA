@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/root_layout"
+    android:id="@+id/dialog_root_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -9,18 +9,20 @@
     android:paddingTop="10dp">
 
     <EditText
-        android:id="@+id/et_sport_name"
+        android:id="@+id/dialog_et_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="运动名称..."
         android:inputType="textPersonName"
+        android:textSize="16sp"
         android:maxLength="10" />
 
     <EditText
-        android:id="@+id/et_sport_des"
+        android:id="@+id/dialog_et_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:hint="运动描述..."
+        android:hint="运动描述...(可以不填)"
+        android:textSize="16sp"
         android:maxLength="100" />
 </LinearLayout>

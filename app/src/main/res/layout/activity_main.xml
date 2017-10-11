@@ -78,6 +78,7 @@
                                 android:orientation="horizontal">
 
                                 <android.support.v7.widget.AppCompatRadioButton
+                                    android:id="@+id/radio_button_male"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="10dp"
@@ -85,6 +86,7 @@
                                     android:text="男生" />
 
                                 <android.support.v7.widget.AppCompatRadioButton
+                                    android:id="@+id/radio_button_female"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="女生" />
@@ -132,11 +134,20 @@
 
                     </LinearLayout>
 
+                    <TextView
+                        android:id="@+id/tv_random"
+                        android:layout_marginTop="15dp"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_marginLeft="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="随机填写" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="4dp"
-                        android:layout_marginTop="56dp"
+                        android:layout_marginTop="35dp"
                         android:orientation="vertical">
 
                         <TextView

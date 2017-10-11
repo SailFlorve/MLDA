@@ -10,10 +10,13 @@ import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,7 +27,6 @@ import com.google.gson.Gson;
 import com.lmachine.mlda.algorithm.filter.FilterCallback;
 import com.lmachine.mlda.algorithm.filter.KalmanFilter;
 import com.lmachine.mlda.algorithm.filter.LowPassFilter;
-import com.lmachine.mlda.algorithm.util.FilterUtil;
 import com.lmachine.mlda.bean.TestInfo;
 import com.lmachine.mlda.bean.sport.SportInfo;
 import com.lmachine.mlda.service.SensorService;
@@ -57,7 +59,7 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
 
     private LinearLayout buttonLayout;
 
-    private MyCountDownTimer countDownTimer = new MyCountDownTimer(3000, 300);
+    private MyCountDownTimer countDownTimer = new MyCountDownTimer(3000, 100);
     private SensorService.MyBinder binder;
 
     private List<float[]> oriDataList = new ArrayList<>();
@@ -164,20 +166,39 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
         });
 
         saveButton.setOnClickListener(new View.OnClickListener() {
+            @SuppressWarnings("ConstantConditions")
             @Override
             public void onClick(View v) {
-                final Intent i = new Intent();
-                showProgressDialog("正在处理数据...");
-                saveData(new FilterCallback() {
-                    @Override
-                    public void onFilterFinished() {
-                        closeProgressDialog();
-                        i.putExtra("test_info", testInfo);
-                        setResult(RESULT_OK, i);
-                        finish();
-                    }
-                });
 
+                final View inputView = getLayoutInflater().inflate(R.layout.times_input_dialog, null);
+
+                AlertDialog dialog = new AlertDialog.Builder(MonitorActivity.this)
+                        .setTitle("输入\"" + sportTitle.getText().toString() + "\"次数")
+                        .setView(inputView)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                EditText et = (EditText) inputView.findViewById(R.id.et_times_input_dialog);
+                                String timesStr = et.getText().toString();
+                                if (TextUtils.isEmpty(timesStr)) {
+                                    testInfo.setInputTimes(0);
+                                } else {
+                                    testInfo.setInputTimes(Integer.parseInt(timesStr));
+                                }
+                                showProgressDialog("正在处理数据...");
+                                saveData(new FilterCallback() {
+                                    @Override
+                                    public void onFilterFinished() {
+                                        Intent i = new Intent();
+                                        closeProgressDialog();
+                                        i.putExtra("test_info", testInfo);
+                                        setResult(RESULT_OK, i);
+                                        finish();
+                                    }
+                                });
+                            }
+                        }).create();
+                dialog.show();
             }
         });
 
@@ -293,6 +314,7 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
             @Override
             public void run() {
                 int filterType = Integer.parseInt(SPUtil.load(MonitorActivity.this).getString("filter_type", "0"));
+                testInfo.setFiltered(filterType != 0);
                 testInfo.setOrientationData(new Gson().toJson(
                         filterType == 0 ? oriDataList :
                                 (filterType == 1 ? KalmanFilter.filter(oriDataList) : LowPassFilter.filter(oriDataList))));

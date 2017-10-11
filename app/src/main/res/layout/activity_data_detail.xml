@@ -123,7 +123,6 @@
                     android:id="@+id/tv_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
                     android:layout_marginTop="5dp"
                     android:text="测试时间: 2017-12-21 12:12:12" />
 
@@ -131,7 +130,23 @@
                     android:id="@+id/tv_duration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:text="持续时间: 18秒" />
+
+                <TextView
+                    android:id="@+id/tv_isFiltered"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="是否滤波: 是" />
+
+                <TextView
+                    android:id="@+id/tv_times_input"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="输入次数: 17" />
+
             </LinearLayout>
 
             <LinearLayout

@@ -3,11 +3,9 @@ package com.lmachine.mlda;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
@@ -23,20 +21,17 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.lmachine.mlda.bean.TestInfo;
 import com.lmachine.mlda.service.SensorService;
 import com.lmachine.mlda.util.SPUtil;
-import com.lmachine.mlda.util.SaveUtil;
-import com.lmachine.mlda.util.TimeUtil;
-import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 
 public class MainActivity extends BaseActivity implements ServiceConnection {
 
+    private TextView randomInputText;
     private TextView magText;
     private TextView gyroText;
     private TextView gravityText;
@@ -67,6 +62,7 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
         linearAccText = (TextView) findViewById(R.id.tv_linear_acceleration);
         cardView = (CardView) findViewById(R.id.card_view);
         radioGroup = (RadioGroup) findViewById(R.id.radio_group);
+        randomInputText = (TextView) findViewById(R.id.tv_random);
         ageText = (TextInputLayout) findViewById(R.id.til_age);
         statureText = (TextInputLayout) findViewById(R.id.til_stature);
         weightText = (TextInputLayout) findViewById(R.id.til_weight);
@@ -87,6 +83,12 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
             }
         });
 
+        randomInputText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                randomInput();
+            }
+        });
         bindService(new Intent(this, SensorService.class), this, BIND_AUTO_CREATE);
         List<float[]> list = new ArrayList<>();
         float[] num = new float[]{};
@@ -194,6 +196,19 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
         intent.putExtra("stature", stature);
         intent.putExtra("weight", weight);
         startActivity(intent);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private void randomInput() {
+        Random r = new Random();
+        int sex = r.nextInt(2);
+        radioGroup.check(sex == 0 ? R.id.radio_button_male : R.id.radio_button_female);
+        int age = r.nextInt(7) + 16;
+        ageText.getEditText().setText(String.valueOf(age));
+        int stature = r.nextInt(36) + 150;
+        statureText.getEditText().setText(String.valueOf(stature));
+        int weight = r.nextInt(41) + 40;
+        weightText.getEditText().setText(String.valueOf(weight));
     }
 
     @Override

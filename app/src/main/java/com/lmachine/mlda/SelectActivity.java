@@ -96,13 +96,13 @@ public class SelectActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.add_sport) {
-            final View view = getLayoutInflater().inflate(R.layout.input_dialog, null);
+            final View view = getLayoutInflater().inflate(R.layout.sport_input_dialog, null);
             new AlertDialog.Builder(this).setTitle("添加运动")
                     .setView(view)
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            EditText sportName = (EditText) view.findViewById(R.id.et_sport_name);
-                            EditText sportDes = (EditText) view.findViewById(R.id.et_sport_des);
+                            EditText sportName = (EditText) view.findViewById(R.id.dialog_et_1);
+                            EditText sportDes = (EditText) view.findViewById(R.id.dialog_et_2);
                             String name = sportName.getText().toString();
                             String des = sportDes.getText().toString();
                             sportInfoList.add(new SportInfo(
@@ -146,6 +146,12 @@ public class SelectActivity extends BaseActivity {
                 "深蹲。",
                 R.drawable.bg_deep_squat,
                 R.drawable.bg_deep_squat));
+
+        sportInfoList.add(new SportInfo(
+                SportType.WALK,
+                "正常走路。",
+                R.drawable.bg_walk,
+                R.drawable.bg_walk));
 
         loadSport();
     }

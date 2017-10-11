@@ -1,13 +1,10 @@
 package com.lmachine.mlda;
 
-import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -20,8 +17,6 @@ import com.lmachine.mlda.bean.TestInfo;
 import com.lmachine.mlda.bean.TestInfo_Table;
 import com.lmachine.mlda.util.DataUtil;
 import com.lmachine.mlda.util.SaveUtil;
-import com.lmachine.mlda.util.TimeUtil;
-import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.lang.reflect.Type;
@@ -38,6 +33,8 @@ public class DataDetailActivity extends DataActivity implements View.OnClickList
     private TextView type;
     private TextView duration;
     private TextView time;
+    private TextView isFiltered;
+    private TextView inputTimes;
     private TextView ori;
     private TextView oriData;
     private TextView gyro;
@@ -71,6 +68,8 @@ public class DataDetailActivity extends DataActivity implements View.OnClickList
         type = (TextView) findViewById(R.id.tv_type);
         duration = (TextView) findViewById(R.id.tv_duration);
         time = (TextView) findViewById(R.id.tv_time);
+        isFiltered = (TextView) findViewById(R.id.tv_isFiltered);
+        inputTimes = (TextView) findViewById(R.id.tv_times_input);
         ori = (TextView) findViewById(R.id.tv_ori);
         oriData = (TextView) findViewById(R.id.tv_ori_data);
         gyro = (TextView) findViewById(R.id.tv_gyro);
@@ -111,6 +110,8 @@ public class DataDetailActivity extends DataActivity implements View.OnClickList
         type.setText("类型: " + testInfo.getType());
         duration.setText("持续时间: " + testInfo.getDuration() + "秒");
         time.setText("测试时间: " + testInfo.getTime());
+        isFiltered.setText("是否被滤波: " + (testInfo.isFiltered() ? "是" : "否"));
+        inputTimes.setText("被测者输入的次数: " + testInfo.getInputTimes());
 
         Type type = new TypeToken<List<float[]>>() {
         }.getType();
