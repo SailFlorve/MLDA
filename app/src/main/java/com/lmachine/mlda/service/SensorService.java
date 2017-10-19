@@ -28,6 +28,8 @@ public class SensorService extends Service {
     private float[] gravityData = new float[]{};
     private float[] linearAccData = new float[]{};
 
+    private int rate;//频率 （毫秒）
+
     private SensorDataListener dataListener;
 
     private SensorEventListener sensorEventListener = new SensorEventListener() {
@@ -144,11 +146,11 @@ public class SensorService extends Service {
 
         public void startMonitor() {
             String rateStr = SPUtil.load(SensorService.this).getString("data_rate", "40");
-            int rate = Integer.parseInt(rateStr) * 1000;
-            sensorManager.registerListener(sensorEventListener, magSensor, rate);
-            sensorManager.registerListener(sensorEventListener, linearAccSensor, rate);
-            sensorManager.registerListener(sensorEventListener, gravitySensor, rate);
-            sensorManager.registerListener(sensorEventListener, gyroSensor, rate);
+            rate = Integer.parseInt(rateStr);
+            sensorManager.registerListener(sensorEventListener, magSensor, rate * 1000);
+            sensorManager.registerListener(sensorEventListener, linearAccSensor, rate * 1000);
+            sensorManager.registerListener(sensorEventListener, gravitySensor, rate * 1000);
+            sensorManager.registerListener(sensorEventListener, gyroSensor, rate * 1000);
         }
 
         public void stopMonitor() {
@@ -188,5 +190,9 @@ public class SensorService extends Service {
 
     public Sensor getLinearAccSensor() {
         return linearAccSensor;
+    }
+
+    public int getRate() {
+        return rate;
     }
 }

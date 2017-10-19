@@ -4,5 +4,5 @@
     <item
         android:id="@+id/add_sport"
         android:title="添加运动"
-        app:showAsAction="never" />
+        app:showAsAction="always" />
 </menu>

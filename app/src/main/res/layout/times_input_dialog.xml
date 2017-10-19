@@ -8,11 +8,14 @@
     android:paddingRight="18dp"
     android:paddingTop="10dp">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="输入运动次数"
+        android:textColor="@color/colorPrimary" />
+
     <EditText
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:layout_marginTop="10dp"
         android:id="@+id/et_times_input_dialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,6 +23,27 @@
         android:hint="运动次数...(不填默认为0)"
         android:inputType="number"
         android:maxLength="5"
+        android:paddingBottom="10dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="10dp"
         android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tv_seek_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:text="去除5秒数据"
+        android:textColor="@color/colorPrimary" />
+
+    <android.support.v7.widget.AppCompatSeekBar
+        android:id="@+id/seek_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:max="10"
+        android:progress="0" />
+
 
 </LinearLayout>

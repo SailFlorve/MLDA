@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
         android:id="@+id/output_data"
-        android:title="导出数据"
+        android:title="导出"
         app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/delete_data"
-        android:title="删除全部数据"
-        app:showAsAction="never" />
+        android:title="删除全部"
+        app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/data_help"
         android:title="帮助"

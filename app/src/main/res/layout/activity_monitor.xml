@@ -17,17 +17,23 @@
             android:layout_width="match_parent"
             android:layout_height="200dp">
 
-            <ImageView
-                android:id="@+id/iv_monitor_title"
+            <RelativeLayout
+                android:id="@+id/sport_bg_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:transitionName="sport_bg" />
+                android:transitionName="sport_bg">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#50000000"/>
+                <ImageView
+                    android:id="@+id/iv_monitor_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#96000000" />
+            </RelativeLayout>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -117,7 +123,7 @@
                     android:layout_marginTop="10dp"
                     android:gravity="center">
 
-                    <TextView
+                    <com.lmachine.mlda.view.CarouselTextView
                         android:id="@+id/tv_tip_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

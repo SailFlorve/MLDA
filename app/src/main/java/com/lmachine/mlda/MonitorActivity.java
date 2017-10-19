@@ -10,16 +10,17 @@ import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatSeekBar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -31,6 +32,8 @@ import com.lmachine.mlda.bean.TestInfo;
 import com.lmachine.mlda.bean.sport.SportInfo;
 import com.lmachine.mlda.service.SensorService;
 import com.lmachine.mlda.util.SPUtil;
+import com.lmachine.mlda.util.SoundMgr;
+import com.lmachine.mlda.view.CarouselTextView;
 import com.lmachine.mlda.view.SensorView;
 
 import java.util.ArrayList;
@@ -42,7 +45,7 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
     private ImageView titleImage;
     private TextView sportTitle;
     private TextView sportDes;
-    private TextView tipText;
+    private CarouselTextView tipText;
     private Chronometer chronometer;
 
     private SensorView dirView;
@@ -59,6 +62,7 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
 
     private LinearLayout buttonLayout;
 
+    private boolean isCountDown;
     private MyCountDownTimer countDownTimer = new MyCountDownTimer(3000, 100);
     private SensorService.MyBinder binder;
 
@@ -67,9 +71,13 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
     private List<float[]> gravityDataList = new ArrayList<>();
     private List<float[]> accDataList = new ArrayList<>();
 
+    private int duration;
+
     private int currentState = 0;//0: 未开始记录 1: 正在倒计时 2:正在记录 3.记录结束
 
-    TestInfo testInfo = new TestInfo();
+    private TestInfo testInfo = new TestInfo();
+
+    private SoundMgr soundMgr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +86,7 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
         setToolbar(R.id.toolbar, true);
         sportTitle = (TextView) findViewById(R.id.tv_sport_name);
         sportDes = (TextView) findViewById(R.id.tv_sport_des);
-        tipText = (TextView) findViewById(R.id.tv_tip_text);
+        tipText = (CarouselTextView) findViewById(R.id.tv_tip_text);
         chronometer = (Chronometer) findViewById(R.id.chronometer);
         titleImage = (ImageView) findViewById(R.id.iv_monitor_title);
         dirView = (SensorView) findViewById(R.id.sensor_view_dir);
@@ -91,7 +99,9 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
         buttonLayout = (LinearLayout) findViewById(R.id.btn_layout);
         countDownLayout = (FrameLayout) findViewById(R.id.count_down_layout);
         countDownText = (TextView) findViewById(R.id.tv_count_down);
+        initSettings();
         initView();
+
         bindService(new Intent(this, SensorService.class), this, BIND_AUTO_CREATE);
     }
 
@@ -122,12 +132,17 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
         }
     }
 
+    protected void initSettings() {
+        SPUtil.SharedPrefsManager spMgr = SPUtil.load(this);
+        isCountDown = spMgr.getBoolean("count_down", true);
+    }
+
     protected void initView() {
         Intent intent = getIntent();
         SportInfo sport = (SportInfo) intent.getSerializableExtra("sport");
 
         sportTitle.setText(sport.getName());
-
+        tipText.setTextArray(getResources().getStringArray(R.array.tip_text));
         Glide.with(this).load(sport.getGifId()).into(titleImage);
         sportDes.setText(sport.getDes());
 
@@ -142,25 +157,42 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
         buttonLayout.setVisibility(View.GONE);
         countDownLayout.setVisibility(View.GONE);
 
+        soundMgr = new SoundMgr(this,
+                R.raw.one,
+                R.raw.two,
+                R.raw.three,
+                R.raw.go);
+
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //点击了开始测试
                 if (currentState == 0) {
-                    currentState = 1;
-                    countDown();
                     startButton.setText("取消");
+                    currentState = 1;
+                    if (isCountDown) {
+                        countDown();
+                    } else {
+                        finishCountDown();
+                    }
                 } else if (currentState == 1) {
+                    //点击了取消
+                    tipText.setVisibility(View.VISIBLE);
                     currentState = 0;
                     countDownTimer.cancel();
                     countDownLayout.setVisibility(View.GONE);
                     startButton.setText("开始测试");
                 } else if (currentState == 2) {
+                    //点击了结束测试
                     chronometer.stop();
+                    chronometer.setVisibility(View.GONE);
+                    tipText.setVisibility(View.VISIBLE);
                     currentState = 3;
                     startButton.animate().translationY(500).setDuration(500);
                     buttonLayout.setVisibility(View.VISIBLE);
                     buttonLayout.setTranslationY(500);
                     buttonLayout.animate().translationY(0).setDuration(500);
+                    testInfo.setDuration(duration);
                 }
             }
         });
@@ -171,9 +203,34 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
             public void onClick(View v) {
 
                 final View inputView = getLayoutInflater().inflate(R.layout.times_input_dialog, null);
+                final AppCompatSeekBar seekBar = (AppCompatSeekBar) inputView.findViewById(R.id.seek_bar);
+                final TextView tv = (TextView) inputView.findViewById(R.id.tv_seek_bar);
+                tv.setText("拖动选择要从尾部删除的数据的秒数。");
+                seekBar.setMax(testInfo.getDuration());
+
+                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        if (progress != 0) {
+                            tv.setText("将会去除最后" + progress + "秒的数据。");
+                        } else {
+                            tv.setText("不会去除数据。");
+                        }
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+
+                    }
+                });
 
                 AlertDialog dialog = new AlertDialog.Builder(MonitorActivity.this)
-                        .setTitle("输入\"" + sportTitle.getText().toString() + "\"次数")
+                        .setTitle("数据处理")
                         .setView(inputView)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
@@ -186,7 +243,7 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
                                     testInfo.setInputTimes(Integer.parseInt(timesStr));
                                 }
                                 showProgressDialog("正在处理数据...");
-                                saveData(new FilterCallback() {
+                                handleData(seekBar.getProgress(), new FilterCallback() {
                                     @Override
                                     public void onFilterFinished() {
                                         Intent i = new Intent();
@@ -197,7 +254,9 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
                                     }
                                 });
                             }
-                        }).create();
+                        })
+                        .setNegativeButton("取消", null)
+                        .create();
                 dialog.show();
             }
         });
@@ -214,6 +273,8 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
                 startButton.animate().translationY(0).setDuration(500);
                 buttonLayout.animate().translationY(500).setDuration(500);
                 startButton.setText("开始测试");
+                tipText.setVisibility(View.VISIBLE);
+                chronometer.setVisibility(View.GONE);
             }
         });
 
@@ -221,7 +282,8 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
                 int seconds = (int) ((SystemClock.elapsedRealtime() - chronometer.getBase()) / 1000);
-                chronometer.setText(String.format(Locale.getDefault(), "%02d秒", seconds));
+                duration = seconds;
+                chronometer.setText(String.format(Locale.getDefault(), "已用时间: %02d秒", seconds));
             }
         });
     }
@@ -230,6 +292,39 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
         countDownText.setText("");
         countDownLayout.setVisibility(View.VISIBLE);
         countDownTimer.start();
+    }
+
+    private void showCountDownText(String time) {
+        if (countDownText.getText().toString().equals(time)) return;
+        countDownText.setAlpha(0);
+        countDownText.setScaleX(1.5f);
+        countDownText.setScaleY(1.5f);
+        countDownText.setText(time);
+        countDownText.animate().alpha(1).scaleX(1).scaleY(1).setDuration(300);
+
+        switch (time) {
+            case "1":
+                soundMgr.play(0);
+                break;
+            case "2":
+                soundMgr.play(1);
+                break;
+            case "3":
+                soundMgr.play(2);
+                break;
+        }
+
+    }
+
+    private void finishCountDown() {
+        soundMgr.play(3);
+        tipText.setVisibility(View.GONE);
+        chronometer.setVisibility(View.VISIBLE);
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        chronometer.start();
+        currentState = 2;
+        countDownLayout.setVisibility(View.GONE);
+        startButton.setText("结束测试");
     }
 
     @Override
@@ -300,6 +395,8 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
             }
         });
         binder.startMonitor();
+
+        testInfo.setRate(sensorService.getRate());
     }
 
     @Override
@@ -308,27 +405,33 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
         binder.stopMonitor();
     }
 
-    private void saveData(final FilterCallback callback) {
+    //去除尾部、滤波
+    private void handleData(final int subTimes, final FilterCallback callback) {
 
         new Thread(new Runnable() {
             @Override
             public void run() {
+                int subEnd = subTimes * 1000 / testInfo.getRate();
+                oriDataList.subList(oriDataList.size() - 1 - subEnd, oriDataList.size() - 1).clear();
+                gravityDataList.subList(gravityDataList.size() - 1 - subEnd, gravityDataList.size() - 1).clear();
+                gyroDataList.subList(gyroDataList.size() - 1 - subEnd, gyroDataList.size() - 1).clear();
+                accDataList.subList(accDataList.size() - 1 - subEnd, accDataList.size() - 1).clear();
+
                 int filterType = Integer.parseInt(SPUtil.load(MonitorActivity.this).getString("filter_type", "0"));
                 testInfo.setFiltered(filterType != 0);
                 testInfo.setOrientationData(new Gson().toJson(
                         filterType == 0 ? oriDataList :
                                 (filterType == 1 ? KalmanFilter.filter(oriDataList) : LowPassFilter.filter(oriDataList))));
-                testInfo.setGravityData(new Gson().toJson(filterType == 0 ? oriDataList :
+                testInfo.setGravityData(new Gson().toJson(filterType == 0 ? gravityDataList :
                         (filterType == 1 ? KalmanFilter.filter(gravityDataList) : LowPassFilter.filter(gravityDataList))));
-                testInfo.setGyroscopeData(new Gson().toJson(filterType == 0 ? oriDataList :
+                testInfo.setGyroscopeData(new Gson().toJson(filterType == 0 ? gyroDataList :
                         (filterType == 1 ? KalmanFilter.filter(gyroDataList) : LowPassFilter.filter(gyroDataList))));
-                testInfo.setAccelerationData(new Gson().toJson(filterType == 0 ? oriDataList :
+                testInfo.setAccelerationData(new Gson().toJson(filterType == 0 ? accDataList :
                         (filterType == 1 ? KalmanFilter.filter(accDataList) : LowPassFilter.filter(accDataList))));
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        testInfo.setDuration(Integer.valueOf(chronometer.getText().toString().split("秒")[0]));
                         callback.onFilterFinished();
                     }
                 });
@@ -351,24 +454,14 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
 
         @Override
         public void onTick(long millisUntilFinished) {
-            Log.d(TAG, "onTick: " + millisUntilFinished);
+            //Log.d(TAG, "onTick: " + millisUntilFinished);
             String time = String.valueOf((millisUntilFinished / 1000) + 1);
-            if (countDownText.getText().toString().equals(time)) return;
-            countDownText.setAlpha(0);
-            countDownText.setScaleX(0);
-            countDownText.setScaleY(0);
-            countDownText.setText(time);
-            countDownText.animate().alpha(1).scaleX(1).scaleY(1).setDuration(300);
+            showCountDownText(time);
         }
 
         @Override
         public void onFinish() {
-            tipText.setText("已用时间: ");
-            chronometer.setBase(SystemClock.elapsedRealtime());
-            chronometer.start();
-            currentState = 2;
-            countDownLayout.setVisibility(View.GONE);
-            startButton.setText("结束测试");
+            finishCountDown();
         }
     }
 }

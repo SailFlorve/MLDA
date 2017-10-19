@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -73,14 +74,19 @@ public class SelectActivity extends BaseActivity {
                 Intent intent = new Intent(SelectActivity.this, MonitorActivity.class);
                 intent.putExtra("sport", sportInfoList.get(position));
 
+                Pair pair1 = Pair.create(view.findViewById(R.id.tv_sport_view), "sport_text");
+                Pair pair2 = Pair.create(view.findViewById(R.id.sport_bg_layout), "sport_bg");
+
                 startActivityForResult(intent, position, ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        SelectActivity.this, view.findViewById(R.id.tv_sport_view), "sport_text").toBundle());
+                        SelectActivity.this,
+                        pair1, pair2).toBundle()
+                );
             }
         });
 
         testerInfoText.setText(String.format(
                 Locale.getDefault(),
-                "性别: %s 年龄: %d岁 身高: %dcm 体重: %d千克",
+                "性别: %s|年龄: %d|身高: %dcm|体重: %d千克",
                 testInfo.getSex(),
                 testInfo.getAge(),
                 testInfo.getStature(),

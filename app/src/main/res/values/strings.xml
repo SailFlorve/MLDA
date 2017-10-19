@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">MLDA</string>
-    <string name="privacy_statement">隐私声明:\n©Machine Learning Data Acquisition</string>
+    <string name="privacy_statement">说明: 填好后点击红色箭头进入测试。\n©Machine Learning Data Acquisition</string>
     <string name="small_jump_des">绷紧全身，左右跳动，身体跟随双腿左右摆动。起跳时，手臂用力上提带起身体。</string>
     <string name="jumping_jack_des">双脚开合跳跃，小腿放松，用肩部力量抬臂，背部力量下压手臂，用手臂带动身体跳跃。收紧腰腹，手臂用力绷紧。</string>
     <string name="high_knees_des">挺直背部，目视前方，前脚掌着地快速交替抬腿。保持身体稳定，保持最快速度。</string>
@@ -34,5 +34,12 @@
         <item>0</item>
         <item>1</item>
         <item>2</item>
+    </string-array>
+    <string-array name="tip_text">
+        <item>测试时间应该尽量短暂。</item>
+        <item>请记住您的运动次数。</item>
+        <item>请记住最后无效动作的时间。</item>
+        <item>测试时，尽量保持每次动作一致。</item>
+        <item>你可以回到主界面的“数据管理”查看保存的数据。</item>
     </string-array>
 </resources>

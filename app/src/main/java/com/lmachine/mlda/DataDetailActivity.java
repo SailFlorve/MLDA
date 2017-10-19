@@ -35,6 +35,7 @@ public class DataDetailActivity extends DataActivity implements View.OnClickList
     private TextView time;
     private TextView isFiltered;
     private TextView inputTimes;
+    private TextView rate;
     private TextView ori;
     private TextView oriData;
     private TextView gyro;
@@ -69,6 +70,7 @@ public class DataDetailActivity extends DataActivity implements View.OnClickList
         duration = (TextView) findViewById(R.id.tv_duration);
         time = (TextView) findViewById(R.id.tv_time);
         isFiltered = (TextView) findViewById(R.id.tv_isFiltered);
+        rate = (TextView) findViewById(R.id.tv_rate);
         inputTimes = (TextView) findViewById(R.id.tv_times_input);
         ori = (TextView) findViewById(R.id.tv_ori);
         oriData = (TextView) findViewById(R.id.tv_ori_data);
@@ -109,6 +111,7 @@ public class DataDetailActivity extends DataActivity implements View.OnClickList
         stature.setText("身高: " + testInfo.getStature() + "cm");
         type.setText("类型: " + testInfo.getType());
         duration.setText("持续时间: " + testInfo.getDuration() + "秒");
+        rate.setText("数据采集频率: " + testInfo.getRate() + "ms");
         time.setText("测试时间: " + testInfo.getTime());
         isFiltered.setText("是否被滤波: " + (testInfo.isFiltered() ? "是" : "否"));
         inputTimes.setText("被测者输入的次数: " + testInfo.getInputTimes());

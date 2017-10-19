@@ -59,6 +59,8 @@ public class TestInfo extends BaseModel implements Serializable {
     private boolean isFiltered;
     @Column(defaultValue = "0")
     private int inputTimes;
+    @Column(defaultValue = "40")
+    private int rate;
 
     public TestInfo() {
 
@@ -251,5 +253,13 @@ public class TestInfo extends BaseModel implements Serializable {
 
     public void setInputTimes(int inputTimes) {
         this.inputTimes = inputTimes;
+    }
+
+    public int getRate() {
+        return rate;
+    }
+
+    public void setRate(int rate) {
+        this.rate = rate;
     }
 }

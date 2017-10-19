@@ -6,6 +6,15 @@
             android:key="check_sensor"
             android:summary="开启后，当传感器缺失时，不允许进入测试。"
             android:title="检查传感器完整性" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="count_down"
+            android:summary="开启后测试前会有3秒倒计时。"
+            android:title="测试倒计时" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="play_sound"
+            android:title="播放声音" />
     </PreferenceCategory>
     <PreferenceCategory android:title="数据采集">
         <ListPreference
