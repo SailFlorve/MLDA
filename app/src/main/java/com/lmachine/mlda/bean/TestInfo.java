@@ -61,6 +61,8 @@ public class TestInfo extends BaseModel implements Serializable {
     private int inputTimes;
     @Column(defaultValue = "40")
     private int rate;
+    @Column
+    private String remark;
 
     public TestInfo() {
 
@@ -261,5 +263,13 @@ public class TestInfo extends BaseModel implements Serializable {
 
     public void setRate(int rate) {
         this.rate = rate;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

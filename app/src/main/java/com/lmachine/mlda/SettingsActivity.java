@@ -1,9 +1,7 @@
 package com.lmachine.mlda;
 
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 
 public class SettingsActivity extends BaseActivity {
 

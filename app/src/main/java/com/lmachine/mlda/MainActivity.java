@@ -14,9 +14,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -24,8 +22,6 @@ import android.widget.TextView;
 import com.lmachine.mlda.service.SensorService;
 import com.lmachine.mlda.util.SPUtil;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 
@@ -42,7 +38,6 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
     private TextInputLayout statureText;
     private TextInputLayout weightText;
     private FloatingActionButton fab;
-    private LinearLayout rootLayout;
 
     private TextInputLayout[] textInputLayouts;
 
@@ -56,18 +51,17 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setToolbar(R.id.toolbar, false);
-        magText = (TextView) findViewById(R.id.tv_magnetic);
-        gyroText = (TextView) findViewById(R.id.tv_gyroscope);
-        gravityText = (TextView) findViewById(R.id.tv_gravity);
-        linearAccText = (TextView) findViewById(R.id.tv_linear_acceleration);
-        cardView = (CardView) findViewById(R.id.card_view);
-        radioGroup = (RadioGroup) findViewById(R.id.radio_group);
-        randomInputText = (TextView) findViewById(R.id.tv_random);
-        ageText = (TextInputLayout) findViewById(R.id.til_age);
-        statureText = (TextInputLayout) findViewById(R.id.til_stature);
-        weightText = (TextInputLayout) findViewById(R.id.til_weight);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        rootLayout = (LinearLayout) findViewById(R.id.root_layout);
+        magText = findViewById(R.id.tv_magnetic);
+        gyroText = findViewById(R.id.tv_gyroscope);
+        gravityText = findViewById(R.id.tv_gravity);
+        linearAccText = findViewById(R.id.tv_linear_acceleration);
+        cardView = findViewById(R.id.card_view);
+        radioGroup = findViewById(R.id.radio_group);
+        randomInputText = findViewById(R.id.tv_random);
+        ageText = findViewById(R.id.til_age);
+        statureText = findViewById(R.id.til_stature);
+        weightText = findViewById(R.id.til_weight);
+        fab = findViewById(R.id.fab);
 
         textInputLayouts = new TextInputLayout[]{ageText, statureText, weightText};
 
@@ -75,32 +69,15 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
         cardView.setTranslationY(80);
         cardView.animate().alpha(1).translationY(0).setDuration(750).start();
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: ");
-                check();
-            }
+        fab.setOnClickListener(v -> {
+            Log.d(TAG, "onClick: ");
+            check();
         });
 
-        randomInputText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                randomInput();
-            }
-        });
+        randomInputText.setOnClickListener(v -> randomInput());
         bindService(new Intent(this, SensorService.class), this, BIND_AUTO_CREATE);
-        List<float[]> list = new ArrayList<>();
-        float[] num = new float[]{};
 
-        float[] num1 = new float[]{1f, 2f, 3f};
-        float[] num2 = new float[]{4f, 5f, 6f};
-        num = num1;
-        list.add(num);
-        num = num2;
-        list.add(num);
-
-        Log.d(TAG, "onCreate: " + list.toString());
+        int a = 1 / 0;
     }
 
     @Override
@@ -153,7 +130,7 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
     @SuppressWarnings("ConstantConditions")
     private void check() {
         clearError();
-        RadioButton radioButton = (RadioButton) findViewById(radioGroup.getCheckedRadioButtonId());
+        RadioButton radioButton = findViewById(radioGroup.getCheckedRadioButtonId());
         if (radioButton == null) {
             showSnackBar("请选择性别。");
             return;
@@ -215,22 +192,19 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
     public void onServiceConnected(ComponentName name, IBinder service) {
         SensorService.MyBinder binder = (SensorService.MyBinder) service;
         SensorService sensorService = binder.getService();
-        sensorService.getSensorStatus(new SensorService.SensorStatusCallback() {
-            @Override
-            public void onSensorInit(boolean mag, boolean gyro, boolean gravity, boolean acc) {
-                Drawable right = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_right);
-                Drawable error = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_error);
-                right.setBounds(0, 0, 40, 40);
-                error.setBounds(0, 0, 40, 40);
-                haveMag = mag;
-                haveGyro = gyro;
-                haveGravity = gravity;
-                haveAcc = acc;
-                magText.setCompoundDrawables(mag ? right : error, null, null, null);
-                gyroText.setCompoundDrawables(gyro ? right : error, null, null, null);
-                gravityText.setCompoundDrawables(gravity ? right : error, null, null, null);
-                linearAccText.setCompoundDrawables(acc ? right : error, null, null, null);
-            }
+        sensorService.getSensorStatus((mag, gyro, gravity, acc) -> {
+            Drawable right = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_right);
+            Drawable error = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_error);
+            right.setBounds(0, 0, 40, 40);
+            error.setBounds(0, 0, 40, 40);
+            haveMag = mag;
+            haveGyro = gyro;
+            haveGravity = gravity;
+            haveAcc = acc;
+            magText.setCompoundDrawables(mag ? right : error, null, null, null);
+            gyroText.setCompoundDrawables(gyro ? right : error, null, null, null);
+            gravityText.setCompoundDrawables(gravity ? right : error, null, null, null);
+            linearAccText.setCompoundDrawables(acc ? right : error, null, null, null);
         });
     }
 

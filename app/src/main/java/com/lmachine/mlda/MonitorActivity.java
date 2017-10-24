@@ -84,21 +84,21 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_monitor);
         setToolbar(R.id.toolbar, true);
-        sportTitle = (TextView) findViewById(R.id.tv_sport_name);
-        sportDes = (TextView) findViewById(R.id.tv_sport_des);
-        tipText = (CarouselTextView) findViewById(R.id.tv_tip_text);
-        chronometer = (Chronometer) findViewById(R.id.chronometer);
-        titleImage = (ImageView) findViewById(R.id.iv_monitor_title);
-        dirView = (SensorView) findViewById(R.id.sensor_view_dir);
-        gyroView = (SensorView) findViewById(R.id.sensor_view_gyro);
-        gravityView = (SensorView) findViewById(R.id.sensor_view_gravity);
-        accView = (SensorView) findViewById(R.id.sensor_view_acc);
-        startButton = (Button) findViewById(R.id.btn_start_test);
-        saveButton = (Button) findViewById(R.id.btn_save);
-        retestButton = (Button) findViewById(R.id.btn_retest);
-        buttonLayout = (LinearLayout) findViewById(R.id.btn_layout);
-        countDownLayout = (FrameLayout) findViewById(R.id.count_down_layout);
-        countDownText = (TextView) findViewById(R.id.tv_count_down);
+        sportTitle = findViewById(R.id.tv_sport_name);
+        sportDes = findViewById(R.id.tv_sport_des);
+        tipText = findViewById(R.id.tv_tip_text);
+        chronometer = findViewById(R.id.chronometer);
+        titleImage = findViewById(R.id.iv_monitor_title);
+        dirView = findViewById(R.id.sensor_view_dir);
+        gyroView = findViewById(R.id.sensor_view_gyro);
+        gravityView = findViewById(R.id.sensor_view_gravity);
+        accView = findViewById(R.id.sensor_view_acc);
+        startButton = findViewById(R.id.btn_start_test);
+        saveButton = findViewById(R.id.btn_save);
+        retestButton = findViewById(R.id.btn_retest);
+        buttonLayout = findViewById(R.id.btn_layout);
+        countDownLayout = findViewById(R.id.count_down_layout);
+        countDownText = findViewById(R.id.tv_count_down);
         initSettings();
         initView();
 
@@ -119,12 +119,7 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
             new AlertDialog.Builder(this)
                     .setTitle("退出确认")
                     .setMessage("如果退出，测试数据将会丢失。是否确认退出？")
-                    .setPositiveButton("退出", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    })
+                    .setPositiveButton("退出", (dialog, which) -> finish())
                     .setNegativeButton("取消", null)
                     .create().show();
         } else {
@@ -163,128 +158,110 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
                 R.raw.three,
                 R.raw.go);
 
-        startButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //点击了开始测试
-                if (currentState == 0) {
-                    startButton.setText("取消");
-                    currentState = 1;
-                    if (isCountDown) {
-                        countDown();
-                    } else {
-                        finishCountDown();
-                    }
-                } else if (currentState == 1) {
-                    //点击了取消
-                    tipText.setVisibility(View.VISIBLE);
-                    currentState = 0;
-                    countDownTimer.cancel();
-                    countDownLayout.setVisibility(View.GONE);
-                    startButton.setText("开始测试");
-                } else if (currentState == 2) {
-                    //点击了结束测试
-                    chronometer.stop();
-                    chronometer.setVisibility(View.GONE);
-                    tipText.setVisibility(View.VISIBLE);
-                    currentState = 3;
-                    startButton.animate().translationY(500).setDuration(500);
-                    buttonLayout.setVisibility(View.VISIBLE);
-                    buttonLayout.setTranslationY(500);
-                    buttonLayout.animate().translationY(0).setDuration(500);
-                    testInfo.setDuration(duration);
+        startButton.setOnClickListener(v -> {
+            //点击了开始测试
+            if (currentState == 0) {
+                startButton.setText("取消");
+                currentState = 1;
+                if (isCountDown) {
+                    countDown();
+                } else {
+                    finishCountDown();
                 }
-            }
-        });
-
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @SuppressWarnings("ConstantConditions")
-            @Override
-            public void onClick(View v) {
-
-                final View inputView = getLayoutInflater().inflate(R.layout.times_input_dialog, null);
-                final AppCompatSeekBar seekBar = (AppCompatSeekBar) inputView.findViewById(R.id.seek_bar);
-                final TextView tv = (TextView) inputView.findViewById(R.id.tv_seek_bar);
-                tv.setText("拖动选择要从尾部删除的数据的秒数。");
-                seekBar.setMax(testInfo.getDuration());
-
-                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        if (progress != 0) {
-                            tv.setText("将会去除最后" + progress + "秒的数据。");
-                        } else {
-                            tv.setText("不会去除数据。");
-                        }
-                    }
-
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-
-                    }
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-
-                    }
-                });
-
-                AlertDialog dialog = new AlertDialog.Builder(MonitorActivity.this)
-                        .setTitle("数据处理")
-                        .setView(inputView)
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                EditText et = (EditText) inputView.findViewById(R.id.et_times_input_dialog);
-                                String timesStr = et.getText().toString();
-                                if (TextUtils.isEmpty(timesStr)) {
-                                    testInfo.setInputTimes(0);
-                                } else {
-                                    testInfo.setInputTimes(Integer.parseInt(timesStr));
-                                }
-                                showProgressDialog("正在处理数据...");
-                                handleData(seekBar.getProgress(), new FilterCallback() {
-                                    @Override
-                                    public void onFilterFinished() {
-                                        Intent i = new Intent();
-                                        closeProgressDialog();
-                                        i.putExtra("test_info", testInfo);
-                                        setResult(RESULT_OK, i);
-                                        finish();
-                                    }
-                                });
-                            }
-                        })
-                        .setNegativeButton("取消", null)
-                        .create();
-                dialog.show();
-            }
-        });
-
-        retestButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                oriDataList.clear();
-                accDataList.clear();
-                gravityDataList.clear();
-                gyroDataList.clear();
-                Log.d(TAG, "onClick: 数据已经清除");
-                currentState = 0;
-                startButton.animate().translationY(0).setDuration(500);
-                buttonLayout.animate().translationY(500).setDuration(500);
-                startButton.setText("开始测试");
+            } else if (currentState == 1) {
+                //点击了取消
                 tipText.setVisibility(View.VISIBLE);
+                currentState = 0;
+                countDownTimer.cancel();
+                countDownLayout.setVisibility(View.GONE);
+                startButton.setText("开始测试");
+            } else if (currentState == 2) {
+                //点击了结束测试
+                chronometer.stop();
                 chronometer.setVisibility(View.GONE);
+                tipText.setVisibility(View.VISIBLE);
+                currentState = 3;
+                startButton.animate().translationY(500).setDuration(500);
+                buttonLayout.setVisibility(View.VISIBLE);
+                buttonLayout.setTranslationY(500);
+                buttonLayout.animate().translationY(0).setDuration(500);
+                testInfo.setDuration(duration);
             }
         });
 
-        chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-            @Override
-            public void onChronometerTick(Chronometer chronometer) {
-                int seconds = (int) ((SystemClock.elapsedRealtime() - chronometer.getBase()) / 1000);
-                duration = seconds;
-                chronometer.setText(String.format(Locale.getDefault(), "已用时间: %02d秒", seconds));
-            }
+        saveButton.setOnClickListener(v -> {
+
+            final View inputView = getLayoutInflater().inflate(R.layout.times_input_dialog, null);
+            final AppCompatSeekBar seekBar = inputView.findViewById(R.id.seek_bar);
+            final TextView tv = inputView.findViewById(R.id.tv_seek_bar);
+            tv.setText("拖动选择要从尾部删除的数据的秒数。");
+            seekBar.setMax(testInfo.getDuration());
+
+            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    if (progress != 0) {
+                        tv.setText("将会去除最后" + progress + "秒的数据。");
+                    } else {
+                        tv.setText("不会去除数据。");
+                    }
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                }
+            });
+
+            AlertDialog dialog = new AlertDialog.Builder(MonitorActivity.this)
+                    .setTitle("数据处理")
+                    .setView(inputView)
+                    .setPositiveButton("确定", (dialog1, which) -> {
+                        EditText times = inputView.findViewById(R.id.et_times_input_dialog);
+                        EditText remark = inputView.findViewById(R.id.et_remark);
+                        String timesStr = times.getText().toString();
+                        String remarkStr = remark.getText().toString();
+
+                        testInfo.setInputTimes(TextUtils.isEmpty(timesStr) ? 0 : Integer.parseInt(timesStr));
+                        testInfo.setRemark(TextUtils.isEmpty(remarkStr) ? "无" : remarkStr);
+
+                        showProgressDialog("正在处理数据...");
+                        handleData(seekBar.getProgress(), () -> {
+                            Intent i = new Intent();
+                            closeProgressDialog();
+                            i.putExtra("test_info", testInfo);
+                            setResult(RESULT_OK, i);
+                            finish();
+                        });
+                    })
+                    .setNegativeButton("取消", null)
+                    .create();
+            dialog.show();
+        });
+
+        retestButton.setOnClickListener(v -> {
+            oriDataList.clear();
+            accDataList.clear();
+            gravityDataList.clear();
+            gyroDataList.clear();
+            Log.d(TAG, "onClick: 数据已经清除");
+            currentState = 0;
+            startButton.animate().translationY(0).setDuration(500);
+            buttonLayout.animate().translationY(500).setDuration(500);
+            startButton.setText("开始测试");
+            tipText.setVisibility(View.VISIBLE);
+            chronometer.setVisibility(View.GONE);
+        });
+
+        chronometer.setOnChronometerTickListener(chronometer -> {
+            int seconds = (int) ((SystemClock.elapsedRealtime() - chronometer.getBase()) / 1000);
+            duration = seconds;
+            chronometer.setText(String.format(Locale.getDefault(), "已用时间: %02d秒", seconds));
         });
     }
 
@@ -408,34 +385,26 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
     //去除尾部、滤波
     private void handleData(final int subTimes, final FilterCallback callback) {
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int subEnd = subTimes * 1000 / testInfo.getRate();
-                oriDataList.subList(oriDataList.size() - 1 - subEnd, oriDataList.size() - 1).clear();
-                gravityDataList.subList(gravityDataList.size() - 1 - subEnd, gravityDataList.size() - 1).clear();
-                gyroDataList.subList(gyroDataList.size() - 1 - subEnd, gyroDataList.size() - 1).clear();
-                accDataList.subList(accDataList.size() - 1 - subEnd, accDataList.size() - 1).clear();
+        new Thread(() -> {
+            int subEnd = subTimes * 1000 / testInfo.getRate();
+            oriDataList.subList(oriDataList.size() - 1 - subEnd, oriDataList.size() - 1).clear();
+            gravityDataList.subList(gravityDataList.size() - 1 - subEnd, gravityDataList.size() - 1).clear();
+            gyroDataList.subList(gyroDataList.size() - 1 - subEnd, gyroDataList.size() - 1).clear();
+            accDataList.subList(accDataList.size() - 1 - subEnd, accDataList.size() - 1).clear();
 
-                int filterType = Integer.parseInt(SPUtil.load(MonitorActivity.this).getString("filter_type", "0"));
-                testInfo.setFiltered(filterType != 0);
-                testInfo.setOrientationData(new Gson().toJson(
-                        filterType == 0 ? oriDataList :
-                                (filterType == 1 ? KalmanFilter.filter(oriDataList) : LowPassFilter.filter(oriDataList))));
-                testInfo.setGravityData(new Gson().toJson(filterType == 0 ? gravityDataList :
-                        (filterType == 1 ? KalmanFilter.filter(gravityDataList) : LowPassFilter.filter(gravityDataList))));
-                testInfo.setGyroscopeData(new Gson().toJson(filterType == 0 ? gyroDataList :
-                        (filterType == 1 ? KalmanFilter.filter(gyroDataList) : LowPassFilter.filter(gyroDataList))));
-                testInfo.setAccelerationData(new Gson().toJson(filterType == 0 ? accDataList :
-                        (filterType == 1 ? KalmanFilter.filter(accDataList) : LowPassFilter.filter(accDataList))));
+            int filterType = Integer.parseInt(SPUtil.load(MonitorActivity.this).getString("filter_type", "0"));
+            testInfo.setFiltered(filterType != 0);
+            testInfo.setOrientationData(new Gson().toJson(
+                    filterType == 0 ? oriDataList :
+                            (filterType == 1 ? KalmanFilter.filter(oriDataList) : LowPassFilter.filter(oriDataList))));
+            testInfo.setGravityData(new Gson().toJson(filterType == 0 ? gravityDataList :
+                    (filterType == 1 ? KalmanFilter.filter(gravityDataList) : LowPassFilter.filter(gravityDataList))));
+            testInfo.setGyroscopeData(new Gson().toJson(filterType == 0 ? gyroDataList :
+                    (filterType == 1 ? KalmanFilter.filter(gyroDataList) : LowPassFilter.filter(gyroDataList))));
+            testInfo.setAccelerationData(new Gson().toJson(filterType == 0 ? accDataList :
+                    (filterType == 1 ? KalmanFilter.filter(accDataList) : LowPassFilter.filter(accDataList))));
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onFilterFinished();
-                    }
-                });
-            }
+            runOnUiThread(callback::onFilterFinished);
         }).start();
     }
 

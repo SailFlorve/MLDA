@@ -35,6 +35,7 @@ public class DataDetailActivity extends DataActivity implements View.OnClickList
     private TextView time;
     private TextView isFiltered;
     private TextView inputTimes;
+    private TextView remark;
     private TextView rate;
     private TextView ori;
     private TextView oriData;
@@ -62,25 +63,26 @@ public class DataDetailActivity extends DataActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data_detail);
         setToolbar(R.id.toolbar, true);
-        sex = (TextView) findViewById(R.id.tv_sex);
-        age = (TextView) findViewById(R.id.tv_age);
-        stature = (TextView) findViewById(R.id.tv_stature);
-        weight = (TextView) findViewById(R.id.tv_weight);
-        type = (TextView) findViewById(R.id.tv_type);
-        duration = (TextView) findViewById(R.id.tv_duration);
-        time = (TextView) findViewById(R.id.tv_time);
-        isFiltered = (TextView) findViewById(R.id.tv_isFiltered);
-        rate = (TextView) findViewById(R.id.tv_rate);
-        inputTimes = (TextView) findViewById(R.id.tv_times_input);
-        ori = (TextView) findViewById(R.id.tv_ori);
-        oriData = (TextView) findViewById(R.id.tv_ori_data);
-        gyro = (TextView) findViewById(R.id.tv_gyro);
-        gyroData = (TextView) findViewById(R.id.tv_gyro_data);
-        gra = (TextView) findViewById(R.id.tv_gra);
-        graData = (TextView) findViewById(R.id.tv_gra_data);
-        acc = (TextView) findViewById(R.id.tv_acc);
-        accData = (TextView) findViewById(R.id.tv_acc_data);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        sex = findViewById(R.id.tv_sex);
+        age = findViewById(R.id.tv_age);
+        stature = findViewById(R.id.tv_stature);
+        weight = findViewById(R.id.tv_weight);
+        type = findViewById(R.id.tv_type);
+        remark = findViewById(R.id.tv_remark);
+        duration = findViewById(R.id.tv_duration);
+        time = findViewById(R.id.tv_time);
+        isFiltered = findViewById(R.id.tv_isFiltered);
+        rate = findViewById(R.id.tv_rate);
+        inputTimes = findViewById(R.id.tv_times_input);
+        ori = findViewById(R.id.tv_ori);
+        oriData = findViewById(R.id.tv_ori_data);
+        gyro = findViewById(R.id.tv_gyro);
+        gyroData = findViewById(R.id.tv_gyro_data);
+        gra = findViewById(R.id.tv_gra);
+        graData = findViewById(R.id.tv_gra_data);
+        acc = findViewById(R.id.tv_acc);
+        accData = findViewById(R.id.tv_acc_data);
+        toolbar = findViewById(R.id.toolbar);
         initView();
     }
 
@@ -112,7 +114,9 @@ public class DataDetailActivity extends DataActivity implements View.OnClickList
         type.setText("类型: " + testInfo.getType());
         duration.setText("持续时间: " + testInfo.getDuration() + "秒");
         rate.setText("数据采集频率: " + testInfo.getRate() + "ms");
+        remark.setText("备注: " + testInfo.getRemark());
         time.setText("测试时间: " + testInfo.getTime());
+
         isFiltered.setText("是否被滤波: " + (testInfo.isFiltered() ? "是" : "否"));
         inputTimes.setText("被测者输入的次数: " + testInfo.getInputTimes());
 
@@ -170,7 +174,7 @@ public class DataDetailActivity extends DataActivity implements View.OnClickList
                 break;
         }
         View dialogView = getLayoutInflater().inflate(R.layout.data_dialog, null);
-        ListView dialogListView = (ListView) dialogView.findViewById(R.id.list_view);
+        ListView dialogListView = dialogView.findViewById(R.id.list_view);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, floatListToString(dataList));
         dialogListView.setAdapter(arrayAdapter);
         arrayAdapter.notifyDataSetChanged();

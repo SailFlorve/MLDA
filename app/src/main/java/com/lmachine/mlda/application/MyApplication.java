@@ -18,7 +18,7 @@ public class MyApplication extends Application {
         super.onCreate();
         FlowManager.init(FlowConfig.builder(this)
                 .addDatabaseConfig(DatabaseConfig.builder(AppDatabase.class)
-                        .databaseName("TestData")
+                        .databaseName(AppDatabase.NAME)
                         .build())
                 .build());
     }

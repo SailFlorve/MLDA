@@ -1,5 +1,6 @@
 package com.lmachine.mlda;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -57,9 +58,9 @@ public class SelectActivity extends BaseActivity {
         testInfo.setWeight(intent.getIntExtra("weight", 0));
         testInfo.setAge(intent.getIntExtra("age", 0));
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        testerInfoText = (TextView) findViewById(R.id.tv_tester_info);
-        rootLayout = (LinearLayout) findViewById(R.id.root_layout);
+        recyclerView = findViewById(R.id.recycler_view);
+        testerInfoText = findViewById(R.id.tv_tester_info);
+        rootLayout = findViewById(R.id.root_layout);
 
         listAdapter = new SportRecyclerViewAdapter(R.layout.sport_view, sportInfoList);
         recyclerView.setAdapter(listAdapter);
@@ -69,6 +70,7 @@ public class SelectActivity extends BaseActivity {
 
         listAdapter.notifyDataSetChanged();
         listAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @SuppressLint("RestrictedApi")
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 Intent intent = new Intent(SelectActivity.this, MonitorActivity.class);
@@ -105,21 +107,19 @@ public class SelectActivity extends BaseActivity {
             final View view = getLayoutInflater().inflate(R.layout.sport_input_dialog, null);
             new AlertDialog.Builder(this).setTitle("添加运动")
                     .setView(view)
-                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            EditText sportName = (EditText) view.findViewById(R.id.dialog_et_1);
-                            EditText sportDes = (EditText) view.findViewById(R.id.dialog_et_2);
-                            String name = sportName.getText().toString();
-                            String des = sportDes.getText().toString();
-                            sportInfoList.add(new SportInfo(
-                                    name,
-                                    TextUtils.isEmpty(des) ? "没有详细说明。" : des,
-                                    R.drawable.bg_sport,
-                                    R.drawable.bg_sport));
-                            listAdapter.notifyDataSetChanged();
-                            saveSport(name, TextUtils.isEmpty(des) ? "没有详细说明。" : des);
-                            recyclerView.smoothScrollToPosition(sportInfoList.size() - 1);
-                        }
+                    .setPositiveButton("确定", (dialog, which) -> {
+                        EditText sportName = view.findViewById(R.id.dialog_et_1);
+                        EditText sportDes = view.findViewById(R.id.dialog_et_2);
+                        String name = sportName.getText().toString();
+                        String des = sportDes.getText().toString();
+                        sportInfoList.add(new SportInfo(
+                                name,
+                                TextUtils.isEmpty(des) ? "没有详细说明。" : des,
+                                R.drawable.bg_sport,
+                                R.drawable.bg_sport));
+                        listAdapter.notifyDataSetChanged();
+                        saveSport(name, TextUtils.isEmpty(des) ? "没有详细说明。" : des);
+                        recyclerView.smoothScrollToPosition(sportInfoList.size() - 1);
                     })
                     .setNegativeButton("取消", null)
                     .create()

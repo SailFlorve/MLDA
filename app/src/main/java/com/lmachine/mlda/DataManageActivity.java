@@ -38,7 +38,7 @@ public class DataManageActivity extends DataActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data_manage);
         setToolbar(R.id.toolbar, true);
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView = findViewById(R.id.recycler_view);
         initView();
         initData();
     }
@@ -54,14 +54,11 @@ public class DataManageActivity extends DataActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
         recyclerView.setAdapter(adapter);
         adapter.bindToRecyclerView(recyclerView);
-        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Intent i = new Intent(DataManageActivity.this, DataDetailActivity.class);
-                i.putExtra("id", dataList.get(position).getId());
-                startActivity(i);
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            }
+        adapter.setOnItemClickListener((adapter, view, position) -> {
+            Intent i = new Intent(DataManageActivity.this, DataDetailActivity.class);
+            i.putExtra("id", dataList.get(position).getId());
+            startActivity(i);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
     }
 
