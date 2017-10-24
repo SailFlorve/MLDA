@@ -77,7 +77,6 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
         randomInputText.setOnClickListener(v -> randomInput());
         bindService(new Intent(this, SensorService.class), this, BIND_AUTO_CREATE);
 
-        int a = 1 / 0;
     }
 
     @Override
