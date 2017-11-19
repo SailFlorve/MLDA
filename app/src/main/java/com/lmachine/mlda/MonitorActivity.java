@@ -14,6 +14,7 @@ import android.support.v7.widget.AppCompatSeekBar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
@@ -82,6 +83,9 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         setContentView(R.layout.activity_monitor);
         setToolbar(R.id.toolbar, true);
         sportTitle = findViewById(R.id.tv_sport_name);

@@ -3,6 +3,7 @@ package com.lmachine.mlda.bean;
 import android.support.annotation.NonNull;
 
 import com.raizlabs.android.dbflow.annotation.Database;
+import com.raizlabs.android.dbflow.annotation.Migration;
 import com.raizlabs.android.dbflow.sql.SQLiteType;
 import com.raizlabs.android.dbflow.sql.migration.AlterTableMigration;
 import com.raizlabs.android.dbflow.sql.migration.BaseMigration;
@@ -16,9 +17,10 @@ import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 @Database(version = AppDatabase.VERSION)
 public class AppDatabase {
     public static final String NAME = "TestData";
-    public static final int VERSION = 5;
+    public static final int VERSION = 7;
 
-    public class MyMigration extends AlterTableMigration<TestInfo> {
+    @Migration(version = 7, database = AppDatabase.class)
+    public static class MyMigration extends AlterTableMigration<TestInfo> {
 
         public MyMigration(Class<TestInfo> table) {
             super(table);
