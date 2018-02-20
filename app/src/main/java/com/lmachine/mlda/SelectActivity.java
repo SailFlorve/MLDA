@@ -97,7 +97,9 @@ public class SelectActivity extends BaseActivity {
         testerInfoText = findViewById(R.id.tv_tester_info);
         rootLayout = findViewById(R.id.root_layout);
 
+
         listAdapter = new SportRecyclerViewAdapter(R.layout.sport_view, sportInfoList);
+        listAdapter.openLoadAnimation();
         recyclerView.setAdapter(listAdapter);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
 
@@ -120,7 +122,7 @@ public class SelectActivity extends BaseActivity {
                 );
             }
         });
-        listAdapter.setOnItemLongClickListener((BaseQuickAdapter.OnItemLongClickListener) (adapter, view, position) -> {
+        listAdapter.setOnItemLongClickListener((adapter, view, position) -> {
             if (position >= defaultSportInfo.length) {
                 new AlertDialog.Builder(SelectActivity.this).setTitle("删除运动")
                         .setMessage("是否删除？")
@@ -129,8 +131,8 @@ public class SelectActivity extends BaseActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 deleteSport(sportInfoList.get(position).getId());
-                                sportInfoList.clear();
-                                addSport();
+                                sportInfoList.remove(position);
+                                adapter.notifyDataSetChanged();
                             }
                         }).show();
             }
@@ -217,11 +219,13 @@ public class SelectActivity extends BaseActivity {
     }
 
     private void deleteSport(int id) {
-        SportInfo info = SQLite.select().from(SportInfo.class).where(SportInfo_Table.id.eq(id)).querySingle();
-        if (info == null) {
-            Toast.makeText(this, "删除对象不存在。", Toast.LENGTH_SHORT).show();
-        } else {
-            info.delete();
-        }
+        SQLite.delete().from(SportInfo.class).where(SportInfo_Table.id.eq(id)).execute();
+//        SportInfo info = SQLite.select().from(SportInfo.class)
+//                .where(SportInfo_Table.id.eq(id)).querySingle();
+//        if (info == null) {
+//            Toast.makeText(this, "删除对象不存在。", Toast.LENGTH_SHORT).show();
+//        } else {
+//            info.delete();
+//        }
     }
 }

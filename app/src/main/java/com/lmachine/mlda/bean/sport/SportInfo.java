@@ -15,7 +15,7 @@ import java.io.Serializable;
 
 @Table(database = AppDatabase.class)
 public class SportInfo extends BaseModel implements Serializable {
-    @PrimaryKey
+    @PrimaryKey(autoincrement = true)
     private int id;
     @Column
     private String name;

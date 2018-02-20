@@ -146,7 +146,7 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
 
         dirView.setSensorName(getString(R.string.current_dir));
         dirView.setSensorDes(getString(R.string.dir_info));
-        dirView.setYAxisRange(-240, 240);
+        dirView.setYAxisRange(-5, 5);
         dirView.setShow(false, true, true, false);
         gyroView.setSensorName(getString(R.string.gyro));
         gyroView.setSensorDes(getString(R.string.gyro_info));
