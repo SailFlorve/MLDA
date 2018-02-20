@@ -4,7 +4,7 @@
     <string name="small_jump_des">绷紧全身，左右跳动，身体跟随双腿左右摆动。起跳时，手臂用力上提带起身体。</string>
     <string name="jumping_jack_des">双脚开合跳跃，小腿放松，用肩部力量抬臂，背部力量下压手臂，用手臂带动身体跳跃。收紧腰腹，手臂用力绷紧。</string>
     <string name="high_knees_des">挺直背部，目视前方，前脚掌着地快速交替抬腿。保持身体稳定，保持最快速度。</string>
-    <string name="dir_info">根据磁场传感器与重力传感器计算所得。\nx: 手机头部的朝向与正北方向夹角。\ny: 手机顶部或尾部翘起的角度。\nz: 手机左侧或右侧翘起的角度。</string>
+    <string name="dir_info">根据磁场传感器与重力传感器计算所得，单位为弧度。\nx: 手机头部的朝向与正北方向夹角的弧度。\ny: 手机顶部或尾部翘起的弧度。\nz: 手机左侧或右侧翘起的弧度。</string>
     <string name="acc_info">根据加速度传感器与重力传感器计算所得，表示x、y、z三轴的线性加速度。</string>
     <string name="gravity_info">表示x、y、z三轴的重力。\n手机横向放置，x=g；\n手机竖直放置，y=g；\n手机平躺放置，z=g。</string>
     <string name="gyro_info">表示x、y、z三轴的角速度。</string>

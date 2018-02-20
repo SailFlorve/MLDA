@@ -325,29 +325,34 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
         Sensor gyro = sensorService.getGyroSensor();
         Sensor acc = sensorService.getLinearAccSensor();
 
-        dirView.setSensorVendor(
-                "磁场传感器:", mag.getVendor() + " " + mag.getName());
+        if (mag != null) {
+            dirView.setSensorVendor("磁场传感器:",
+                    mag.getVendor() + " " + mag.getName());
+            testInfo.setMagSensorName(mag.getName());
+            testInfo.setMagSensorVendor(mag.getVendor());
+        }
 
-        gravityView.setSensorVendor(gra.getVendor(),
-                gra.getName());
+        if (gra != null) {
+            gravityView.setSensorVendor(gra.getVendor(),
+                    gra.getName());
+            testInfo.setGravitySensorName(gra.getName());
+            testInfo.setGravitySensorVendor(gra.getVendor());
+        }
 
-        gyroView.setSensorVendor(gyro.getVendor(),
-                gyro.getName());
+        if (gyro != null) {
+            gyroView.setSensorVendor(gyro.getVendor(),
+                    gyro.getName());
+            testInfo.setGyroName(gyro.getName());
+            testInfo.setGyroVendor(gyro.getVendor());
 
-        accView.setSensorVendor(acc.getVendor(),
-                acc.getName());
+        }
 
-        testInfo.setMagSensorName(mag.getName());
-        testInfo.setMagSensorVendor(mag.getVendor());
-
-        testInfo.setGravitySensorName(gra.getName());
-        testInfo.setGravitySensorVendor(gra.getVendor());
-
-        testInfo.setGyroName(gyro.getName());
-        testInfo.setGyroVendor(gyro.getVendor());
-
-        testInfo.setAccelerationSensorName(acc.getName());
-        testInfo.setAccelerationSensorVendor(acc.getVendor());
+        if (acc != null) {
+            accView.setSensorVendor(acc.getVendor(),
+                    acc.getName());
+            testInfo.setAccelerationSensorName(acc.getName());
+            testInfo.setAccelerationSensorVendor(acc.getVendor());
+        }
 
         sensorService.setSensorListener(new SensorService.SensorDataListener() {
             @Override
@@ -398,23 +403,25 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
 
         new Thread(() -> {
             int subEnd = subTimes * 1000 / testInfo.getRate();
-            oriDataList.subList(oriDataList.size() - 1 - subEnd, oriDataList.size() - 1).clear();
-            gravityDataList.subList(gravityDataList.size() - 1 - subEnd, gravityDataList.size() - 1).clear();
-            gyroDataList.subList(gyroDataList.size() - 1 - subEnd, gyroDataList.size() - 1).clear();
-            accDataList.subList(accDataList.size() - 1 - subEnd, accDataList.size() - 1).clear();
+            if (oriDataList.size() > 0 && gravityDataList.size() > 0
+                    && gyroDataList.size() > 0 && accDataList.size() > 0) {
+                oriDataList.subList(oriDataList.size() - 1 - subEnd, oriDataList.size() - 1).clear();
+                gravityDataList.subList(gravityDataList.size() - 1 - subEnd, gravityDataList.size() - 1).clear();
+                gyroDataList.subList(gyroDataList.size() - 1 - subEnd, gyroDataList.size() - 1).clear();
+                accDataList.subList(accDataList.size() - 1 - subEnd, accDataList.size() - 1).clear();
 
-            int filterType = Integer.parseInt(SPUtil.load(MonitorActivity.this).getString("filter_type", "0"));
-            testInfo.setFiltered(filterType != 0);
-            testInfo.setOrientationData(new Gson().toJson(
-                    filterType == 0 ? oriDataList :
-                            (filterType == 1 ? KalmanFilter.filter(oriDataList) : LowPassFilter.filter(oriDataList))));
-            testInfo.setGravityData(new Gson().toJson(filterType == 0 ? gravityDataList :
-                    (filterType == 1 ? KalmanFilter.filter(gravityDataList) : LowPassFilter.filter(gravityDataList))));
-            testInfo.setGyroscopeData(new Gson().toJson(filterType == 0 ? gyroDataList :
-                    (filterType == 1 ? KalmanFilter.filter(gyroDataList) : LowPassFilter.filter(gyroDataList))));
-            testInfo.setAccelerationData(new Gson().toJson(filterType == 0 ? accDataList :
-                    (filterType == 1 ? KalmanFilter.filter(accDataList) : LowPassFilter.filter(accDataList))));
-
+                int filterType = Integer.parseInt(SPUtil.load(MonitorActivity.this).getString("filter_type", "0"));
+                testInfo.setFiltered(filterType != 0);
+                testInfo.setOrientationData(new Gson().toJson(
+                        filterType == 0 ? oriDataList :
+                                (filterType == 1 ? KalmanFilter.filter(oriDataList) : LowPassFilter.filter(oriDataList))));
+                testInfo.setGravityData(new Gson().toJson(filterType == 0 ? gravityDataList :
+                        (filterType == 1 ? KalmanFilter.filter(gravityDataList) : LowPassFilter.filter(gravityDataList))));
+                testInfo.setGyroscopeData(new Gson().toJson(filterType == 0 ? gyroDataList :
+                        (filterType == 1 ? KalmanFilter.filter(gyroDataList) : LowPassFilter.filter(gyroDataList))));
+                testInfo.setAccelerationData(new Gson().toJson(filterType == 0 ? accDataList :
+                        (filterType == 1 ? KalmanFilter.filter(accDataList) : LowPassFilter.filter(accDataList))));
+            }
             runOnUiThread(callback::onFilterFinished);
         }).start();
     }

@@ -165,6 +165,7 @@ public class SensorView extends CardView {
     }
 
     private void initChartProp() {
+        multipleSeriesRenderer.setPanEnabled(false);
         multipleSeriesRenderer.setBackgroundColor(Color.WHITE);
         multipleSeriesRenderer.setShowAxes(false);
         multipleSeriesRenderer.setShowLabels(false);
@@ -191,7 +192,6 @@ public class SensorView extends CardView {
 
     @SuppressLint("DefaultLocale")
     public void setSensorData(float[] data) {
-        Log.d("SetSensorData", sensorName.getText() + Arrays.toString(data));
         float sum = (float) Math.sqrt(Math.pow(data[0], 2) + Math.pow(data[1], 2) + Math.pow(data[2], 2));
         if (data.length == 3) {
             checkBoxes[0].setText(String.format("x: %.2f", data[0]));

@@ -124,9 +124,9 @@ public class SensorService extends Service {
         float[] R = new float[9];
         SensorManager.getRotationMatrix(R, null, accData, magData);
         SensorManager.getOrientation(R, values);
-        values[0] = (float) Math.toDegrees(values[0]);
-        values[1] = (float) Math.toDegrees(values[1]);
-        values[2] = (float) Math.toDegrees(values[2]);
+//        values[0] = (float) Math.toDegrees(values[0]);
+//        values[1] = (float) Math.toDegrees(values[1]);
+//        values[2] = (float) Math.toDegrees(values[2]);
         return values;
     }
 

@@ -196,7 +196,7 @@
                     android:id="@+id/tv_ori"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="方向: 90条" />
+                    android:text="方向: 0条" />
 
                 <TextView
                     android:id="@+id/tv_ori_data"
@@ -215,7 +215,7 @@
                     android:id="@+id/tv_gyro"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="陀螺仪: 90条" />
+                    android:text="陀螺仪: 0条" />
 
                 <TextView
                     android:id="@+id/tv_gyro_data"
@@ -234,7 +234,7 @@
                     android:id="@+id/tv_gra"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="重力传感器: 90条" />
+                    android:text="重力传感器: 0条" />
 
                 <TextView
                     android:id="@+id/tv_gra_data"
@@ -253,7 +253,7 @@
                     android:id="@+id/tv_acc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="线性加速度传感器: 91条" />
+                    android:text="线性加速度传感器: 0条" />
 
                 <TextView
                     android:id="@+id/tv_acc_data"

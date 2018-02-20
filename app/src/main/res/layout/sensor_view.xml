@@ -40,7 +40,7 @@
                         android:id="@+id/tv_sensor_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="重力传感器"
+                        android:text="传感器"
                         android:textColor="#af000000"
                         android:textSize="16sp" />
 
@@ -48,7 +48,7 @@
                         android:id="@+id/tv_sensor_vendor"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="QTI accleration"
+                        android:text="此传感器缺失"
                         android:textSize="12sp" />
                 </LinearLayout>
 

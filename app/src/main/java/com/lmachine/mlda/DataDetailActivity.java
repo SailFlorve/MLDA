@@ -124,29 +124,39 @@ public class DataDetailActivity extends DataActivity implements View.OnClickList
         }.getType();
 
         oriDataList = new Gson().fromJson(testInfo.getOrientationData(), type);
-        ori.setText(getString(R.string.current_dir) + ": " + oriDataList.size() + "条\n"
-                + testInfo.getMagSensorVendor() + " " + testInfo.getMagSensorName());
-        oriData.setText(testInfo.getOrientationData());
+
+        if (oriDataList != null) {
+            ori.setText(getString(R.string.current_dir) + ": " + oriDataList.size() + "条\n"
+                    + testInfo.getMagSensorVendor() + " " + testInfo.getMagSensorName());
+            oriData.setText(testInfo.getOrientationData());
+            oriData.setOnClickListener(this);
+        }
 
         gyroDataList = new Gson().fromJson(testInfo.getGyroscopeData(), type);
-        gyro.setText(getString(R.string.gyro) + ": " + gyroDataList.size() + "条\n"
-                + testInfo.getGyroVendor() + " " + testInfo.getGyroName());
-        gyroData.setText(testInfo.getGyroscopeData());
+        if (gyroDataList != null) {
+            gyro.setText(getString(R.string.gyro) + ": " + gyroDataList.size() + "条\n"
+                    + testInfo.getGyroVendor() + " " + testInfo.getGyroName());
+            gyroData.setText(testInfo.getGyroscopeData());
+            gyroData.setOnClickListener(this);
+        }
+
 
         graDataList = new Gson().fromJson(testInfo.getGravityData(), type);
-        gra.setText(getString(R.string.gravity_sensor) + ": " + graDataList.size() + "条\n"
-                + testInfo.getGravitySensorVendor() + " " + testInfo.getGravitySensorName());
-        graData.setText(testInfo.getGravityData());
+        if (graDataList != null) {
+            gra.setText(getString(R.string.gravity_sensor) + ": " + graDataList.size() + "条\n"
+                    + testInfo.getGravitySensorVendor() + " " + testInfo.getGravitySensorName());
+            graData.setText(testInfo.getGravityData());
+            graData.setOnClickListener(this);
+        }
+
 
         accDataList = new Gson().fromJson(testInfo.getAccelerationData(), type);
-        acc.setText(getString(R.string.linear_acc_sensor) + ": " + accDataList.size() + "条\n"
-                + testInfo.getAccelerationSensorVendor() + " " + testInfo.getAccelerationSensorName());
-        accData.setText(testInfo.getAccelerationData());
-
-        oriData.setOnClickListener(this);
-        gyroData.setOnClickListener(this);
-        graData.setOnClickListener(this);
-        accData.setOnClickListener(this);
+        if (accDataList != null) {
+            acc.setText(getString(R.string.linear_acc_sensor) + ": " + accDataList.size() + "条\n"
+                    + testInfo.getAccelerationSensorVendor() + " " + testInfo.getAccelerationSensorName());
+            accData.setText(testInfo.getAccelerationData());
+            accData.setOnClickListener(this);
+        }
     }
 
     @Override
