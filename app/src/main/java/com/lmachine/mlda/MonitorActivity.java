@@ -1,7 +1,6 @@
 package com.lmachine.mlda;
 
 import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.hardware.Sensor;
@@ -145,14 +144,22 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
         Glide.with(this).load(sport.getGifId()).into(titleImage);
         sportDes.setText(sport.getDes());
 
-        dirView.setSensorName("当前方向");
+        dirView.setSensorName(getString(R.string.current_dir));
         dirView.setSensorDes(getString(R.string.dir_info));
-        gyroView.setSensorName("陀螺仪");
+        dirView.setYAxisRange(-240, 240);
+        dirView.setShow(false, true, true, false);
+        gyroView.setSensorName(getString(R.string.gyro));
         gyroView.setSensorDes(getString(R.string.gyro_info));
-        gravityView.setSensorName("重力传感器");
+        gyroView.setYAxisRange(-10, 10);
+        gyroView.setShow(false, false, false, true);
+        gravityView.setSensorName(getString(R.string.gravity_sensor));
         gravityView.setSensorDes(getString(R.string.gravity_info));
-        accView.setSensorName("线性加速度传感器");
+        gravityView.setShow(true, true, true, false);
+        gravityView.setYAxisRange(-12, 12);
+        accView.setSensorName(getString(R.string.linear_acc_sensor));
         accView.setSensorDes(getString(R.string.acc_info));
+        accView.setYAxisRange(-20, 20);
+        accView.setShow(false, false, false, true);
         buttonLayout.setVisibility(View.GONE);
         countDownLayout.setVisibility(View.GONE);
 

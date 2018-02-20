@@ -14,7 +14,9 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:title="基本信息" />
+        app:subtitle="基本信息填写"
+        app:title="MLDA" />
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -26,6 +28,18 @@
             android:layout_height="80dp"
             android:background="@color/colorPrimary" />
 
+        <ImageView
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="15dp"
+            android:layout_marginRight="-15dp"
+            android:adjustViewBounds="true"
+            android:alpha="0.2"
+            android:rotation="-22"
+            android:src="@drawable/ic_fu1" />
+
         <android.support.v7.widget.CardView
             android:id="@+id/card_view"
             android:layout_width="match_parent"
@@ -35,7 +49,6 @@
             android:layout_marginTop="5dp"
             app:cardCornerRadius="5dp"
             app:cardElevation="1dp">
-
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -136,12 +149,12 @@
 
                     <TextView
                         android:id="@+id/tv_random"
-                        android:layout_marginTop="15dp"
-                        android:textColor="@color/colorPrimary"
-                        android:layout_marginLeft="4dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="点击随机填写" />
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginTop="15dp"
+                        android:text="点击随机填写"
+                        android:textColor="@color/colorPrimary" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -155,28 +168,28 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="磁场传感器" />
+                            android:text="@string/mag_sensor" />
 
                         <TextView
                             android:id="@+id/tv_gyroscope"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="陀螺仪" />
+                            android:text="@string/gyro" />
 
                         <TextView
                             android:id="@+id/tv_gravity"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="重力传感器" />
+                            android:text="@string/gravity_sensor" />
 
                         <TextView
                             android:id="@+id/tv_linear_acceleration"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="线性加速度传感器" />
+                            android:text="@string/acc_sensor" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -190,8 +203,10 @@
                 android:layout_marginBottom="25dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
+                android:foreground="@drawable/ic_fu2"
                 android:src="@drawable/ic_arrow_forward_white_36dp"
                 app:fabSize="normal" />
+
 
         </android.support.v7.widget.CardView>
 
@@ -204,5 +219,6 @@
             android:layout_marginRight="15dp"
             android:text="@string/privacy_statement"
             android:textSize="12sp" />
+
     </RelativeLayout>
 </LinearLayout>

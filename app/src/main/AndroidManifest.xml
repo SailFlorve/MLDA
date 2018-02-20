@@ -41,6 +41,7 @@
             android:launchMode="singleTask" />
         <activity android:name=".DataDetailActivity" />
         <activity android:name=".SettingsActivity" />
+        <activity android:name=".LineActivity"></activity>
     </application>
 
 </manifest>

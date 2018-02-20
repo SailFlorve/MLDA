@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
+    android:layout_margin="0dp"
     android:orientation="vertical"
     app:cardElevation="1px"
     app:cardUseCompatPadding="true">
@@ -11,7 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="8dp"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -24,8 +24,8 @@
                 android:gravity="center">
 
                 <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
                     android:alpha="0.4"
                     android:src="@drawable/ic_sensor" />
 
@@ -40,9 +40,9 @@
                         android:id="@+id/tv_sensor_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-
                         android:text="重力传感器"
-                        android:textSize="15sp" />
+                        android:textColor="#af000000"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/tv_sensor_vendor"
@@ -56,8 +56,8 @@
 
             <ImageView
                 android:id="@+id/tv_sensor_info"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:alpha="0.4"
@@ -65,36 +65,57 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp">
+            android:orientation="horizontal"
+            android:baselineAligned="false">
 
-            <TextView
-                android:id="@+id/tv_sensor_x"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="24dp"
-                android:layout_marginRight="15dp"
-                android:text="x:123"
-                android:textSize="17sp" />
+                android:layout_marginTop="5dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_sensor_y"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:text="y:123"
-                android:textSize="17sp" />
+                <CheckBox
+                    android:id="@+id/checkbox_x"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:text="x:123" />
 
-            <TextView
-                android:id="@+id/tv_sensor_z"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:text="z:123"
-                android:textSize="17sp" />
+                <CheckBox
+                    android:id="@+id/checkbox_y"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:text="y:123" />
+
+                <CheckBox
+                    android:id="@+id/checkbox_z"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:text="z:123" />
+
+
+                <CheckBox
+                    android:id="@+id/checkbox_xyz"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="s:123" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/chart_view"
+                android:layout_width="0dp"
+                android:layout_weight="2.5"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="3dp"
+                android:background="@drawable/shape_cornor"
+                android:orientation="horizontal" />
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

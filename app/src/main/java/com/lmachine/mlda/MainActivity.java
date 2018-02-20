@@ -72,6 +72,7 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
         fab.setOnClickListener(v -> {
             Log.d(TAG, "onClick: ");
             check();
+            //startActivity(new Intent(this, LineActivity.class));
         });
 
         randomInputText.setOnClickListener(v -> randomInput());

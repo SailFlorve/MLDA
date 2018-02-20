@@ -16,10 +16,11 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        FlowManager.init(FlowConfig.builder(this)
-                .addDatabaseConfig(DatabaseConfig.builder(AppDatabase.class)
-                        .databaseName(AppDatabase.NAME)
-                        .build())
-                .build());
+//        FlowManager.init(FlowConfig.builder(this)
+//                .addDatabaseConfig(DatabaseConfig.builder(AppDatabase.class)
+//                        .databaseName(AppDatabase.NAME)
+//                        .build())
+//                .build());
+        FlowManager.init(this);
     }
 }

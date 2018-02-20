@@ -17,14 +17,16 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.lmachine.mlda.adapter.SportRecyclerViewAdapter;
 import com.lmachine.mlda.bean.TestInfo;
 import com.lmachine.mlda.bean.sport.SportInfo;
+import com.lmachine.mlda.bean.sport.SportInfo_Table;
 import com.lmachine.mlda.constant.SportType;
-import com.lmachine.mlda.util.SPUtil;
 import com.lmachine.mlda.util.TimeUtil;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,12 +44,45 @@ public class SelectActivity extends BaseActivity {
     private TestInfo testInfo = new TestInfo();
     private List<SportInfo> sportInfoList = new ArrayList<>();
 
+    private SportInfo[] defaultSportInfo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select);
         setToolbar(R.id.toolbar, true);
+
+        defaultSportInfo = new SportInfo[]{
+                new SportInfo(
+                        SportType.HIGH_KNEES,
+                        getString(R.string.high_knees_des),
+                        R.drawable.bg_high_knees,
+                        R.drawable.bg_high_knees),
+                new SportInfo(
+                        SportType.SMALL_JUMP,
+                        getString(R.string.small_jump_des),
+                        R.drawable.bg_small_jump,
+                        R.drawable.bg_small_jump),
+
+                new SportInfo(
+                        SportType.JUMPING_JACKS,
+                        getString(R.string.jumping_jack_des),
+                        R.drawable.bg_jumping_jacks,
+                        R.drawable.bg_jumping_jacks),
+
+                new SportInfo(
+                        SportType.DEEP_SQUAT,
+                        getString(R.string.deep_squat_des),
+                        R.drawable.bg_deep_squat,
+                        R.drawable.bg_deep_squat),
+                new SportInfo(
+                        SportType.WALK,
+                        getString(R.string.walk_des),
+                        R.drawable.bg_walk,
+                        R.drawable.bg_walk)
+        };
+
         initView();
     }
 
@@ -85,10 +120,25 @@ public class SelectActivity extends BaseActivity {
                 );
             }
         });
-
+        listAdapter.setOnItemLongClickListener((BaseQuickAdapter.OnItemLongClickListener) (adapter, view, position) -> {
+            if (position >= defaultSportInfo.length) {
+                new AlertDialog.Builder(SelectActivity.this).setTitle("删除运动")
+                        .setMessage("是否删除？")
+                        .setNegativeButton("不删除", null)
+                        .setPositiveButton("删除", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                deleteSport(sportInfoList.get(position).getId());
+                                sportInfoList.clear();
+                                addSport();
+                            }
+                        }).show();
+            }
+            return true;
+        });
         testerInfoText.setText(String.format(
                 Locale.getDefault(),
-                "性别: %s|年龄: %d|身高: %dcm|体重: %d千克",
+                "性别: %s  年龄: %d  身高: %dcm  体重: %d千克",
                 testInfo.getSex(),
                 testInfo.getAge(),
                 testInfo.getStature(),
@@ -129,36 +179,7 @@ public class SelectActivity extends BaseActivity {
     }
 
     private void addSport() {
-        sportInfoList.add(new SportInfo(
-                SportType.HIGH_KNEES,
-                getString(R.string.high_knees_des),
-                R.drawable.bg_high_knees,
-                R.drawable.bg_high_knees));
-
-        sportInfoList.add(new SportInfo(
-                SportType.SMALL_JUMP,
-                getString(R.string.small_jump_des),
-                R.drawable.bg_small_jump,
-                R.drawable.bg_small_jump));
-
-        sportInfoList.add(new SportInfo(
-                SportType.JUMPING_JACKS,
-                getString(R.string.jumping_jack_des),
-                R.drawable.bg_jumping_jacks,
-                R.drawable.bg_jumping_jacks));
-
-        sportInfoList.add(new SportInfo(
-                SportType.DEEP_SQUAT,
-                "深蹲。",
-                R.drawable.bg_deep_squat,
-                R.drawable.bg_deep_squat));
-
-        sportInfoList.add(new SportInfo(
-                SportType.WALK,
-                "正常走路。",
-                R.drawable.bg_walk,
-                R.drawable.bg_walk));
-
+        sportInfoList.addAll(Arrays.asList(defaultSportInfo));
         loadSport();
     }
 
@@ -185,29 +206,22 @@ public class SelectActivity extends BaseActivity {
     }
 
     private void saveSport(String name, String des) {
-        SPUtil.SharedPrefsManager manager = SPUtil.load(this);
-        String savedNames = manager.getString("sport_name_added", "");
-        String savedDescriptions = manager.getString("sport_des_added", "");
-        manager.put("sport_name_added", savedNames + name + "|");
-        manager.put("sport_des_added", savedDescriptions + des + "|");
+        SportInfo sportInfo = new SportInfo(name, des, R.drawable.bg_sport, R.drawable.bg_sport);
+        sportInfo.save();
     }
 
     private void loadSport() {
-        SPUtil.SharedPrefsManager manager = SPUtil.load(this);
-        String savedNames = manager.getString("sport_name_added", "");
-        String savedDescriptions = manager.getString("sport_des_added", "");
-        String[] nameArray = savedNames.split("\\|");
-        String[] desArray = savedDescriptions.split("\\|");
-        Log.d(TAG, "loadSport: " + Arrays.toString(nameArray));
-        for (int i = 0; i < nameArray.length; i++) {
-            if (TextUtils.isEmpty(nameArray[i])) continue;
-            sportInfoList.add(new SportInfo(
-                    nameArray[i],
-                    desArray[i],
-                    R.drawable.bg_sport,
-                    R.drawable.bg_sport
-            ));
-        }
+        List<SportInfo> addedSport = SQLite.select().from(SportInfo.class).queryList();
+        sportInfoList.addAll(addedSport);
         listAdapter.notifyDataSetChanged();
+    }
+
+    private void deleteSport(int id) {
+        SportInfo info = SQLite.select().from(SportInfo.class).where(SportInfo_Table.id.eq(id)).querySingle();
+        if (info == null) {
+            Toast.makeText(this, "删除对象不存在。", Toast.LENGTH_SHORT).show();
+        } else {
+            info.delete();
+        }
     }
 }

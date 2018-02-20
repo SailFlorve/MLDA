@@ -4,11 +4,19 @@
     <string name="small_jump_des">绷紧全身，左右跳动，身体跟随双腿左右摆动。起跳时，手臂用力上提带起身体。</string>
     <string name="jumping_jack_des">双脚开合跳跃，小腿放松，用肩部力量抬臂，背部力量下压手臂，用手臂带动身体跳跃。收紧腰腹，手臂用力绷紧。</string>
     <string name="high_knees_des">挺直背部，目视前方，前脚掌着地快速交替抬腿。保持身体稳定，保持最快速度。</string>
-    <string name="dir_info">根据磁场传感器、线性加速度传感器与重力传感器计算所得结果。\nx: 手机头部的朝向与正北方向夹角。\ny: 手机顶部或尾部翘起的角度。\nz: 手机左侧或右侧翘起的角度。</string>
-    <string name="acc_info">表示x、y、z三轴的加速度。</string>
-    <string name="gravity_info">表示x、y、z三轴的重力。\n手机横向放置，x为g值；\n手机竖直放置，y为g值；\n手机平躺放置，z为g值。</string>
+    <string name="dir_info">根据磁场传感器与重力传感器计算所得。\nx: 手机头部的朝向与正北方向夹角。\ny: 手机顶部或尾部翘起的角度。\nz: 手机左侧或右侧翘起的角度。</string>
+    <string name="acc_info">根据加速度传感器与重力传感器计算所得，表示x、y、z三轴的线性加速度。</string>
+    <string name="gravity_info">表示x、y、z三轴的重力。\n手机横向放置，x=g；\n手机竖直放置，y=g；\n手机平躺放置，z=g。</string>
     <string name="gyro_info">表示x、y、z三轴的角速度。</string>
     <string name="data_help">导出数据说明：\n导出为Json字符串，每个传感器数据(orientationData、gyroscopeData、gravityData、accelerationData)也为一个Json字符串，此Json中包含许多个float数组。</string>
+    <string name="mag_sensor">磁场传感器</string>
+    <string name="gyro">陀螺仪</string>
+    <string name="gravity_sensor">重力传感器</string>
+    <string name="linear_acc_sensor">线性加速度传感器</string>
+    <string name="acc_sensor">加速度传感器</string>
+    <string name="walk_des">步行是人类基本的活动方式之一，似乎整个人体结构就是为步行设计的，步行被公认为世界上最好的运动。</string>
+    <string name="deep_squat_des">身体挺直，两眼平视前方，两脚同肩宽。屈膝慢慢蹲下至大腿平行地面或稍低于膝，保持后，股四头肌等收缩用力，蹬腿伸膝至还原。</string>
+    <string name="current_dir">方向</string>
     <string-array name="rate_array">
         <item>10毫秒</item>
         <item>20毫秒</item>

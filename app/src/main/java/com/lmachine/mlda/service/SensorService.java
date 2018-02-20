@@ -22,7 +22,9 @@ public class SensorService extends Service {
     private Sensor gyroSensor;//陀螺仪
     private Sensor gravitySensor;//重力传感器
     private Sensor linearAccSensor;//线性加速度
+    private Sensor accSensor;
 
+    private float[] accData = new float[]{};
     private float[] magData = new float[]{};
     private float[] gyroData = new float[]{};
     private float[] gravityData = new float[]{};
@@ -39,11 +41,10 @@ public class SensorService extends Service {
                 case Sensor.TYPE_MAGNETIC_FIELD:
                     magData = event.values;
                     if (dataListener != null) {
-                        if (magData.length == 0 || linearAccData.length == 0
-                                || gravityData.length == 0) {
+                        if (magData.length == 0 || accData.length == 0) {
                             return;
                         }
-                        float[] oriData = getOrientation(gravityData, linearAccData, magData);
+                        float[] oriData = getOrientation(accData, magData);
                         dataListener.onOriDataChanged(oriData);
                     }
                     break;
@@ -71,6 +72,8 @@ public class SensorService extends Service {
                         });
                     }
                     break;
+                case Sensor.TYPE_ACCELEROMETER:
+                    accData = event.values;
             }
         }
 
@@ -91,6 +94,7 @@ public class SensorService extends Service {
         gyroSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
         linearAccSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         Log.d(TAG, "onCreate: " + String.valueOf(magSensor == null)
                 + String.valueOf(gyroSensor == null)
                 + String.valueOf(gravitySensor == null)
@@ -115,12 +119,9 @@ public class SensorService extends Service {
         return new MyBinder();
     }
 
-    private float[] getOrientation(float[] gravityData, float[] linearAccData, float[] magData) {
+    private float[] getOrientation(float[] accData, float[] magData) {
         float[] values = new float[3];
         float[] R = new float[9];
-        float[] accData = new float[]{gravityData[0] + linearAccData[0],
-                gravityData[1] + linearAccData[1],
-                gravityData[2] + linearAccData[2]};
         SensorManager.getRotationMatrix(R, null, accData, magData);
         SensorManager.getOrientation(R, values);
         values[0] = (float) Math.toDegrees(values[0]);
@@ -131,7 +132,7 @@ public class SensorService extends Service {
 
     public void getSensorStatus(SensorStatusCallback callback) {
         callback.onSensorInit(magSensor != null, gyroSensor != null,
-                gravitySensor != null, linearAccSensor != null);
+                gravitySensor != null, accSensor != null);
     }
 
     public void setSensorListener(SensorDataListener listener) {
@@ -151,6 +152,7 @@ public class SensorService extends Service {
             sensorManager.registerListener(sensorEventListener, linearAccSensor, rate * 1000);
             sensorManager.registerListener(sensorEventListener, gravitySensor, rate * 1000);
             sensorManager.registerListener(sensorEventListener, gyroSensor, rate * 1000);
+            sensorManager.registerListener(sensorEventListener, accSensor, rate * 1000);
         }
 
         public void stopMonitor() {

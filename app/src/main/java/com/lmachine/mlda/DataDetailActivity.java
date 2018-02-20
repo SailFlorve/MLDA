@@ -118,31 +118,30 @@ public class DataDetailActivity extends DataActivity implements View.OnClickList
         time.setText("测试时间: " + testInfo.getTime());
 
         isFiltered.setText("是否被滤波: " + (testInfo.isFiltered() ? "是" : "否"));
-        inputTimes.setText("被测者输入的次数: " + testInfo.getInputTimes());
+        inputTimes.setText("输入的运动次数: " + testInfo.getInputTimes());
 
         Type type = new TypeToken<List<float[]>>() {
         }.getType();
 
         oriDataList = new Gson().fromJson(testInfo.getOrientationData(), type);
-        ori.setText("方向: " + oriDataList.size() + "条\n"
+        ori.setText(getString(R.string.current_dir) + ": " + oriDataList.size() + "条\n"
                 + testInfo.getMagSensorVendor() + " " + testInfo.getMagSensorName());
         oriData.setText(testInfo.getOrientationData());
 
         gyroDataList = new Gson().fromJson(testInfo.getGyroscopeData(), type);
-        gyro.setText("陀螺仪: " + gyroDataList.size() + "条\n"
+        gyro.setText(getString(R.string.gyro) + ": " + gyroDataList.size() + "条\n"
                 + testInfo.getGyroVendor() + " " + testInfo.getGyroName());
         gyroData.setText(testInfo.getGyroscopeData());
 
         graDataList = new Gson().fromJson(testInfo.getGravityData(), type);
-        gra.setText("重力传感器: " + graDataList.size() + "条\n"
+        gra.setText(getString(R.string.gravity_sensor) + ": " + graDataList.size() + "条\n"
                 + testInfo.getGravitySensorVendor() + " " + testInfo.getGravitySensorName());
         graData.setText(testInfo.getGravityData());
 
         accDataList = new Gson().fromJson(testInfo.getAccelerationData(), type);
-        acc.setText("线性加速度传感器: " + accDataList.size() + "条\n"
+        acc.setText(getString(R.string.linear_acc_sensor) + ": " + accDataList.size() + "条\n"
                 + testInfo.getAccelerationSensorVendor() + " " + testInfo.getAccelerationSensorName());
         accData.setText(testInfo.getAccelerationData());
-
 
         oriData.setOnClickListener(this);
         gyroData.setOnClickListener(this);

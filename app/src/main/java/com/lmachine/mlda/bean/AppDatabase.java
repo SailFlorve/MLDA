@@ -17,18 +17,5 @@ import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 @Database(version = AppDatabase.VERSION)
 public class AppDatabase {
     public static final String NAME = "TestData";
-    public static final int VERSION = 7;
-
-    @Migration(version = 7, database = AppDatabase.class)
-    public static class MyMigration extends AlterTableMigration<TestInfo> {
-
-        public MyMigration(Class<TestInfo> table) {
-            super(table);
-        }
-
-        @Override
-        public void onPreMigrate() {
-            addColumn(SQLiteType.TEXT, "remark");
-        }
-    }
+    public static final int VERSION = 8;
 }
