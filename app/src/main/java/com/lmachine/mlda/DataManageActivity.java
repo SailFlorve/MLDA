@@ -1,28 +1,22 @@
 package com.lmachine.mlda;
 
-import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.google.gson.Gson;
 import com.lmachine.mlda.adapter.DataRecyclerViewAdapter;
 import com.lmachine.mlda.bean.TestInfo;
 import com.lmachine.mlda.util.DataUtil;
 import com.lmachine.mlda.util.SaveUtil;
+import com.lmachine.mlda.util.TimeUtil;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -99,7 +93,9 @@ public class DataManageActivity extends DataActivity {
             showSnackBar("数据为空！");
             return;
         }
-        DataUtil.output(new Gson().toJson(dataList), this);
+        String time = TimeUtil.getNowTime(TimeUtil.E);
+        String sportDes = dataList.get(0).getType() + "等" + dataList.size() + "组数据";
+        DataUtil.output(new Gson().toJson(dataList), time + " " + sportDes + ".json", this);
     }
 
     @Override

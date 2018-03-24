@@ -17,6 +17,7 @@ import com.lmachine.mlda.bean.TestInfo;
 import com.lmachine.mlda.bean.TestInfo_Table;
 import com.lmachine.mlda.util.DataUtil;
 import com.lmachine.mlda.util.SaveUtil;
+import com.lmachine.mlda.util.TimeUtil;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.lang.reflect.Type;
@@ -202,7 +203,9 @@ public class DataDetailActivity extends DataActivity implements View.OnClickList
 
     @Override
     protected void output(SaveUtil.SaveCallback callback) {
-        DataUtil.output(new Gson().toJson(testInfo, TestInfo.class), this);
+        String time = TimeUtil.getNowTime(TimeUtil.E);
+        String sportDes = testInfo.getType() + testInfo.getInputTimes() + "次";
+        DataUtil.output(new Gson().toJson(testInfo, TestInfo.class), time + " " + sportDes + ".json", this);
     }
 
     @Override

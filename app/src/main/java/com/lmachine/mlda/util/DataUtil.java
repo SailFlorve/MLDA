@@ -1,19 +1,10 @@
 package com.lmachine.mlda.util;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.lmachine.mlda.BaseActivity;
-import com.lmachine.mlda.DataDetailActivity;
-import com.lmachine.mlda.DataManageActivity;
 import com.lmachine.mlda.bean.Status;
 import com.lmachine.mlda.bean.TestInfo;
 import com.lmachine.mlda.bean.TestInfo_Table;
@@ -41,7 +32,11 @@ public class DataUtil {
 
     public static void output(final String str, SaveUtil.SaveCallback callback) {
         String fileName = TimeUtil.getNowTime(TimeUtil.E) + ".txt";
-        SaveUtil.saveString(str, fileName, callback);
+        output(str, fileName, callback);
+    }
+
+    public static void output(final String str, String filename, SaveUtil.SaveCallback callback) {
+        SaveUtil.saveString(str, filename, callback);
     }
 
     public static void delete(final int id) {
