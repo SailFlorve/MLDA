@@ -42,7 +42,6 @@
             android:launchMode="singleTask" />
         <activity android:name=".DataDetailActivity" />
         <activity android:name=".SettingsActivity" />
-        <activity android:name=".LineActivity" />
 
         <service
             android:name=".service.SensorService"
