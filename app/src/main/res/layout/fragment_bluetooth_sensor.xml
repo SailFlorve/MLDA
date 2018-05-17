@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".fragment.BluetoothSensorFragment">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="请配对蓝牙设备。"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp" />
+
+
+    <TextView
+        android:id="@+id/tv_open_bt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="点击此处打开蓝牙。"
+        android:textColor="@color/colorPrimary" />
+
+    <ListView
+        android:id="@+id/lv_bt_device"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content" />
+</LinearLayout>

@@ -51,21 +51,27 @@
         android:paddingTop="10dp"
         android:textSize="16sp" />
 
-    <TextView
-        android:id="@+id/tv_seek_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:text="去除5秒数据"
-        android:textColor="@color/colorPrimary" />
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="25dp"-->
 
-    <android.support.v7.widget.AppCompatSeekBar
-        android:id="@+id/seek_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:max="10"
-        android:progress="0" />
+    <!--android:textColor="@color/colorPrimary"-->
+    <!--android:text="拖动选择要从尾部删除的数据的秒数。"/>-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/tv_seek_bar"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="去除5秒数据" />-->
+
+    <!--<android.support.v7.widget.AppCompatSeekBar-->
+    <!--android:id="@+id/seek_bar"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="10dp"-->
+    <!--android:max="10"-->
+    <!--android:progress="0" />-->
 
 
 </LinearLayout>

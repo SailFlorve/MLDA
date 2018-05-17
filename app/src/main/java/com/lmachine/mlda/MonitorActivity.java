@@ -3,16 +3,16 @@ package com.lmachine.mlda;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.hardware.Sensor;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatSeekBar;
+import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
@@ -20,19 +20,16 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
-import com.lmachine.mlda.algorithm.filter.FilterCallback;
-import com.lmachine.mlda.algorithm.filter.KalmanFilter;
-import com.lmachine.mlda.algorithm.filter.LowPassFilter;
+import com.lmachine.mlda.bean.SensorInfo;
 import com.lmachine.mlda.bean.TestInfo;
-import com.lmachine.mlda.bean.sport.SportInfo;
 import com.lmachine.mlda.service.SensorService;
 import com.lmachine.mlda.util.SPUtil;
 import com.lmachine.mlda.util.SoundMgr;
+import com.lmachine.mlda.util.TimeUtil;
 import com.lmachine.mlda.view.CarouselTextView;
 import com.lmachine.mlda.view.SensorView;
 
@@ -45,13 +42,9 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
     private ImageView titleImage;
     private TextView sportTitle;
     private TextView sportDes;
+    private LinearLayout titleLayout;
     private CarouselTextView tipText;
     private Chronometer chronometer;
-
-    private SensorView dirView;
-    private SensorView gyroView;
-    private SensorView gravityView;
-    private SensorView accView;
 
     private Button startButton;
     private Button saveButton;
@@ -61,23 +54,23 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
     private TextView countDownText;
 
     private LinearLayout buttonLayout;
+    private LinearLayout sensorViewLayout;
 
     private boolean isCountDown;
     private MyCountDownTimer countDownTimer = new MyCountDownTimer(3000, 100);
-    private SensorService.MyBinder binder;
-
-    private List<float[]> oriDataList = new ArrayList<>();
-    private List<float[]> gyroDataList = new ArrayList<>();
-    private List<float[]> gravityDataList = new ArrayList<>();
-    private List<float[]> accDataList = new ArrayList<>();
+    private SensorService sensorService;
 
     private int duration;
 
     private int currentState = 0;//0: 未开始记录 1: 正在倒计时 2:正在记录 3.记录结束
 
-    private TestInfo testInfo = new TestInfo();
+    private TestInfo testInfo;
 
     private SoundMgr soundMgr;
+
+    private List<SensorInfo> sensorInfoList;
+
+    private List<SensorView> sensorViewList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,12 +83,11 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
         sportTitle = findViewById(R.id.tv_sport_name);
         sportDes = findViewById(R.id.tv_sport_des);
         tipText = findViewById(R.id.tv_tip_text);
+        titleLayout = findViewById(R.id.ll_sport_title);
         chronometer = findViewById(R.id.chronometer);
+        sensorViewLayout = findViewById(R.id.sensor_view_layout);
         titleImage = findViewById(R.id.iv_monitor_title);
-        dirView = findViewById(R.id.sensor_view_dir);
-        gyroView = findViewById(R.id.sensor_view_gyro);
-        gravityView = findViewById(R.id.sensor_view_gravity);
-        accView = findViewById(R.id.sensor_view_acc);
+
         startButton = findViewById(R.id.btn_start_test);
         saveButton = findViewById(R.id.btn_save);
         retestButton = findViewById(R.id.btn_retest);
@@ -111,9 +103,10 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
     @Override
     protected void onDestroy() {
         Log.d(TAG, "onDestroy: ");
-        super.onDestroy();
-        binder.stopMonitor();
+        sensorService.stopSensor();
         unbindService(this);
+        super.onDestroy();
+
     }
 
     @Override
@@ -137,29 +130,49 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
 
     protected void initView() {
         Intent intent = getIntent();
-        SportInfo sport = (SportInfo) intent.getSerializableExtra("sport");
+        testInfo = (TestInfo) intent.getSerializableExtra("test_info");
 
-        sportTitle.setText(sport.getName());
+        PopupMenu popupMenu = new PopupMenu(MonitorActivity.this, titleLayout);
+        String[] sportArray = getResources().getStringArray(R.array.sport_array);
+        for (String s : sportArray) {
+            popupMenu.getMenu().add(s);
+        }
+        popupMenu.setOnMenuItemClickListener(item -> {
+            sportTitle.setText(item.getTitle());
+            return true;
+        });
+
+        titleLayout.setOnClickListener(v -> popupMenu.show());
+
+        sportTitle.setText(sportArray[0]);
+        sportDes.setText(String.format(
+                Locale.getDefault(),
+                "性别: %s  年龄: %d  身高: %dcm  体重: %d千克",
+                testInfo.getSex(),
+                testInfo.getAge(),
+                testInfo.getStature(),
+                testInfo.getWeight()));
+
         tipText.setTextArray(getResources().getStringArray(R.array.tip_text));
-        Glide.with(this).load(sport.getGifId()).into(titleImage);
-        sportDes.setText(sport.getDes());
+        Glide.with(this).load(R.drawable.bg_high_knees).into(titleImage);
 
-        dirView.setSensorName(getString(R.string.current_dir));
-        dirView.setSensorDes(getString(R.string.dir_info));
-        dirView.setYAxisRange(-5, 5);
-        dirView.setShow(false, true, true, false);
-        gyroView.setSensorName(getString(R.string.gyro));
-        gyroView.setSensorDes(getString(R.string.gyro_info));
-        gyroView.setYAxisRange(-10, 10);
-        gyroView.setShow(false, false, false, true);
-        gravityView.setSensorName(getString(R.string.gravity_sensor));
-        gravityView.setSensorDes(getString(R.string.gravity_info));
-        gravityView.setShow(true, true, true, false);
-        gravityView.setYAxisRange(-12, 12);
-        accView.setSensorName(getString(R.string.linear_acc_sensor));
-        accView.setSensorDes(getString(R.string.acc_info));
-        accView.setYAxisRange(-20, 20);
-        accView.setShow(false, false, false, true);
+//        dirView.setSensorName(getString(R.string.current_dir));
+//        dirView.setSensorDes(getString(R.string.dir_info));
+//        dirView.setYAxisRange(-5, 5);
+//        dirView.setShow(false, true, true, false);
+//        gyroView.setSensorName(getString(R.string.gyro));
+//        gyroView.setSensorDes(getString(R.string.gyro_info));
+//        gyroView.setYAxisRange(-10, 10);
+//        gyroView.setShow(false, false, false, true);
+//        gravityView.setSensorName(getString(R.string.gravity_sensor));
+//        gravityView.setSensorDes(getString(R.string.gravity_info));
+//        gravityView.setShow(true, true, true, false);
+//        gravityView.setYAxisRange(-12, 12);
+//        accView.setSensorName(getString(R.string.linear_acc_sensor));
+//        accView.setSensorDes(getString(R.string.acc_info));
+//        accView.setYAxisRange(-20, 20);
+//        accView.setShow(false, false, false, true);
+
         buttonLayout.setVisibility(View.GONE);
         countDownLayout.setVisibility(View.GONE);
 
@@ -168,6 +181,7 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
                 R.raw.two,
                 R.raw.three,
                 R.raw.go);
+
 
         startButton.setOnClickListener(v -> {
             //点击了开始测试
@@ -203,34 +217,34 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
         saveButton.setOnClickListener(v -> {
 
             final View inputView = getLayoutInflater().inflate(R.layout.times_input_dialog, null);
-            final AppCompatSeekBar seekBar = inputView.findViewById(R.id.seek_bar);
-            final TextView tv = inputView.findViewById(R.id.tv_seek_bar);
-            tv.setText("拖动选择要从尾部删除的数据的秒数。");
-            seekBar.setMax(testInfo.getDuration());
-
-            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    if (progress != 0) {
-                        tv.setText("将会去除最后" + progress + "秒的数据。");
-                    } else {
-                        tv.setText("不会去除数据。");
-                    }
-                }
-
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-
-                }
-
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-
-                }
-            });
+//            final AppCompatSeekBar seekBar = inputView.findViewById(R.id.seek_bar);
+//            final TextView tv = inputView.findViewById(R.id.tv_seek_bar);
+//            tv.setText("不会去除数据。");
+//            seekBar.setMax(testInfo.getDuration());
+//
+//            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//                @Override
+//                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                    if (progress != 0) {
+//                        tv.setText("将会去除最后" + progress + "秒的数据。");
+//                    } else {
+//                        tv.setText("不会去除数据。");
+//                    }
+//                }
+//
+//                @Override
+//                public void onStartTrackingTouch(SeekBar seekBar) {
+//
+//                }
+//
+//                @Override
+//                public void onStopTrackingTouch(SeekBar seekBar) {
+//
+//                }
+//            });
 
             AlertDialog dialog = new AlertDialog.Builder(MonitorActivity.this)
-                    .setTitle("数据处理")
+                    .setTitle("额外信息输入")
                     .setView(inputView)
                     .setPositiveButton("确定", (dialog1, which) -> {
                         EditText times = inputView.findViewById(R.id.et_times_input_dialog);
@@ -240,15 +254,21 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
 
                         testInfo.setInputTimes(TextUtils.isEmpty(timesStr) ? 0 : Integer.parseInt(timesStr));
                         testInfo.setRemark(TextUtils.isEmpty(remarkStr) ? "无" : remarkStr);
+                        testInfo.setType(sportTitle.getText().toString());
+                        testInfo.setTime(TimeUtil.getNowTime(TimeUtil.A));
+                        testInfo.setRate(sensorService.getRate());
 
-                        showProgressDialog("正在处理数据...");
-                        handleData(seekBar.getProgress(), () -> {
-                            Intent i = new Intent();
-                            closeProgressDialog();
-                            i.putExtra("test_info", testInfo);
-                            setResult(RESULT_OK, i);
-                            finish();
-                        });
+                        String jsonStr = new Gson().toJson(sensorInfoList);
+                        testInfo.setSensorData(jsonStr);
+
+//                        showProgressDialog("正在处理数据...");
+//                        closeProgressDialog();
+
+                        Intent i = new Intent();
+                        i.putExtra("test_info", testInfo);
+                        setResult(RESULT_OK, i);
+                        finish();
+
                     })
                     .setNegativeButton("取消", null)
                     .create();
@@ -256,10 +276,10 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
         });
 
         retestButton.setOnClickListener(v -> {
-            oriDataList.clear();
-            accDataList.clear();
-            gravityDataList.clear();
-            gyroDataList.clear();
+//            oriDataList.clear();
+//            accDataList.clear();
+//            gravityDataList.clear();
+//            gyroDataList.clear();
             Log.d(TAG, "onClick: 数据已经清除");
             currentState = 0;
             startButton.animate().translationY(0).setDuration(500);
@@ -315,116 +335,101 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
         startButton.setText("结束测试");
     }
 
+    private void initSensorViewLayout() {
+        sensorViewList = new ArrayList<>();
+
+        for (SensorInfo sensorInfo : sensorInfoList) {
+            SensorView sensorView = new SensorView(this);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+            sensorView.setSensorName(sensorInfo.getName());
+            sensorView.setSensorDes(sensorInfo.getDes());
+            sensorView.setRate(sensorService.getRate());
+            sensorView.setYAxisRange(sensorInfo.getRange()[0], sensorInfo.getRange()[1]);
+            sensorView.setSensorVendor(sensorInfo.getVendor());
+            boolean[] showedArr = sensorInfo.getAxisShowed();
+            sensorView.setShow(showedArr[0], showedArr[1], showedArr[2], showedArr[3]);
+
+            sensorViewLayout.addView(sensorView, params);
+            sensorViewList.add(sensorView);
+        }
+    }
+
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        binder = (SensorService.MyBinder) service;
-        SensorService sensorService = binder.getService();
+        SensorService.MyBinder myBinder = (SensorService.MyBinder) service;
+        sensorService = myBinder.getService();
 
-        Sensor mag = sensorService.getMagSensor();
-        Sensor gra = sensorService.getGravitySensor();
-        Sensor gyro = sensorService.getGyroSensor();
-        Sensor acc = sensorService.getLinearAccSensor();
+        sensorInfoList = sensorService.getSensorList();
+        initSensorViewLayout();
 
-        if (mag != null) {
-            dirView.setSensorVendor("磁场传感器:",
-                    mag.getVendor() + " " + mag.getName());
-            testInfo.setMagSensorName(mag.getName());
-            testInfo.setMagSensorVendor(mag.getVendor());
-        }
-
-        if (gra != null) {
-            gravityView.setSensorVendor(gra.getVendor(),
-                    gra.getName());
-            testInfo.setGravitySensorName(gra.getName());
-            testInfo.setGravitySensorVendor(gra.getVendor());
-        }
-
-        if (gyro != null) {
-            gyroView.setSensorVendor(gyro.getVendor(),
-                    gyro.getName());
-            testInfo.setGyroName(gyro.getName());
-            testInfo.setGyroVendor(gyro.getVendor());
-
-        }
-
-        if (acc != null) {
-            accView.setSensorVendor(acc.getVendor(),
-                    acc.getName());
-            testInfo.setAccelerationSensorName(acc.getName());
-            testInfo.setAccelerationSensorVendor(acc.getVendor());
-        }
-
-        sensorService.setSensorListener(new SensorService.SensorDataListener() {
+        sensorService.startSensor(new SensorService.SensorDataChangeListener() {
             @Override
-            public void onOriDataChanged(float[] data) {
-                dirView.setSensorData(data);
-                if (currentState == 2) {
-                    oriDataList.add(data);
+            public void onDataChanged(float[] data, int position) {
+                if (sensorViewList == null) {
+                    return;
                 }
+                if (position <= sensorViewList.size()) {
+                    sensorViewList.get(position).setSensorData(data);
+                }
+                if (currentState == 2) {
+                    sensorInfoList.get(position).addData(new float[]{data[0], data[1], data[2]});
+                }
+                closeProgressDialog();
             }
 
             @Override
-            public void onGyroDataChanged(float[] data) {
-                gyroView.setSensorData(data);
-                if (currentState == 2) {
-                    gyroDataList.add(data);
-                }
-            }
-
-            @Override
-            public void onGravityDataChanged(float[] data) {
-                gravityView.setSensorData(data);
-                if (currentState == 2) {
-                    gravityDataList.add(data);
-                }
-            }
-
-            @Override
-            public void onAccDataChanged(float[] data) {
-                accView.setSensorData(data);
-                if (currentState == 2) {
-                    accDataList.add(data);
-                }
+            public void onDisconnected() {
+                showProgressDialog("连接中断...");
             }
         });
-        binder.startMonitor();
 
-        testInfo.setRate(sensorService.getRate());
+
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
         Log.d(TAG, "onServiceDisconnected: ");
-        binder.stopMonitor();
+
+        sensorService.stopSensor();
     }
 
-    //去除尾部、滤波
-    private void handleData(final int subTimes, final FilterCallback callback) {
-
-        new Thread(() -> {
-            int subEnd = subTimes * 1000 / testInfo.getRate();
-            if (oriDataList.size() > 0 && gravityDataList.size() > 0
-                    && gyroDataList.size() > 0 && accDataList.size() > 0) {
-                oriDataList.subList(oriDataList.size() - 1 - subEnd, oriDataList.size() - 1).clear();
-                gravityDataList.subList(gravityDataList.size() - 1 - subEnd, gravityDataList.size() - 1).clear();
-                gyroDataList.subList(gyroDataList.size() - 1 - subEnd, gyroDataList.size() - 1).clear();
-                accDataList.subList(accDataList.size() - 1 - subEnd, accDataList.size() - 1).clear();
-
-                int filterType = Integer.parseInt(SPUtil.load(MonitorActivity.this).getString("filter_type", "0"));
-                testInfo.setFiltered(filterType != 0);
-                testInfo.setOrientationData(new Gson().toJson(
-                        filterType == 0 ? oriDataList :
-                                (filterType == 1 ? KalmanFilter.filter(oriDataList) : LowPassFilter.filter(oriDataList))));
-                testInfo.setGravityData(new Gson().toJson(filterType == 0 ? gravityDataList :
-                        (filterType == 1 ? KalmanFilter.filter(gravityDataList) : LowPassFilter.filter(gravityDataList))));
-                testInfo.setGyroscopeData(new Gson().toJson(filterType == 0 ? gyroDataList :
-                        (filterType == 1 ? KalmanFilter.filter(gyroDataList) : LowPassFilter.filter(gyroDataList))));
-                testInfo.setAccelerationData(new Gson().toJson(filterType == 0 ? accDataList :
-                        (filterType == 1 ? KalmanFilter.filter(accDataList) : LowPassFilter.filter(accDataList))));
-            }
-            runOnUiThread(callback::onFilterFinished);
-        }).start();
-    }
+//    //去除尾部、滤波
+//    private void handleData(final int subTimes, final FilterCallback callback) {
+//
+//        new Thread(() -> {
+//            int subEnd = subTimes * 1000 / testInfo.getRate();
+//            for (SensorInfo sensorInfo : sensorInfoList) {
+//                List<float[]> data = sensorInfo.getData();
+//                data.subList(data.size() - 1 - subEnd, data.size() - 1).clear();
+//                int filterType = Integer.parseInt(SPUtil.load(MonitorActivity.this).getString("filter_type", "0"));
+//                testInfo.setFiltered(filterType != 0);
+//                data = filterType == 1 ? KalmanFilter.filter(data) : LowPassFilter.filter(data);
+//            }
+//
+//            if (oriDataList.size() > 0 && gravityDataList.size() > 0
+//                    && gyroDataList.size() > 0 && accDataList.size() > 0) {
+//                oriDataList.subList(oriDataList.size() - 1 - subEnd, oriDataList.size() - 1).clear();
+//                gravityDataList.subList(gravityDataList.size() - 1 - subEnd, gravityDataList.size() - 1).clear();
+//                gyroDataList.subList(gyroDataList.size() - 1 - subEnd, gyroDataList.size() - 1).clear();
+//                accDataList.subList(accDataList.size() - 1 - subEnd, accDataList.size() - 1).clear();
+//
+//                int filterType = Integer.parseInt(SPUtil.load(MonitorActivity.this).getString("filter_type", "0"));
+//                testInfo.setFiltered(filterType != 0);
+//                testInfo.setOrientationData(new Gson().toJson(
+//                        filterType == 0 ? oriDataList :
+//                                (filterType == 1 ? KalmanFilter.filter(oriDataList) : LowPassFilter.filter(oriDataList))));
+//                testInfo.setGravityData(new Gson().toJson(filterType == 0 ? gravityDataList :
+//                        (filterType == 1 ? KalmanFilter.filter(gravityDataList) : LowPassFilter.filter(gravityDataList))));
+//                testInfo.setGyroscopeData(new Gson().toJson(filterType == 0 ? gyroDataList :
+//                        (filterType == 1 ? KalmanFilter.filter(gyroDataList) : LowPassFilter.filter(gyroDataList))));
+//                testInfo.setAccelerationData(new Gson().toJson(filterType == 0 ? accDataList :
+//                        (filterType == 1 ? KalmanFilter.filter(accDataList) : LowPassFilter.filter(accDataList))));
+//            }
+//            runOnUiThread(callback::onFilterFinished);
+//        }).start();
+//    }
 
     private class MyCountDownTimer extends CountDownTimer {
 

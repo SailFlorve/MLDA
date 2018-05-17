@@ -7,7 +7,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,6 @@ import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
@@ -65,11 +63,15 @@ public class SensorView extends CardView {
 
     public SensorView(Context context) {
         super(context);
-        mContext = context;
+        init(context);
     }
 
     public SensorView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init(context);
+    }
+
+    private void init(Context context) {
         mContext = context;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.sensor_view, this);
@@ -146,8 +148,7 @@ public class SensorView extends CardView {
 
         String rateStr = SPUtil.load(getContext()).getString("data_rate", "40");
         int rate = Integer.parseInt(rateStr);
-        setXAxisRange(0, dataDuration / rate);
-
+        setRate(rate);
         setYAxisRange(0, 20);
 
         for (XYSeries line : lines) {
@@ -176,6 +177,10 @@ public class SensorView extends CardView {
         multipleSeriesRenderer.setAxisTitleTextSize(0);
     }
 
+    public void setRate(int rate) {
+        setXAxisRange(0, dataDuration / rate);
+    }
+
     public void setXAxisRange(double min, double max) {
         multipleSeriesRenderer.setXAxisMax(max);
         multipleSeriesRenderer.setXAxisMin(min);
@@ -198,8 +203,6 @@ public class SensorView extends CardView {
             checkBoxes[1].setText(String.format("y: %.2f", data[1]));
             checkBoxes[2].setText(String.format("z: %.2f", data[2]));
             checkBoxes[3].setText(String.format("s: %.2f", sum));
-        } else if (data.length == 1) {
-            checkBoxes[0].setText("x: " + data[0]);
         }
         for (XYSeries line : lines) {
             line.clear();
@@ -236,8 +239,8 @@ public class SensorView extends CardView {
         this.sensorDes = sensorInfo;
     }
 
-    public void setSensorVendor(String vendor, String name) {
-        sensorVendor.setText(vendor + " " + name);
+    public void setSensorVendor(String vendor) {
+        sensorVendor.setText(vendor);
     }
 
     public void setShow(boolean showX, boolean showY, boolean showZ, boolean showXYZ) {

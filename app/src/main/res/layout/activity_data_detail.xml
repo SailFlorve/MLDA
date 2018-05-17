@@ -190,83 +190,10 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:id="@+id/data_layout">
 
-                <TextView
-                    android:id="@+id/tv_ori"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="方向: 0条" />
 
-                <TextView
-                    android:id="@+id/tv_ori_data"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp"
-                    android:background="#ededed"
-                    android:ellipsize="end"
-                    android:maxLines="4"
-                    android:padding="6dp"
-                    android:text=""
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/tv_gyro"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="陀螺仪: 0条" />
-
-                <TextView
-                    android:id="@+id/tv_gyro_data"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp"
-                    android:background="#ededed"
-                    android:ellipsize="end"
-                    android:maxLines="4"
-                    android:padding="6dp"
-                    android:text=""
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/tv_gra"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="重力传感器: 0条" />
-
-                <TextView
-                    android:id="@+id/tv_gra_data"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp"
-                    android:background="#ededed"
-                    android:ellipsize="end"
-                    android:maxLines="4"
-                    android:padding="6dp"
-                    android:text=""
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/tv_acc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="线性加速度传感器: 0条" />
-
-                <TextView
-                    android:id="@+id/tv_acc_data"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp"
-                    android:background="#ededed"
-                    android:ellipsize="end"
-                    android:maxLines="4"
-                    android:padding="6dp"
-                    android:text=""
-                    android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

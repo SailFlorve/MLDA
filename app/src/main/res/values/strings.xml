@@ -17,6 +17,13 @@
     <string name="walk_des">步行是人类基本的活动方式之一，似乎整个人体结构就是为步行设计的，步行被公认为世界上最好的运动。</string>
     <string name="deep_squat_des">身体挺直，两眼平视前方，两脚同肩宽。屈膝慢慢蹲下至大腿平行地面或稍低于膝，保持后，股四头肌等收缩用力，蹬腿伸膝至还原。</string>
     <string name="current_dir">方向</string>
+    <string-array name="sport_array">
+        <item>高抬腿</item>
+        <item>开合跳</item>
+        <item>左右小跳</item>
+        <item>深蹲</item>
+        <item>步行</item>
+    </string-array>
     <string-array name="rate_array">
         <item>10毫秒</item>
         <item>20毫秒</item>
@@ -50,4 +57,6 @@
         <item>测试时，尽量保持每次动作一致。</item>
         <item>你可以回到主界面的“数据管理”查看保存的数据。</item>
     </string-array>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

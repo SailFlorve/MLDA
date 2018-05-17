@@ -8,7 +8,6 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -76,6 +75,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void closeProgressDialog() {
         if (progressDialog != null) {
             progressDialog.dismiss();
+            progressDialog = null;
         }
     }
 
@@ -116,17 +116,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     /**
      * 检查权限，未被允许则申请，并返回false否则返回true
      */
-    protected boolean checkPermission(int requestCode, @NonNull String permission) {
-        if (ContextCompat.checkSelfPermission(this, permission)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
-            return false;
-        } else {
-            return true;
-        }
+    protected boolean checkPermission(@NonNull String permission) {
+        return ContextCompat.checkSelfPermission(this, permission)
+                == PackageManager.PERMISSION_GRANTED;
     }
 
-    protected boolean checkPermissions(int requestCode, @NonNull String... permissions) {
+    public boolean checkPermissions(@NonNull String... permissions) {
         List<String> deniedPermissionList = new ArrayList<>();
         for (String permission : permissions) {
             if (ContextCompat.checkSelfPermission(this, permission)
@@ -134,12 +129,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                 deniedPermissionList.add(permission);
             }
         }
-        if (deniedPermissionList.isEmpty()) {
-            return true;
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    (String[]) deniedPermissionList.toArray(), requestCode);
-            return false;
-        }
+        return deniedPermissionList.isEmpty();
     }
 }

@@ -1,13 +1,9 @@
 package com.lmachine.mlda.bean;
 
-import android.support.annotation.NonNull;
-
 import com.raizlabs.android.dbflow.annotation.Database;
 import com.raizlabs.android.dbflow.annotation.Migration;
 import com.raizlabs.android.dbflow.sql.SQLiteType;
 import com.raizlabs.android.dbflow.sql.migration.AlterTableMigration;
-import com.raizlabs.android.dbflow.sql.migration.BaseMigration;
-import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
 /**
  * Created by SailFlorve on 2017/9/1 0001.
@@ -17,5 +13,19 @@ import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 @Database(version = AppDatabase.VERSION)
 public class AppDatabase {
     public static final String NAME = "TestData";
-    public static final int VERSION = 8;
+    public static final int VERSION = 9;
+
+    @Migration(version = 9, database = AppDatabase.class)
+    public static class Migration9 extends AlterTableMigration<TestInfo> {
+
+        public Migration9(Class<TestInfo> table) {
+            super(table);
+        }
+
+        @Override
+        public void onPreMigrate() {
+            addColumn(SQLiteType.TEXT, "sensorData");
+        }
+    }
+
 }

@@ -1,9 +1,9 @@
 package com.lmachine.mlda;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 
@@ -27,8 +27,12 @@ public abstract class DataActivity extends BaseActivity implements SaveUtil.Save
             new AlertDialog.Builder(this)
                     .setItems(new String[]{"导出至本地", "导出并上传"}, (dialog, which) -> {
                         isUpload = which != 0;
-                        if (checkPermission(0, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        if (checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                             output(DataActivity.this);
+                        } else {
+                            ActivityCompat.requestPermissions(this,
+                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                    0);
                         }
                     }).create().show();
         } else if (item.getItemId() == R.id.delete_data) {

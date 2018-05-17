@@ -48,7 +48,6 @@ public class DataUtil {
     }
 
     public static void upload(File file, final UploadCallback callback) {
-        //...\
         final Handler mHandler = new Handler(Looper.getMainLooper());
         HttpUtil.load("http://skylance.xin/UploadFileServlet")
                 .addFile("upfile", file.getName(), file)

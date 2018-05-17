@@ -1,79 +1,62 @@
 package com.lmachine.mlda.service;
 
 import android.app.Service;
-import android.content.Context;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
+import android.os.Looper;
 
+import com.lmachine.mlda.bean.SensorInfo;
+import com.lmachine.mlda.util.BluetoothDataResolver;
+import com.lmachine.mlda.util.BluetoothUtil;
 import com.lmachine.mlda.util.SPUtil;
+import com.lmachine.mlda.util.SensorInfoMgr;
+
+import java.util.List;
 
 public class SensorService extends Service {
 
-    private String TAG = "SensorService";
-    private MyBinder binder;
-    private SensorManager sensorManager;
-    private Sensor magSensor;//磁场传感器
-    private Sensor gyroSensor;//陀螺仪
-    private Sensor gravitySensor;//重力传感器
-    private Sensor linearAccSensor;//线性加速度
-    private Sensor accSensor;
+    private static final String TAG = "SensorService";
+    private Handler mainHandler = new Handler(Looper.getMainLooper());
 
-    private float[] accData = new float[]{};
-    private float[] magData = new float[]{};
-    private float[] gyroData = new float[]{};
-    private float[] gravityData = new float[]{};
-    private float[] linearAccData = new float[]{};
+    private List<SensorInfo> sensorList;
 
-    private int rate;//频率 （毫秒）
+    private MyBinder myBinder;
 
-    private SensorDataListener dataListener;
+    private SensorDataChangeListener dataChangeListener;
+
+    private BluetoothDataResolver resolver;
+
+    private BluetoothUtil bluetoothUtil;
+    private SensorInfoMgr sensorInfoMgr;
+
+    private int rate;
+
+    public interface SensorDataChangeListener {
+        void onDataChanged(float[] data, int position);
+
+        void onDisconnected();
+    }
+
 
     private SensorEventListener sensorEventListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
-            switch (event.sensor.getType()) {
-                case Sensor.TYPE_MAGNETIC_FIELD:
-                    magData = event.values;
-                    if (dataListener != null) {
-                        if (magData.length == 0 || accData.length == 0) {
-                            return;
-                        }
-                        float[] oriData = getOrientation(accData, magData);
-                        dataListener.onOriDataChanged(oriData);
+            int type = event.sensor.getType();
+            for (int i = 0; i < sensorInfoMgr.getBuiltinSensor().size(); i++) {
+                if (type == sensorInfoMgr.getBuiltinSensor().get(i).getType()) {
+                    if (dataChangeListener != null) {
+                        dataChangeListener.onDataChanged(event.values, i);
                     }
                     break;
-                case Sensor.TYPE_GYROSCOPE:
-                    gyroData = event.values;
-                    if (dataListener != null) {
-                        dataListener.onGyroDataChanged(new float[]{
-                                gyroData[0], gyroData[1], gyroData[2]
-                        });
-                    }
-                    break;
-                case Sensor.TYPE_GRAVITY:
-                    gravityData = event.values;
-                    if (dataListener != null) {
-                        dataListener.onGravityDataChanged(new float[]{
-                                gravityData[0], gravityData[1], gravityData[2]
-                        });
-                    }
-                    break;
-                case Sensor.TYPE_LINEAR_ACCELERATION:
-                    linearAccData = event.values;
-                    if (dataListener != null) {
-                        dataListener.onAccDataChanged(new float[]{
-                                linearAccData[0], linearAccData[1], linearAccData[2]
-                        });
-                    }
-                    break;
-                case Sensor.TYPE_ACCELEROMETER:
-                    accData = event.values;
+                }
             }
         }
 
@@ -83,60 +66,49 @@ public class SensorService extends Service {
         }
     };
 
+    private BluetoothDataResolver.DataChangedCallBack resolverDataChangedCallBack =
+            new BluetoothDataResolver.DataChangedCallBack() {
+                @Override
+                public void onDataChanged(List<float[]> f) {
+                    mainHandler.post(() -> {
+                        for (int i = 0; i < f.size(); i++) {
+                            if (dataChangeListener != null) {
+                                dataChangeListener.onDataChanged(f.get(i), i);
+                            }
+                        }
+                    });
+                }
+            };
+
     public SensorService() {
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        magSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        gyroSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-        linearAccSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        Log.d(TAG, "onCreate: " + String.valueOf(magSensor == null)
-                + String.valueOf(gyroSensor == null)
-                + String.valueOf(gravitySensor == null)
-                + String.valueOf(linearAccSensor == null));
+        sensorInfoMgr = new SensorInfoMgr(this);
+        bluetoothUtil = new BluetoothUtil(this);
+        resolver = new BluetoothDataResolver();
+        rate = SPUtil.load(this).getInt("rate", 40);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "onStartCommand: ");
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onDestroy() {
-        Log.d(TAG, "onDestroy: ");
         super.onDestroy();
-        unregisterSensorListener();
+        stopSensor();
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        return new MyBinder();
-    }
-
-    private float[] getOrientation(float[] accData, float[] magData) {
-        float[] values = new float[3];
-        float[] R = new float[9];
-        SensorManager.getRotationMatrix(R, null, accData, magData);
-        SensorManager.getOrientation(R, values);
-//        values[0] = (float) Math.toDegrees(values[0]);
-//        values[1] = (float) Math.toDegrees(values[1]);
-//        values[2] = (float) Math.toDegrees(values[2]);
-        return values;
-    }
-
-    public void getSensorStatus(SensorStatusCallback callback) {
-        callback.onSensorInit(magSensor != null, gyroSensor != null,
-                gravitySensor != null, accSensor != null);
-    }
-
-    public void setSensorListener(SensorDataListener listener) {
-        this.dataListener = listener;
+        if (myBinder == null) {
+            myBinder = new MyBinder();
+        }
+        return myBinder;
     }
 
     public class MyBinder extends Binder {
@@ -144,54 +116,109 @@ public class SensorService extends Service {
         public SensorService getService() {
             return SensorService.this;
         }
+    }
 
-        public void startMonitor() {
-            String rateStr = SPUtil.load(SensorService.this).getString("data_rate", "40");
-            rate = Integer.parseInt(rateStr);
-            sensorManager.registerListener(sensorEventListener, magSensor, rate * 1000);
-            sensorManager.registerListener(sensorEventListener, linearAccSensor, rate * 1000);
-            sensorManager.registerListener(sensorEventListener, gravitySensor, rate * 1000);
-            sensorManager.registerListener(sensorEventListener, gyroSensor, rate * 1000);
-            sensorManager.registerListener(sensorEventListener, accSensor, rate * 1000);
-        }
+    public void initBuiltinSensor(SensorInfoMgr.BuiltinSensorInitStateCallback callback) {
+        List<Sensor> builtinSensor = sensorInfoMgr.getBuiltinSensor();
 
-        public void stopMonitor() {
-            unregisterSensorListener();
+        if (builtinSensor.isEmpty()) {
+            callback.onFailed();
+        } else {
+            callback.onSuccess(builtinSensor);
         }
     }
 
-    private void unregisterSensorListener() {
-        sensorManager.unregisterListener(sensorEventListener);
+    public void initBluetooth(BluetoothUtil.BluetoothDeviceSensorInitStateCallback callback) {
+        if (bluetoothUtil.getBluetoothManager() != null) {
+            callback.onSuccess();
+        } else {
+            callback.onFailed();
+        }
     }
 
-    public interface SensorStatusCallback {
-        void onSensorInit(boolean mag, boolean gyro, boolean gravity, boolean acc);
+    public void startSensor(SensorDataChangeListener listener) {
+        setDataChangeListener(listener);
+
+        SensorManager manager = sensorInfoMgr.getSensorManager();
+
+        switch (sensorInfoMgr.getCurrentSensorType()) {
+            case SensorInfoMgr.TYPE_BUILT_IN_SENSOR:
+                for (Sensor sensor : sensorInfoMgr.getBuiltinSensor()) {
+                    manager.registerListener(sensorEventListener, sensor, rate * 1000);
+                }
+                break;
+            case SensorInfoMgr.TYPE_BLUETOOTH_DEVICE_SENSOR:
+                resolver.setDataChangedCallBack(resolverDataChangedCallBack);
+
+                bluetoothUtil.startRead(new BluetoothUtil.BluetoothDataListener() {
+                    @Override
+                    public void onRead(byte[] b) {
+                        resolver.dataSync(b);
+                    }
+
+                    @Override
+                    public void onConnectClosed() {
+                        dataChangeListener.onDisconnected();
+                    }
+                });
+                break;
+            default:
+
+        }
     }
 
-    public interface SensorDataListener {
-        void onOriDataChanged(float[] data);
+    public void stopSensor() {
+        switch (sensorInfoMgr.getCurrentSensorType()) {
+            case SensorInfoMgr.TYPE_BUILT_IN_SENSOR:
+                sensorInfoMgr.getSensorManager().unregisterListener(sensorEventListener);
+                break;
+            case SensorInfoMgr.TYPE_BLUETOOTH_DEVICE_SENSOR:
+                bluetoothUtil.stopRead();
+                break;
+            default:
 
-        void onGyroDataChanged(float[] data);
-
-        void onGravityDataChanged(float[] data);
-
-        void onAccDataChanged(float[] data);
+        }
     }
 
-    public Sensor getMagSensor() {
-        return magSensor;
+    public boolean isBuiltinSensorEmpty() {
+        return sensorInfoMgr.getBuiltinSensor().isEmpty();
     }
 
-    public Sensor getGyroSensor() {
-        return gyroSensor;
+    public void connectBluetoothDevice(BluetoothUtil.BluetoothConnectCallback connectCallback) {
+        bluetoothUtil.connect(connectCallback);
     }
 
-    public Sensor getGravitySensor() {
-        return gravitySensor;
+    public void startDiscovery() {
+        bluetoothUtil.startDiscovery();
     }
 
-    public Sensor getLinearAccSensor() {
-        return linearAccSensor;
+    public void setBoundDevice(BluetoothDevice device) {
+        bluetoothUtil.setBondedDevice(device);
+
+    }
+
+    public MyBinder getMyBinder() {
+        return myBinder;
+    }
+
+    public BluetoothAdapter getBluetoothAdapter() {
+        return bluetoothUtil.getBluetoothAdapter();
+    }
+
+    public void setCurrentSensorType(int current) {
+        sensorInfoMgr.setCurrentSensorType(current);
+        sensorList = sensorInfoMgr.getSensorInfoList();
+        if (current == SensorInfoMgr.TYPE_BLUETOOTH_DEVICE_SENSOR) {
+            rate = 25;
+        }
+    }
+
+    public void setDataChangeListener(SensorDataChangeListener dataChangeListener) {
+        this.dataChangeListener = dataChangeListener;
+    }
+
+    public List<SensorInfo> getSensorList() {
+        return sensorList;
     }
 
     public int getRate() {
