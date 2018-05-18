@@ -119,7 +119,7 @@ public class BluetoothUtil {
             connectCallback.onConnectFailed("请打开蓝牙。");
         } else if (bluetoothAdapter.isDiscovering()) {
             connectCallback.onConnectFailed("请等待设备搜索完毕。");
-        } else if (this.bondedDevice == null) {
+        } else if (bondedDevice == null) {
             connectCallback.onConnectFailed("请先配对。");
         } else if (bondedDevice.getBondState() != BluetoothDevice.BOND_BONDED) {
             connectCallback.onConnectFailed("配对状态失效。");

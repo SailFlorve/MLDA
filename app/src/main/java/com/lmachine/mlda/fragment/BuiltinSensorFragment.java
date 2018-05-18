@@ -45,9 +45,8 @@ public class BuiltinSensorFragment extends Fragment {
             public void onSuccess(List<Sensor> initSensor) {
                 StringBuilder sb = new StringBuilder();
                 for (Sensor sensor : initSensor) {
-                    sb.append(sensorService.getSensorInfoMgr()
-                            .generateSensorName(sensor.getType())).append(" ")
-                            .append(sensor.getVendor()).append(" ")
+                    sb.append(sensorService.getSensorInfoMgr().generateSensorName(sensor.getType()))
+                            .append(" ")
                             .append(sensor.getName())
                             .append("\n");
                 }

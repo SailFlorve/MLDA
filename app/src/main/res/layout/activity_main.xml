@@ -14,31 +14,13 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:subtitle="基本信息填写"
+        app:subtitle="运动数据采集"
         app:title="MLDA" />
-
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusableInTouchMode="true">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:background="@color/colorPrimary" />
-
-        <ImageView
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="15dp"
-            android:layout_marginRight="-15dp"
-            android:adjustViewBounds="true"
-            android:alpha="0.2"
-            android:rotation="-22"
-            android:src="@drawable/ic_fu1" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -50,8 +32,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:layout_marginTop="5dp"
-                android:orientation="vertical">
+                android:layout_marginTop="15dp"
+                android:orientation="vertical"
+                android:paddingBottom="15dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center"
+                    android:text="基本信息填写"
+
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12sp" />
 
                 <android.support.v7.widget.CardView
                     android:id="@+id/card_view"
@@ -81,7 +74,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="请选择性别"
-                                android:textSize="16sp" />
+                                android:textSize="15sp" />
 
                             <RadioGroup
                                 android:id="@+id/radio_group"
@@ -116,35 +109,38 @@
                                 android:layout_height="wrap_content"
                                 android:hint="年龄"
                                 android:inputType="number"
-                                android:textColor="@color/colorAccent" />
+                                android:textColor="@color/colorAccent"
+                                android:textSize="16sp" />
                         </android.support.design.widget.TextInputLayout>
 
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/til_stature"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp">
+                            android:layout_marginTop="10dp">
 
                             <EditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="身高(单位: 厘米)"
                                 android:inputType="number"
-                                android:textColor="@color/colorAccent" />
+                                android:textColor="@color/colorAccent"
+                                android:textSize="16sp" />
                         </android.support.design.widget.TextInputLayout>
 
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/til_weight"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp">
+                            android:layout_marginTop="10dp">
 
                             <EditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="体重(单位: 千克）"
                                 android:inputType="number"
-                                android:textColor="@color/colorAccent" />
+                                android:textColor="@color/colorAccent"
+                                android:textSize="16sp" />
                         </android.support.design.widget.TextInputLayout>
 
                         <TextView
@@ -152,9 +148,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="4dp"
-                            android:layout_marginTop="20dp"
+                            android:layout_marginTop="15dp"
                             android:text="随机填写"
-                            android:textColor="@color/colorPrimary" />
+                            android:textColor="@color/colorAccent" />
 
                     </LinearLayout>
 
@@ -162,15 +158,18 @@
                 </android.support.v7.widget.CardView>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
                     android:text="传感器类型选择"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="12sp" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="240dp"
+                    android:layout_height="210dp"
                     app:cardCornerRadius="5dp"
                     app:cardElevation="1dp">
 
@@ -185,20 +184,22 @@
                             android:layout_height="wrap_content" />
 
                         <android.support.v4.view.ViewPager
-                            android:paddingTop="5dp"
                             android:id="@+id/view_pager"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:paddingTop="5dp" />
                     </LinearLayout>
-
 
                 </android.support.v7.widget.CardView>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
                     android:text="程序使用说明"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="12sp" />
 
                 <android.support.v7.widget.CardView
@@ -208,17 +209,31 @@
                     app:cardCornerRadius="5dp"
                     app:cardElevation="1dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingBottom="25dp"
                         android:paddingLeft="40dp"
                         android:paddingRight="40dp"
-                        android:paddingTop="25dp"
-                        android:paddingBottom="25dp"
-                        android:text="@string/privacy_statement" />
+                        android:paddingTop="25dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="说明:"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/privacy_statement" />
+                    </LinearLayout>
                 </android.support.v7.widget.CardView>
 
             </LinearLayout>
+
         </ScrollView>
 
 
@@ -228,12 +243,13 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginBottom="25dp"
+            android:layout_marginBottom="20dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:foreground="@drawable/ic_fu2"
             android:src="@drawable/ic_arrow_forward_white_36dp"
             app:fabSize="normal" />
 
     </RelativeLayout>
+
+
 </LinearLayout>

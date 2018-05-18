@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">MLDA</string>
-    <string name="privacy_statement">1.先填写基本信息。如果确定信息无关紧要，可以使用随机填写。\n2.选择使用的传感器类型，点击红色箭头进入测试。\n3.若使用蓝牙，则切换到“外部传感器”选项卡，并配对相应的蓝牙传感器设备。测试过程个需要保证蓝牙不要断开连接，否则可能会造成部分数据或者全部数据丢失。程序会在失去连接后自动尝试重连。\n4.点击“开始测试”按钮开始记录数据，保存过的数据在“数据管理”界面查看，也可以导出进行研究。\n©Machine Learning Data Acquisition</string>
+    <string name="privacy_statement">1.先填写基本信息。如果确定信息无关紧要，可以使用随机填写；\n2.选择使用的传感器类型，点击红色箭头进入测试；\n3.若使用蓝牙，则切换到“外部传感器”选项卡，并配对相应的蓝牙传感器设备。测试过程个需要保证蓝牙不要断开连接，否则可能会造成部分数据或者全部数据丢失。程序会在失去连接后自动尝试重连；\n4.点击“开始测试”按钮开始记录数据，点击运动名称更换运动。保存过的数据在“数据管理”界面查看，也可以导出进行研究。\n©Machine Learning Data Acquisition</string>
     <string name="small_jump_des">绷紧全身，左右跳动，身体跟随双腿左右摆动。起跳时，手臂用力上提带起身体。</string>
     <string name="jumping_jack_des">双脚开合跳跃，小腿放松，用肩部力量抬臂，背部力量下压手臂，用手臂带动身体跳跃。收紧腰腹，手臂用力绷紧。</string>
     <string name="high_knees_des">挺直背部，目视前方，前脚掌着地快速交替抬腿。保持身体稳定，保持最快速度。</string>
@@ -15,7 +15,7 @@
     <string name="linear_acc_sensor">线性加速度传感器</string>
     <string name="acc_sensor">加速度传感器</string>
     <string name="walk_des">步行是人类基本的活动方式之一，似乎整个人体结构就是为步行设计的，步行被公认为世界上最好的运动。</string>
-    <string name="deep_squat_des">身体挺直，两眼平视前方，两脚同肩宽。屈膝慢慢蹲下至大腿平行地面或稍低于膝，保持后，股四头肌等收缩用力，蹬腿伸膝至还原。</string>
+    <string name="deep_squat_des">屈膝慢慢蹲下至大腿平行地面或稍低于膝，保持后，股四头肌等收缩用力，蹬腿伸膝至还原。</string>
     <string name="current_dir">方向</string>
     <string-array name="sport_array">
         <item>高抬腿</item>

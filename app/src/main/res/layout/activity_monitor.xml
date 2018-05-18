@@ -79,16 +79,15 @@
                     android:id="@+id/tv_sport_des"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:textColor="#FFF"
-                    android:textSize="14sp" />
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/tv_user_info"
                     android:layout_marginTop="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/small_jump_des"
+                    android:text=""
                     android:textColor="#FFF"
                     android:textSize="14sp" />
 

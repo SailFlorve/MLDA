@@ -46,7 +46,11 @@ public class BluetoothDeviceListAdapter extends BaseAdapter {
         Pair<String, String> device = (Pair<String, String>) getItem(position);
         TextView name = v.findViewById(R.id.tv_device_name);
         TextView mac = v.findViewById(R.id.tv_device_mac);
-        name.setText(device.first);
+        String first = device.first;
+        if (first == null || first.isEmpty() || first.trim().isEmpty()) {
+            first = "未知设备";
+        }
+        name.setText(first);
         mac.setText(device.second);
         return v;
     }

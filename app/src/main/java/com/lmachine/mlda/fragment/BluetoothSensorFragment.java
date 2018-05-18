@@ -36,6 +36,7 @@ import java.util.List;
 
 public class BluetoothSensorFragment extends Fragment implements ServiceConnection {
 
+    private static final String TAG = "BluetoothSensorFragment";
     private TextView openBtText;
     private ListView btDeviceListView;
     private BluetoothDeviceListAdapter listAdapter;
@@ -96,9 +97,6 @@ public class BluetoothSensorFragment extends Fragment implements ServiceConnecti
                         deviceStringList.add(pair);
                         bluetoothDeviceList.add(d);
                         listAdapter.notifyDataSetChanged();
-                    }
-                    if (d.getBondState() == BluetoothDevice.BOND_BONDED) {
-                        setBondedStatus(d);
                     }
                     break;
                 case BluetoothDevice.ACTION_BOND_STATE_CHANGED:
@@ -164,6 +162,7 @@ public class BluetoothSensorFragment extends Fragment implements ServiceConnecti
 
         btDeviceListView.setOnItemClickListener((parent, view1, position, id) -> {
             BluetoothDevice device = bluetoothDeviceList.get(position);
+            Log.d(TAG, "onCreateView: " + device.getBondState());
             if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
                 setBondedStatus(device);
             } else {
