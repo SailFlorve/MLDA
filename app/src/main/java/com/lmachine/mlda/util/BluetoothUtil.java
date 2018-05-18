@@ -77,7 +77,7 @@ public class BluetoothUtil {
                 } catch (IOException e) {
                     e.printStackTrace();
                     if (dataListener != null) {
-                        dataListener.onConnectClosed();
+                        mainHandler.post(() -> dataListener.onConnectClosed());
                     }
                     break;
                 }

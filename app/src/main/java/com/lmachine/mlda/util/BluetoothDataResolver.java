@@ -39,7 +39,7 @@ public class BluetoothDataResolver {
     private List<Integer> checkHead(byte[] bytes) {
         List<Integer> r = new ArrayList<>();
         for (int index = 0; index < bytes.length; index++) {
-            if (bytes[index] == (byte) 0x66) {
+            if (bytes[index] == (byte) 0xFF) {
                 headCount++;
                 if (headCount == HEAD_OK) {
                     headCount = 0;
