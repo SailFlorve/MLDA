@@ -23,6 +23,7 @@
         android:focusableInTouchMode="true">
 
         <ScrollView
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -169,7 +170,7 @@
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="210dp"
+                    android:layout_height="240dp"
                     app:cardCornerRadius="5dp"
                     app:cardElevation="1dp">
 

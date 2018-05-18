@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.lmachine.mlda.bean.TestInfo;
@@ -50,6 +51,7 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
     private RadioButton radioButton;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private ScrollView scrollView;
     private List<Fragment> fragments;
 
     private TextInputLayout[] textInputLayouts;
@@ -64,6 +66,7 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
         radioGroup = findViewById(R.id.radio_group);
         randomInputText = findViewById(R.id.tv_random);
         ageText = findViewById(R.id.til_age);
+        scrollView = findViewById(R.id.scroll_view);
         statureText = findViewById(R.id.til_stature);
         weightText = findViewById(R.id.til_weight);
         tabLayout = findViewById(R.id.tab_layout);
@@ -299,5 +302,9 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
     @Override
     public void onServiceDisconnected(ComponentName name) {
 
+    }
+
+    public ScrollView getScrollView() {
+        return scrollView;
     }
 }

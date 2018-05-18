@@ -18,10 +18,12 @@
         android:textSize="16sp" />
 
     <TextView
+        android:paddingBottom="10dp"
         android:id="@+id/tv_builtin_sensor_list"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
         android:text="加速度传感器\n重力传感器\n陀螺仪\n地磁传感器\n" />
 
 </LinearLayout>
