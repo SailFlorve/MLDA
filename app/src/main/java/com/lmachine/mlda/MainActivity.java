@@ -91,14 +91,14 @@ public class MainActivity extends BaseActivity implements ServiceConnection {
                     showProgressDialog("正在连接蓝牙...");
                     sensorService.connectBluetoothDevice(new BluetoothUtil.BluetoothConnectCallback() {
                         @Override
-                        public void onSuccess(BluetoothSocket socket) {
+                        public void onConnectSuccess(BluetoothSocket socket) {
                             closeProgressDialog();
                             sensorService.setCurrentSensorType(TYPE_BLUETOOTH_DEVICE_SENSOR);
                             startMonitorActivity();
                         }
 
                         @Override
-                        public void onFailed(String msg) {
+                        public void onConnectFailed(String msg) {
                             closeProgressDialog();
                             showSnackBar(msg);
                         }

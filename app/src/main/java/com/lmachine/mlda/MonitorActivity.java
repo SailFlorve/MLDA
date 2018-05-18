@@ -1,5 +1,6 @@
 package com.lmachine.mlda;
 
+import android.bluetooth.BluetoothSocket;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -27,6 +28,7 @@ import com.google.gson.Gson;
 import com.lmachine.mlda.bean.SensorInfo;
 import com.lmachine.mlda.bean.TestInfo;
 import com.lmachine.mlda.service.SensorService;
+import com.lmachine.mlda.util.BluetoothUtil;
 import com.lmachine.mlda.util.SPUtil;
 import com.lmachine.mlda.util.SoundMgr;
 import com.lmachine.mlda.util.TimeUtil;
@@ -37,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MonitorActivity extends BaseActivity implements ServiceConnection {
+public class MonitorActivity extends BaseActivity implements ServiceConnection, SensorService.SensorDataChangeListener, BluetoothUtil.BluetoothConnectCallback {
 
     private ImageView titleImage;
     private TextView sportTitle;
@@ -63,6 +65,7 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
     private int duration;
 
     private int currentState = 0;//0: 未开始记录 1: 正在倒计时 2:正在记录 3.记录结束
+    private boolean isConnectInterrupt;
 
     private TestInfo testInfo;
 
@@ -364,28 +367,7 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
         sensorInfoList = sensorService.getSensorList();
         initSensorViewLayout();
 
-        sensorService.startSensor(new SensorService.SensorDataChangeListener() {
-            @Override
-            public void onDataChanged(float[] data, int position) {
-                if (sensorViewList == null) {
-                    return;
-                }
-                if (position <= sensorViewList.size()) {
-                    sensorViewList.get(position).setSensorData(data);
-                }
-                if (currentState == 2) {
-                    sensorInfoList.get(position).addData(new float[]{data[0], data[1], data[2]});
-                }
-                closeProgressDialog();
-            }
-
-            @Override
-            public void onDisconnected() {
-                showProgressDialog("连接中断...");
-            }
-        });
-
-
+        sensorService.startSensor(this);
     }
 
     @Override
@@ -393,6 +375,46 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection {
         Log.d(TAG, "onServiceDisconnected: ");
 
         sensorService.stopSensor();
+    }
+
+    @Override
+    public void onDataChanged(float[] data, int position) {
+        if (sensorViewList == null) {
+            return;
+        }
+        if (position <= sensorViewList.size()) {
+            sensorViewList.get(position).setSensorData(data);
+        }
+        if (currentState == 2) {
+            sensorInfoList.get(position).addData(new float[]{data[0], data[1], data[2]});
+        }
+        if (isConnectInterrupt) {
+            closeProgressDialog();
+            isConnectInterrupt = false;
+        }
+    }
+
+    @Override
+    public void onDisconnected() {
+        isConnectInterrupt = true;
+        showProgressDialog("连接中断...");
+        sensorService.connectBluetoothDevice(this);
+    }
+
+    @Override
+    public void onConnectSuccess(BluetoothSocket socket) {
+        closeProgressDialog();
+        sensorService.startSensor(this);
+    }
+
+    @Override
+    public void onConnectFailed(String msg) {
+        showDialog("连接失败",
+                "连接失败，点击返回主界面。\n" + msg,
+                "确定",
+                null,
+                (dialog, which) -> finish(),
+                null);
     }
 
 //    //去除尾部、滤波

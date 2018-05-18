@@ -86,7 +86,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             progressDialog.dismiss();
         }
         progressDialog.setMessage(text);
-
+        progressDialog.setCancelable(false);
         progressDialog.show();
     }
 

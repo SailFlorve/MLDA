@@ -15,9 +15,9 @@ import java.util.UUID;
 public class BluetoothUtil {
 
     public interface BluetoothConnectCallback {
-        void onSuccess(BluetoothSocket socket);
+        void onConnectSuccess(BluetoothSocket socket);
 
-        void onFailed(String msg);
+        void onConnectFailed(String msg);
     }
 
     public interface BluetoothDataListener {
@@ -116,22 +116,22 @@ public class BluetoothUtil {
 
     public void connect(BluetoothConnectCallback connectCallback) {
         if (!bluetoothAdapter.isEnabled()) {
-            connectCallback.onFailed("请打开蓝牙。");
+            connectCallback.onConnectFailed("请打开蓝牙。");
         } else if (bluetoothAdapter.isDiscovering()) {
-            connectCallback.onFailed("请等待设备搜索完毕。");
+            connectCallback.onConnectFailed("请等待设备搜索完毕。");
         } else if (this.bondedDevice == null) {
-            connectCallback.onFailed("请先配对。");
+            connectCallback.onConnectFailed("请先配对。");
         } else if (bondedDevice.getBondState() != BluetoothDevice.BOND_BONDED) {
-            connectCallback.onFailed("配对状态失效。");
+            connectCallback.onConnectFailed("配对状态失效。");
         } else {
             Thread thread = new Thread(() -> {
                 try {
                     socket = bondedDevice.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
                     socket.connect();
-                    mainHandler.post(() -> connectCallback.onSuccess(socket));
+                    mainHandler.post(() -> connectCallback.onConnectSuccess(socket));
                 } catch (IOException e) {
                     e.printStackTrace();
-                    mainHandler.post(() -> connectCallback.onFailed("连接失败, " + e.getMessage()));
+                    mainHandler.post(() -> connectCallback.onConnectFailed("连接失败, " + e.getMessage()));
 
                 }
             });
