@@ -3,10 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="15dp"
+    android:gravity=""
     android:orientation="vertical"
-    tools:context=".fragment.BuiltinSensorFragment"
-    android:gravity="center_horizontal">
+    android:paddingStart="40dp"
+    android:paddingEnd="40dp"
+    tools:context=".fragment.BuiltinSensorFragment">
 
     <TextView
         android:layout_width="wrap_content"

@@ -54,29 +54,11 @@ public class SensorInfoMgr {
         builtinSensor = new ArrayList<>();
         bluetoothSensor = new ArrayList<>();
 
-        initMap();
         initBuiltin();
         initBluetooth();
+        initMap();
 
         currentSensorType = TYPE_BUILT_IN_SENSOR;
-    }
-
-    private void initMap() {
-        int[] sensorTypeArray = new int[]{
-                Sensor.TYPE_GRAVITY,
-                Sensor.TYPE_GYROSCOPE,
-                Sensor.TYPE_LINEAR_ACCELERATION,
-                Sensor.TYPE_MAGNETIC_FIELD,
-                TYPE_BLUETOOTH_HOST,
-                TYPE_BLUETOOTH_SLAVE_1,
-                TYPE_BLUETOOTH_SLAVE_2,
-                TYPE_BLUETOOTH_SLAVE_3
-        };
-
-        sensorTypeMap = new SparseIntArray();
-        for (int i = 0; i < sensorTypeArray.length; i++) {
-            sensorTypeMap.put(sensorTypeArray[i], i + 1);
-        }
     }
 
     private void initBuiltin() {
@@ -145,7 +127,26 @@ public class SensorInfoMgr {
         return list;
     }
 
-    String generateSensorName(int sensorType) {
+    private void initMap() {
+        int[] sensorTypeArray = new int[]{
+                Sensor.TYPE_GRAVITY,
+                Sensor.TYPE_GYROSCOPE,
+                Sensor.TYPE_LINEAR_ACCELERATION,
+                Sensor.TYPE_MAGNETIC_FIELD,
+
+                TYPE_BLUETOOTH_HOST,
+                TYPE_BLUETOOTH_SLAVE_1,
+                TYPE_BLUETOOTH_SLAVE_2,
+                TYPE_BLUETOOTH_SLAVE_3
+        };
+
+        sensorTypeMap = new SparseIntArray();
+        for (int i = 0; i < sensorTypeArray.length; i++) {
+            sensorTypeMap.put(sensorTypeArray[i], i + 1);
+        }
+    }
+
+    public String generateSensorName(int sensorType) {
         if (nameArray == null) {
             nameArray = new String[]{
                     "未知传感器",

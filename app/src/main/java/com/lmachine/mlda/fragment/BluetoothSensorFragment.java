@@ -17,15 +17,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.lmachine.mlda.MainActivity;
 import com.lmachine.mlda.R;
+import com.lmachine.mlda.adapter.BluetoothDeviceListAdapter;
 import com.lmachine.mlda.service.SensorService;
 import com.lmachine.mlda.util.BluetoothUtil;
 
@@ -37,8 +38,8 @@ public class BluetoothSensorFragment extends Fragment implements ServiceConnecti
 
     private TextView openBtText;
     private ListView btDeviceListView;
-    private ArrayAdapter<String> arrayAdapter;
-    private List<String> deviceStringList = new ArrayList<>();
+    private BluetoothDeviceListAdapter listAdapter;
+    private List<Pair<String, String>> deviceStringList = new ArrayList<>();
     private List<BluetoothDevice> bluetoothDeviceList = new ArrayList<>();
 
     private StringBuilder logBuilder;
@@ -81,16 +82,20 @@ public class BluetoothSensorFragment extends Fragment implements ServiceConnecti
                     addLog("正在搜索设备...");
                     break;
                 case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
-                    addLog("蓝牙设备搜索已经结束，点击重新搜索。");
+                    if (deviceStringList.isEmpty()) {
+                        addLog("没有搜索到设备，点此重新搜索。");
+                    } else {
+                        addLog("点击设备名称配对，或点此重新搜索。");
+                    }
                     openBtText.setClickable(true);
                     break;
                 case BluetoothDevice.ACTION_FOUND:
-                    String deviceStr = d.getName() + "\n" + d.getAddress();
-                    Log.d("", "onReceive: " + deviceStr);
-                    if (!deviceStringList.contains(deviceStr)) {
-                        deviceStringList.add(deviceStr);
+                    Pair<String, String> pair = new Pair<>(d.getName(), d.getAddress());
+                    Log.d("", "onReceive: " + pair.toString());
+                    if (!deviceStringList.contains(pair)) {
+                        deviceStringList.add(pair);
                         bluetoothDeviceList.add(d);
-                        arrayAdapter.notifyDataSetChanged();
+                        listAdapter.notifyDataSetChanged();
                     }
                     if (d.getBondState() == BluetoothDevice.BOND_BONDED) {
                         setBondedStatus(d);
@@ -99,7 +104,7 @@ public class BluetoothSensorFragment extends Fragment implements ServiceConnecti
                 case BluetoothDevice.ACTION_BOND_STATE_CHANGED:
                     switch (d.getBondState()) {
                         case BluetoothDevice.BOND_NONE:
-                            addLog("配对失败，请重试，或点击重新搜索设备。");
+                            addLog("配对失败，请重试。点此重新搜索。");
                             openBtText.setClickable(true);
                             break;
                         case BluetoothDevice.BOND_BONDING:
@@ -166,8 +171,8 @@ public class BluetoothSensorFragment extends Fragment implements ServiceConnecti
             }
         });
 
-        arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, deviceStringList);
-        btDeviceListView.setAdapter(arrayAdapter);
+        listAdapter = new BluetoothDeviceListAdapter(getContext(), deviceStringList);
+        btDeviceListView.setAdapter(listAdapter);
 
         sensorService.initBluetooth(new BluetoothUtil.BluetoothDeviceSensorInitStateCallback() {
             @Override
@@ -219,8 +224,8 @@ public class BluetoothSensorFragment extends Fragment implements ServiceConnecti
     }
 
     private void setBondedStatus(BluetoothDevice device) {
-        addLog("已经与" + device.getName() + "配对");
-        sensorService.setBoundDevice(device);
+        addLog("已经与" + device.getName() + "配对。");
+        sensorService.setBondedDevice(device);
         bluetoothAdapter.cancelDiscovery();
     }
 

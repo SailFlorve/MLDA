@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
+    android:paddingStart="40dp"
+    android:paddingEnd="40dp"
     android:orientation="vertical"
     tools:context=".fragment.BluetoothSensorFragment">
 
@@ -25,7 +26,9 @@
         android:textColor="@color/colorPrimary" />
 
     <ListView
+        android:divider="@null"
         android:id="@+id/lv_bt_device"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp" />
 </LinearLayout>

@@ -31,9 +31,6 @@
         </activity>
 
         <activity
-            android:name=".SelectActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".MonitorActivity"
             android:screenOrientation="portrait"
             android:theme="@style/TransparentTheme" />
@@ -48,7 +45,6 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".BluetoothActivity"></activity>
     </application>
 
 </manifest>

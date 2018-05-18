@@ -27,10 +27,12 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.lmachine.mlda.bean.SensorInfo;
 import com.lmachine.mlda.bean.TestInfo;
+import com.lmachine.mlda.bean.sport.SportInfo;
 import com.lmachine.mlda.service.SensorService;
 import com.lmachine.mlda.util.BluetoothUtil;
 import com.lmachine.mlda.util.SPUtil;
 import com.lmachine.mlda.util.SoundMgr;
+import com.lmachine.mlda.util.SportInfoMgr;
 import com.lmachine.mlda.util.TimeUtil;
 import com.lmachine.mlda.view.CarouselTextView;
 import com.lmachine.mlda.view.SensorView;
@@ -43,6 +45,7 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection, 
 
     private ImageView titleImage;
     private TextView sportTitle;
+    private TextView userInfo;
     private TextView sportDes;
     private LinearLayout titleLayout;
     private CarouselTextView tipText;
@@ -84,8 +87,9 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection, 
         setContentView(R.layout.activity_monitor);
         setToolbar(R.id.toolbar, true);
         sportTitle = findViewById(R.id.tv_sport_name);
-        sportDes = findViewById(R.id.tv_sport_des);
+        userInfo = findViewById(R.id.tv_user_info);
         tipText = findViewById(R.id.tv_tip_text);
+        sportDes = findViewById(R.id.tv_sport_des);
         titleLayout = findViewById(R.id.ll_sport_title);
         chronometer = findViewById(R.id.chronometer);
         sensorViewLayout = findViewById(R.id.sensor_view_layout);
@@ -141,14 +145,15 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection, 
             popupMenu.getMenu().add(s);
         }
         popupMenu.setOnMenuItemClickListener(item -> {
-            sportTitle.setText(item.getTitle());
+            setSportView(item.getTitle().toString());
             return true;
         });
 
         titleLayout.setOnClickListener(v -> popupMenu.show());
 
-        sportTitle.setText(sportArray[0]);
-        sportDes.setText(String.format(
+        setSportView(sportArray[0]);
+
+        userInfo.setText(String.format(
                 Locale.getDefault(),
                 "性别: %s  年龄: %d  身高: %dcm  体重: %d千克",
                 testInfo.getSex(),
@@ -157,7 +162,6 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection, 
                 testInfo.getWeight()));
 
         tipText.setTextArray(getResources().getStringArray(R.array.tip_text));
-        Glide.with(this).load(R.drawable.bg_high_knees).into(titleImage);
 
 //        dirView.setSensorName(getString(R.string.current_dir));
 //        dirView.setSensorDes(getString(R.string.dir_info));
@@ -327,6 +331,13 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection, 
 
     }
 
+    private void setSportView(String name) {
+        SportInfo info = SportInfoMgr.getInfo(name);
+        sportTitle.setText(info.getName());
+        sportDes.setText(info.getDes());
+        Glide.with(this).load(info.getPicId()).crossFade(1000).into(titleImage);
+
+    }
     private void finishCountDown() {
         soundMgr.play(3);
         tipText.setVisibility(View.GONE);
@@ -382,7 +393,7 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection, 
         if (sensorViewList == null) {
             return;
         }
-        if (position <= sensorViewList.size()) {
+        if (position < sensorViewList.size()) {
             sensorViewList.get(position).setSensorData(data);
         }
         if (currentState == 2) {

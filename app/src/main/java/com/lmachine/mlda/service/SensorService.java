@@ -189,12 +189,12 @@ public class SensorService extends Service {
     }
 
     public void startDiscovery() {
+        bluetoothUtil.setBondedDevice(null);
         bluetoothUtil.startDiscovery();
     }
 
-    public void setBoundDevice(BluetoothDevice device) {
+    public void setBondedDevice(BluetoothDevice device) {
         bluetoothUtil.setBondedDevice(device);
-
     }
 
     public MyBinder getMyBinder() {
@@ -223,5 +223,9 @@ public class SensorService extends Service {
 
     public int getRate() {
         return rate;
+    }
+
+    public SensorInfoMgr getSensorInfoMgr() {
+        return sensorInfoMgr;
     }
 }

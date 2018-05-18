@@ -45,7 +45,11 @@ public class BuiltinSensorFragment extends Fragment {
             public void onSuccess(List<Sensor> initSensor) {
                 StringBuilder sb = new StringBuilder();
                 for (Sensor sensor : initSensor) {
-                    sb.append(sensor.getName()).append("\n");
+                    sb.append(sensorService.getSensorInfoMgr()
+                            .generateSensorName(sensor.getType())).append(" ")
+                            .append(sensor.getVendor()).append(" ")
+                            .append(sensor.getName())
+                            .append("\n");
                 }
                 builtinSensorText.setText(sb.toString());
             }

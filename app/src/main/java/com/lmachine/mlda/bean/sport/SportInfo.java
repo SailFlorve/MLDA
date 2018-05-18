@@ -1,11 +1,5 @@
 package com.lmachine.mlda.bean.sport;
 
-import com.lmachine.mlda.bean.AppDatabase;
-import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
-import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.structure.BaseModel;
-
 import java.io.Serializable;
 
 /**
@@ -13,17 +7,11 @@ import java.io.Serializable;
  * 运动实体类的基类
  */
 
-@Table(database = AppDatabase.class)
-public class SportInfo extends BaseModel implements Serializable {
-    @PrimaryKey(autoincrement = true)
+public class SportInfo implements Serializable {
     private int id;
-    @Column
     private String name;
-    @Column
     private String des;
-    @Column
     private int picId;
-    @Column
     private int gifId;
     private boolean isFinished;
 
@@ -31,11 +19,10 @@ public class SportInfo extends BaseModel implements Serializable {
 
     }
 
-    public SportInfo(String name, String des, int picId, int gifId) {
+    public SportInfo(String name, String des, int picId) {
         this.name = name;
         this.des = des;
         this.picId = picId;
-        this.gifId = gifId;
     }
 
     public String getName() {
