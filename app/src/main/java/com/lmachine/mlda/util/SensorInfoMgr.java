@@ -28,10 +28,14 @@ public class SensorInfoMgr {
     public static final int TYPE_BLUETOOTH_DEVICE_SENSOR = 2;
 
     /*蓝牙传感器类型*/
-    private static final int TYPE_BLUETOOTH_HOST = 101;
-    private static final int TYPE_BLUETOOTH_SLAVE_1 = 102;
-    private static final int TYPE_BLUETOOTH_SLAVE_2 = 103;
-    private static final int TYPE_BLUETOOTH_SLAVE_3 = 104;
+    private static final int TYPE_BLUETOOTH_HOST_ACC = 101;
+    private static final int TYPE_BLUETOOTH_HOST_GYRO = 102;
+    private static final int TYPE_BLUETOOTH_SLAVE_1_ACC = 103;
+    private static final int TYPE_BLUETOOTH_SLAVE_1_GYRO = 104;
+    private static final int TYPE_BLUETOOTH_SLAVE_2_ACC = 105;
+    private static final int TYPE_BLUETOOTH_SLAVE_2_GYRO = 106;
+    private static final int TYPE_BLUETOOTH_SLAVE_3_ACC = 107;
+    private static final int TYPE_BLUETOOTH_SLAVE_3_GYRO = 108;
 
     private Context context;
     private SensorManager sensorManager;
@@ -63,7 +67,7 @@ public class SensorInfoMgr {
 
     private void initBuiltin() {
         Sensor[] builtin = new Sensor[]{
-                sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
+                sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
                 sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
                 sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY),
                 sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
@@ -79,10 +83,14 @@ public class SensorInfoMgr {
 
     private void initBluetooth() {
         int[] bluetooth = new int[]{
-                TYPE_BLUETOOTH_HOST,
-                TYPE_BLUETOOTH_SLAVE_1,
-                TYPE_BLUETOOTH_SLAVE_2,
-                TYPE_BLUETOOTH_SLAVE_3
+                TYPE_BLUETOOTH_HOST_ACC,
+                TYPE_BLUETOOTH_HOST_GYRO,
+                TYPE_BLUETOOTH_SLAVE_1_ACC,
+                TYPE_BLUETOOTH_SLAVE_1_GYRO,
+                TYPE_BLUETOOTH_SLAVE_2_ACC,
+                TYPE_BLUETOOTH_SLAVE_2_GYRO,
+                TYPE_BLUETOOTH_SLAVE_3_ACC,
+                TYPE_BLUETOOTH_SLAVE_3_GYRO
         };
 
         for (int i : bluetooth) {
@@ -132,12 +140,16 @@ public class SensorInfoMgr {
                 Sensor.TYPE_GRAVITY,
                 Sensor.TYPE_GYROSCOPE,
                 Sensor.TYPE_LINEAR_ACCELERATION,
-                Sensor.TYPE_MAGNETIC_FIELD,
+                Sensor.TYPE_ORIENTATION,
 
-                TYPE_BLUETOOTH_HOST,
-                TYPE_BLUETOOTH_SLAVE_1,
-                TYPE_BLUETOOTH_SLAVE_2,
-                TYPE_BLUETOOTH_SLAVE_3
+                TYPE_BLUETOOTH_HOST_ACC,
+                TYPE_BLUETOOTH_HOST_GYRO,
+                TYPE_BLUETOOTH_SLAVE_1_ACC,
+                TYPE_BLUETOOTH_SLAVE_1_GYRO,
+                TYPE_BLUETOOTH_SLAVE_2_ACC,
+                TYPE_BLUETOOTH_SLAVE_2_GYRO,
+                TYPE_BLUETOOTH_SLAVE_3_ACC,
+                TYPE_BLUETOOTH_SLAVE_3_GYRO
         };
 
         sensorTypeMap = new SparseIntArray();
@@ -156,10 +168,14 @@ public class SensorInfoMgr {
                     context.getString(R.string.linear_acc_sensor),
                     context.getString(R.string.mag_sensor),
 
-                    "主机",
-                    "从机1",
-                    "从机2",
-                    "从机3"
+                    "主机加速度",
+                    "主机角度",
+                    "从机1加速度",
+                    "从机1角度",
+                    "从机2加速度",
+                    "从机2角度",
+                    "从机3加速度",
+                    "从机3角度"
             };
         }
         int index = sensorTypeMap.get(sensorType);
@@ -177,10 +193,14 @@ public class SensorInfoMgr {
                     context.getString(R.string.acc_info),
                     context.getString(R.string.dir_info),
 
-                    "主机加速度。",
-                    "从机1加速度。",
-                    "从机2加速度。",
-                    "从机3加速度。"
+                    "主机加速度",
+                    "主机角度",
+                    "从机1加速度",
+                    "从机1角度",
+                    "从机2加速度",
+                    "从机2角度",
+                    "从机3加速度",
+                    "从机3角度"
             };
         }
         int index = sensorTypeMap.get(type);
@@ -197,10 +217,14 @@ public class SensorInfoMgr {
                     {-20, 20},
                     {-100, 100},
 
-                    {-10, 30},
-                    {-10, 30},
-                    {-10, 30},
-                    {-10, 30}
+                    {-30, 30},
+                    {-180, 180},
+                    {-30, 30},
+                    {-180, 180},
+                    {-30, 30},
+                    {-180, 180},
+                    {-30, 30},
+                    {-180, 180}
             };
         }
         int index = sensorTypeMap.get(type);
@@ -210,17 +234,38 @@ public class SensorInfoMgr {
     private boolean[] generateAxisShowed(int type) {
         if (showedArray == null) {
             showedArray = new boolean[][]{
-                    {true, true, true, true},
+//                    {true, true, true, true},
+//
+//                    {true, true, true, false},
+//                    {false, false, false, true},
+//                    {false, false, false, true},
+//                    {false, true, true, false},
+//
+//                    {false, false, false, true},
+//                    {true, true, true, false},
+//                    {false, false, false, true},
+//                    {true, true, true, false},
+//                    {false, false, false, true},
+//                    {true, true, true, false},
+//                    {false, false, false, true},
+//                    {true, true, true, false}
+                    {false, false, false, false},
 
-                    {true, true, true, false},
-                    {false, false, false, true},
-                    {false, false, false, true},
-                    {false, true, true, false},
+                    {false, false, false, false},
+                    {false, false, false, false},
+                    {false, false, false, false},
+                    {false, false, false, false},
 
-                    {false, false, false, true},
-                    {false, false, false, true},
-                    {false, false, false, true},
-                    {false, false, false, true}
+                    {false, false, false, false},
+                    {false, false, false, false},
+                    {false, false, false, false},
+                    {false, false, false, false},
+                    {false, false, false, false},
+                    {false, false, false, false},
+                    {false, false, false, false},
+                    {false, false, false, false},
+
+
             };
         }
         int index = sensorTypeMap.get(type);
@@ -229,14 +274,14 @@ public class SensorInfoMgr {
 
     private String generateBluetoothSensorVendor(int type) {
         switch (type) {
-            case TYPE_BLUETOOTH_HOST:
-                return "主机芯片";
-            case TYPE_BLUETOOTH_SLAVE_1:
-                return "从机1芯片";
-            case TYPE_BLUETOOTH_SLAVE_2:
-                return "从机2芯片";
-            case TYPE_BLUETOOTH_SLAVE_3:
-                return "从机3芯片";
+//            case TYPE_BLUETOOTH_HOST:
+//                return "主机芯片";
+//            case TYPE_BLUETOOTH_SLAVE_1:
+//                return "从机1芯片";
+//            case TYPE_BLUETOOTH_SLAVE_2:
+//                return "从机2芯片";
+//            case TYPE_BLUETOOTH_SLAVE_3:
+//                return "从机3芯片";
             default:
                 return "未知芯片";
         }

@@ -70,13 +70,12 @@ public class SensorService extends Service {
             new BluetoothDataResolver.DataChangedCallBack() {
                 @Override
                 public void onDataChanged(List<float[]> f) {
-                    mainHandler.post(() -> {
-                        for (int i = 0; i < f.size(); i++) {
-                            if (dataChangeListener != null) {
-                                dataChangeListener.onDataChanged(f.get(i), i);
-                            }
+                    for (int i = 0; i < f.size(); i++) {
+                        if (dataChangeListener != null) {
+                            dataChangeListener.onDataChanged(f.get(i), i);
                         }
-                    });
+                    }
+
                 }
             };
 

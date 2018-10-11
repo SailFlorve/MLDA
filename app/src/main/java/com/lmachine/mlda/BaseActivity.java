@@ -80,6 +80,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void showProgressDialog(String text) {
+        if (isFinishing()) {
+            return;
+        }
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
         } else {
@@ -97,6 +100,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void showDialog(String title, String message, String positive, String negative,
                            DialogInterface.OnClickListener positiveListener,
                            DialogInterface.OnClickListener negativeListener) {
+        if (isFinishing()) {
+            return;
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         if (!TextUtils.isEmpty(title)) {
             builder.setTitle(title);

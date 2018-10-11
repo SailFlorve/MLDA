@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,6 +71,7 @@ public class BluetoothUtil {
                     for (byte b1 : newByte) {
                         sb.append(Integer.toHexString(b1 & 0xff)).append(" ");
                     }
+                    Log.d("BluetoothUtil", sb.toString());
                     if (dataListener != null) {
                         dataListener.onRead(newByte);
                     }

@@ -79,8 +79,13 @@ public class BluetoothDataResolver {
             short s2 = (short) (c & 0xFF);
             short s3 = (short) (s1 << 8 | s2);
 
-            float d = (float) (s3 / 8192f * G);
-
+            float d;
+            int pos = dataList.size() + 1;
+            if (pos % 2 == 0) {
+                d = s3 / 10f;
+            } else {
+                d = (float) (s3 / 8192f * G);
+            }
             f[fPosition] = d;
             fPosition++;
             read += 2;
@@ -123,4 +128,3 @@ public class BluetoothDataResolver {
         }
     }
 }
-

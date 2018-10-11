@@ -400,8 +400,10 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection, 
             sensorInfoList.get(position).addData(new float[]{data[0], data[1], data[2]});
         }
         if (isConnectInterrupt) {
-            closeProgressDialog();
-            isConnectInterrupt = false;
+            runOnUiThread(() -> {
+                closeProgressDialog();
+                isConnectInterrupt = false;
+            });
         }
     }
 

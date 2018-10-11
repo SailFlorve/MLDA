@@ -3,6 +3,9 @@ package com.lmachine.mlda.view;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
@@ -48,6 +51,29 @@ public class SensorView extends CardView {
     private XYSeriesRenderer[] renderers;
     private XYMultipleSeriesRenderer multipleSeriesRenderer;
     private GraphicalView chart;
+
+    private Handler handler = new Handler(new Handler.Callback() {
+        @SuppressLint("DefaultLocale")
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    chart.postInvalidate();
+                    break;
+                case 0:
+                    Bundle b = msg.getData();
+                    String[] strData = b.getStringArray("data");
+                    checkBoxes[0].setText(strData[0]);
+                    checkBoxes[1].setText(strData[1]);
+                    checkBoxes[2].setText(strData[2]);
+                    checkBoxes[3].setText(strData[3]);
+
+                default:
+
+            }
+            return true;
+        }
+    });
 
     private int[] colors = new int[]{
             Color.parseColor("#26a69a"),
@@ -195,15 +221,21 @@ public class SensorView extends CardView {
         sensorName.setText(name);
     }
 
+    //不在主线程
     @SuppressLint("DefaultLocale")
     public void setSensorData(float[] data) {
         float sum = (float) Math.sqrt(Math.pow(data[0], 2) + Math.pow(data[1], 2) + Math.pow(data[2], 2));
-        if (data.length == 3) {
-            checkBoxes[0].setText(String.format("x: %.2f", data[0]));
-            checkBoxes[1].setText(String.format("y: %.2f", data[1]));
-            checkBoxes[2].setText(String.format("z: %.2f", data[2]));
-            checkBoxes[3].setText(String.format("s: %.2f", sum));
-        }
+        Message message1 = handler.obtainMessage(0);
+        Bundle b = new Bundle();
+        b.putStringArray("data", new String[]{
+                String.format("x: %.2f", data[0]),
+                String.format("y: %.2f", data[1]),
+                String.format("z: %.2f", data[2]),
+                String.format("s: %.2f", sum)
+        });
+        message1.setData(b);
+        handler.sendMessage(message1);
+
         for (XYSeries line : lines) {
             line.clear();
         }
@@ -223,7 +255,8 @@ public class SensorView extends CardView {
             dataListXYZ.add(sum);
             updateLineData(dataListXYZ, lines[3]);
         }
-        chart.postInvalidate();
+        Message message2 = handler.obtainMessage(1);
+        handler.sendMessage(message2);
     }
 
     private void updateLineData(LinkedList<Float> dataList, XYSeries line) {
