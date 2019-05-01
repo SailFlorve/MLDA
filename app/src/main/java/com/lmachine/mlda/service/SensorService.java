@@ -72,7 +72,9 @@ public class SensorService extends Service {
                 public void onDataChanged(List<float[]> f) {
                     for (int i = 0; i < f.size(); i++) {
                         if (dataChangeListener != null) {
-                            dataChangeListener.onDataChanged(f.get(i), i);
+                            int finalI = i;
+                            mainHandler.post(() -> dataChangeListener.onDataChanged(f.get(finalI), finalI));
+
                         }
                     }
 

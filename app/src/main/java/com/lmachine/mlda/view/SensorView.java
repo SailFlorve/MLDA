@@ -200,10 +200,12 @@ public class SensorView extends CardView {
     public void setSensorData(float[] data) {
         float sum = (float) Math.sqrt(Math.pow(data[0], 2) + Math.pow(data[1], 2) + Math.pow(data[2], 2));
 
-        checkBoxes[0].setText(String.format("x: %.2f", data[0]));
-        checkBoxes[1].setText(String.format("y: %.2f", data[1]));
-        checkBoxes[2].setText(String.format("z: %.2f", data[2]));
-        checkBoxes[3].setText(String.format("s: %.2f", sum));
+        if (data.length == 3) {
+            checkBoxes[0].setText(String.format("x: %.2f", data[0]));
+            checkBoxes[1].setText(String.format("y: %.2f", data[1]));
+            checkBoxes[2].setText(String.format("z: %.2f", data[2]));
+            checkBoxes[3].setText(String.format("s: %.2f", sum));
+        }
 
         for (XYSeries line : lines) {
             line.clear();

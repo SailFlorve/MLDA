@@ -338,6 +338,7 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection, 
         Glide.with(this).load(info.getPicId()).crossFade(1000).into(titleImage);
 
     }
+
     private void finishCountDown() {
         soundMgr.play(3);
         tipText.setVisibility(View.GONE);
@@ -400,10 +401,8 @@ public class MonitorActivity extends BaseActivity implements ServiceConnection, 
             sensorInfoList.get(position).addData(new float[]{data[0], data[1], data[2]});
         }
         if (isConnectInterrupt) {
-            runOnUiThread(() -> {
-                closeProgressDialog();
-                isConnectInterrupt = false;
-            });
+            closeProgressDialog();
+            isConnectInterrupt = false;
         }
     }
 
